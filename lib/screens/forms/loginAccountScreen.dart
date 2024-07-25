@@ -1,0 +1,150 @@
+import 'package:flutter/material.dart';
+import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
+import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
+
+class LoginScreenAccount extends StatefulWidget {
+  final Color textColor;
+  final double width;
+  final Color textColorWhite;
+
+  const LoginScreenAccount({
+    super.key,
+    required this.textColor,
+    required this.width,
+    required this.textColorWhite,
+  });
+
+  @override
+  State<LoginScreenAccount> createState() => _LoginScreenAccountState();
+}
+
+class _LoginScreenAccountState extends State<LoginScreenAccount> {
+  final _nameController = TextEditingController();
+  final _schoolIdController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool isVisible = true;
+
+  void toggleVisibility() {
+    setState(() {
+      isVisible = !isVisible;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'LSG',
+          style: TextStyle(
+              color: widget.textColor,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+              fontSize: 24.0),
+        ),
+        Text(
+          'Welcome Back',
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 40.0,
+              fontWeight: FontWeight.w600),
+        ),
+        Text(
+          'Glad to see you again',
+          style: TextStyle(
+              fontFamily: "Poppins",
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0),
+        ),
+        Text(
+          'Login to your account below',
+          style: TextStyle(
+              fontFamily: "Poppins",
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.0),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 45.0, 40.0, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Name',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins"),
+              ),
+              CustomTextField(
+                  hintext: 'enter name', controller: _nameController),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'School Id',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins"),
+              ),
+              CustomTextField(
+                  hintext: 'enter school id', controller: _schoolIdController),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Password',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins"),
+              ),
+              PasswordTextField(
+                  hintext: 'enter password',
+                  controller: _passwordController,
+                  obscureText: isVisible,
+                  isVisible: toggleVisibility)
+            ],
+          ),
+        ),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 10),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: widget.width,
+                decoration: BoxDecoration(
+                    color: widget.textColor,
+                    borderRadius: BorderRadius.circular(6.0)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                      child: Text(
+                    'Login',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: widget.textColorWhite,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18.0),
+                  )),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+}

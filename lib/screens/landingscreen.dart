@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:qr_app/screens/forms/carouselWidget.dart';
-import 'package:qr_app/screens/forms/circleButtonWidget.dart';
 import 'package:qr_app/screens/forms/createAccountScreen.dart';
+import 'package:qr_app/screens/forms/formUtils/carouselWidget.dart';
+import 'package:qr_app/screens/forms/formUtils/circleButtonWidget.dart';
+import 'package:qr_app/screens/forms/formUtils/textButton.dart';
 import 'package:qr_app/screens/forms/landingScreenWidget.dart';
+import 'package:qr_app/screens/forms/loginAccountScreen.dart';
 import 'package:qr_app/theme/avartar.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
@@ -18,6 +20,16 @@ class _LandingScreenState extends State<LandingScreen> {
   final appBar = AppBar();
   int pageIndex = 0;
 
+  void newScreen() {
+    setState(() {
+      if (pageIndex > 1) {
+        pageIndex--;
+      } else {
+        pageIndex++;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double appBarHeight = appBar.preferredSize.height;
@@ -27,50 +39,79 @@ class _LandingScreenState extends State<LandingScreen> {
     Color purple = Color(color.hexColor(color.primaryColor));
     List pages = [
       landingScreenWidget(
-        height: (screenHeight - appBarHeight - statusbarHeight) * 0.50,
+        height: (screenHeight - appBarHeight - statusbarHeight) * 0.55,
         width: screenWIdth * 0.80,
       ),
-      CreateAccountScreen()
+      LoginScreenAccount(
+        textColor: purple,
+        width: screenWIdth,
+        textColorWhite: color.secondaryColor,
+      ),
+      CreateAccountScreen(
+        textColor: purple,
+      )
     ];
 
-    List Buttons = [circleButtonWidget(color: purple)];
+    List Buttons = [
+      circleButtonWidget(
+        color: purple,
+        elevation: 6,
+        ontap: newScreen,
+      ),
+      CustomTextButton(
+        padding: 10.0,
+        onpress: newScreen,
+        color: purple,
+        text: 'Create Account',
+        textColor: color.secondaryColor,
+        fontsize: 14.0,
+      ),
+      CustomTextButton(
+          padding: 10.0,
+          onpress: newScreen,
+          fontsize: 13.0,
+          color: purple,
+          text: 'Already Have An Account',
+          textColor: color.secondaryColor),
+    ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '    LSG',
-          style: TextStyle(
-              color: Color(color.hexColor(color.primaryColor)),
-              fontWeight: FontWeight.w800,
-              fontFamily: 'Poppins'),
-        ),
+        title: pageIndex == 0
+            ? Text(
+                '    LSG',
+                style: TextStyle(
+                    color: Color(color.hexColor(color.primaryColor)),
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Poppins'),
+              )
+            : Text(''),
       ),
-      body: Column(
-        children: [
-          Expanded(flex: 5, child: pages[pageIndex]),
-          Expanded(
-              flex: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 44.0),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: (screenHeight - appBarHeight - statusbarHeight) * 0.80,
+              child: pages[pageIndex],
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0, horizontal: 44.0),
+              child: Container(
+                height: (screenHeight - appBarHeight - statusbarHeight) * 0.20,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CarouselWidget(pageIndex: pageIndex, color: purple),
                     Buttons[pageIndex],
                   ],
                 ),
-              ))
-        ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 }
-
-
-// 107.80
-
-
-
-
-

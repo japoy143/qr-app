@@ -12,4 +12,6 @@ class ColorThemeProvider {
   }
 
   final primaryColor = '#6C63FF';
+
+  final Color secondaryColor = Colors.white;
 }

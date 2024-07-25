@@ -19,7 +19,7 @@ class landingScreenWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 60, 0),
+              padding: const EdgeInsets.fromLTRB(0, 20, 30, 0),
               child: AvatarIllustration(height: height, width: width),
             ),
           ],
