@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
 import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
+import 'package:qr_app/screens/homescree.dart';
+import 'package:qr_app/screens/menuscreen.dart';
 
 class LoginScreenAccount extends StatefulWidget {
   final Color textColor;
@@ -44,7 +46,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
               fontFamily: 'Poppins',
               fontSize: 24.0),
         ),
-        Text(
+        const Text(
           'Welcome Back',
           style: TextStyle(
               fontFamily: 'Poppins',
@@ -72,7 +74,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Name',
                 style: TextStyle(
                     fontSize: 16.0,
@@ -89,7 +91,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'School Id',
                 style: TextStyle(
                     fontSize: 16.0,
@@ -106,7 +108,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Password',
                 style: TextStyle(
                     fontSize: 16.0,
@@ -124,7 +126,8 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 10),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => MenuScreen())),
               child: Container(
                 width: widget.width,
                 decoration: BoxDecoration(

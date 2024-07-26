@@ -1,11 +1,22 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
 import 'package:qr_app/screens/forms/formUtils/dropDownItem.dart';
-
+import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   final Color textColor;
-  const CreateAccountScreen({super.key, required this.textColor});
+  final double width;
+  final double buttonWidth;
+  final Color textColorWhite;
+  const CreateAccountScreen(
+      {super.key,
+      required this.textColor,
+      required this.width,
+      required this.buttonWidth,
+      required this.textColorWhite});
 
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
@@ -19,8 +30,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  List<String> Courses = ['BSIT', 'BSCS', "BSIS", "BSCPE", "BSECE"];
+  bool isPasswordVisible = true;
+  bool isConfirmPasswordVisible = true;
+
+  List<String> courses = ['BSIT', 'BSCS', "BSIS", "BSCPE", "BSECE"];
   String? selectedCourse = 'BSIT';
+
+  List<int> year = [1, 2, 3, 4];
+  int? selectedYear = 1;
+
+  void togglePassword() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+    });
+  }
+
+  void toggleConfirmPassword() {
+    setState(() {
+      isConfirmPasswordVisible = !isConfirmPasswordVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +63,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontFamily: 'Poppins',
               fontSize: 24.0),
         ),
-        Text(
+        const Text(
           'Sign Up',
           style: TextStyle(
               fontFamily: 'Poppins',
@@ -50,11 +79,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 45.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Name',
                 style: TextStyle(
                     fontSize: 16.0,
@@ -71,11 +100,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           child: Row(
             children: [
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'School Id',
                       style: TextStyle(
                           fontSize: 16.0,
@@ -84,46 +113,136 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                     CustomTextField(
                         hintext: 'enter school id',
-                        controller: _nameController),
+                        controller: _schoolIdController),
                   ],
                 ),
               ),
-              // Expanded(
-              //   flex: 1,
-              //   child: Container(
-              //     decoration: BoxDecoration(
-              //       border: Border.all(
-              //         color: widget.textColor, // Set the border color to purple
-              //         width: 2.0, // Optional: Set the border width
-              //         style:
-              //             BorderStyle.solid, // Optional: Set the border style
-              //       ),
-              //     ),
-              //     padding: EdgeInsets.all(10.0),
-              //     child: ,
-              //   ),
-              // ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'School Id',
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "Poppins"),
+              SizedBox(
+                width: widget.width,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Courses',
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Poppins"),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.grey.shade900)),
+                    child: DropDown(
+                      initialValue: selectedCourse,
+                      items: courses,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedCourse = val;
+                        });
+                      },
                     ),
-                    CustomTextField(
-                        hintext: 'enter school id',
-                        controller: _nameController),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: widget.width,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Year',
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Poppins"),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.grey.shade900)),
+                    child: DropDown(
+                      initialValue: selectedYear,
+                      items: year,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedYear = val;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        )
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Password',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins"),
+              ),
+              PasswordTextField(
+                  hintext: 'enter password',
+                  controller: _passwordController,
+                  obscureText: isPasswordVisible,
+                  isVisible: togglePassword)
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Confirm Password',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins"),
+              ),
+              PasswordTextField(
+                  hintext: 'confirm password',
+                  controller: _confirmPasswordController,
+                  obscureText: isConfirmPasswordVisible,
+                  isVisible: toggleConfirmPassword)
+            ],
+          ),
+        ),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(40.0, 5.0, 40.0, 0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: widget.buttonWidth,
+                decoration: BoxDecoration(
+                    color: widget.textColor,
+                    borderRadius: BorderRadius.circular(6.0)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                      child: Text(
+                    'Create Account',
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: widget.textColorWhite,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18.0),
+                  )),
+                ),
+              ),
+            )),
       ],
     );
   }

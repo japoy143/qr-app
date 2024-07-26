@@ -35,7 +35,7 @@ class landingScreenWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Color(color.hexColor(color.primaryColor))),
             ),
-            Text(
+            const Text(
               'Revolutionizing Attendance Tracking with Seamless \nQR Code Integration.',
               style: TextStyle(
                 fontFamily: 'Poppins',

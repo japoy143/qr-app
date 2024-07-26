@@ -48,7 +48,10 @@ class _LandingScreenState extends State<LandingScreen> {
         textColorWhite: color.secondaryColor,
       ),
       CreateAccountScreen(
+        textColorWhite: color.secondaryColor,
         textColor: purple,
+        width: screenHeight * 0.02,
+        buttonWidth: screenHeight * 0.80,
       )
     ];
 
@@ -85,19 +88,19 @@ class _LandingScreenState extends State<LandingScreen> {
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Poppins'),
               )
-            : Text(''),
+            : const Text(''),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: (screenHeight - appBarHeight - statusbarHeight) * 0.80,
               child: pages[pageIndex],
             ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 0, horizontal: 44.0),
-              child: Container(
+              child: SizedBox(
                 height: (screenHeight - appBarHeight - statusbarHeight) * 0.20,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

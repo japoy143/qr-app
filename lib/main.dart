@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_app/models/events.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:path_provider/path_provider.dart' as path;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dir = await path.getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+
+  //events
+  Hive.registerAdapter<EventType>(EventTypeAdapter());
+  await Hive.openBox<EventType>('eventsBox');
   runApp(const MyApp());
 }
 
@@ -20,7 +30,7 @@ class MyApp extends StatelessWidget {
             seedColor: Color(color.hexColor(color.primaryColor))),
         useMaterial3: true,
       ),
-      home: LandingScreen(),
+      home: const LandingScreen(),
     );
   }
 }
