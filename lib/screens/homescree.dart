@@ -36,8 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
-    Iterable<EventType> event = _eventBox.values.toList().reversed;
+    //events list
+    List<EventType> event = _eventBox.values.toList();
     final event1 = event.elementAt(0);
+    final event2 = event.length > 1 ? event.elementAt(1) : null;
+    final event3 = event.length > 2 ? event.elementAt(2) : null;
 
     return Scaffold(
       body: Padding(
@@ -141,40 +144,77 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                             child: Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 16),
+                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
                           child: Container(
                             decoration: BoxDecoration(
                                 color: purple,
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
-                                child: EventBoxes(
-                              eventName: event1.eventName,
-                              colorWhite: colortheme.secondaryColor,
-                              eventDescription: event1.eventDescription,
-                              eventStatus: 'Ongoing',
-                              eventDate: event1.eventDate,
-                            )),
+                                child: event2 != null
+                                    ? EventBoxes(
+                                        eventName: event1.eventName,
+                                        colorWhite: colortheme.secondaryColor,
+                                        eventDescription:
+                                            event1.eventDescription,
+                                        eventStatus: 'Ongoing',
+                                        eventDate: event1.eventDate,
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          'No Data',
+                                          style: TextStyle(
+                                              color: colortheme.secondaryColor,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
                           ),
                         )),
                         Expanded(
                             child: Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 16),
+                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
                           child: Container(
                             decoration: BoxDecoration(
                                 color: purple,
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
-                                child: EventBoxes(
-                              eventName: event1.eventName,
-                              colorWhite: colortheme.secondaryColor,
-                              eventDescription: event1.eventDescription,
-                              eventStatus: 'Ongoing',
-                              eventDate: event1.eventDate,
-                            )),
+                                child: event3 != null
+                                    ? EventBoxes(
+                                        eventName: event3.eventName,
+                                        colorWhite: colortheme.secondaryColor,
+                                        eventDescription:
+                                            event3.eventDescription,
+                                        eventStatus: 'Ongoing',
+                                        eventDate: event3.eventDate,
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          'No Data',
+                                          style: TextStyle(
+                                              color: colortheme.secondaryColor,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
                           ),
                         )),
                       ],
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                        child: Text(
+                          'See More',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade600,
+                              fontFamily: 'Poppins'),
+                        ),
+                      )
+                    ],
                   )
                 ],
               ),
@@ -206,16 +246,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             Container(
-              decoration: BoxDecoration(
-                  color: purple, borderRadius: BorderRadius.circular(4.0)),
-              height: (screenHeight - statusbarHeight) * 0.28,
-              child: PastEventBox(
-                  eventName: event1.eventName,
-                  colorWhite: colortheme.secondaryColor,
-                  eventDescription: event1.eventDescription,
-                  eventStatus: 'sdada',
-                  eventDate: event1.eventDate),
-            ),
+                decoration: BoxDecoration(
+                    color: purple, borderRadius: BorderRadius.circular(4.0)),
+                height: (screenHeight - statusbarHeight) * 0.26,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PastEventBox(
+                          eventName: event1.eventName,
+                          colorWhite: colortheme.secondaryColor,
+                          eventDescription: event1.eventDescription,
+                          eventStatus: 'sdada',
+                          eventDate: event1.eventDate),
+                    ),
+                  ],
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                  child: Text(
+                    'See More',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                        fontFamily: 'Poppins'),
+                  ),
+                )
+              ],
+            )
           ],
         )),
       ),
