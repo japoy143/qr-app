@@ -2,9 +2,13 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
 import 'package:qr_app/screens/forms/formUtils/dropDownItem.dart';
 import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
+import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/utils/toast.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   final Color textColor;
@@ -39,6 +43,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   List<int> year = [1, 2, 3, 4];
   int? selectedYear = 1;
 
+  late Box<UsersType> _userBox;
+  final userDb = UsersDatabase();
+
+  @override
+  void initState() {
+    _userBox = userDb.UsersDatabaseInitialization();
+    super.initState();
+  }
+
   void togglePassword() {
     setState(() {
       isPasswordVisible = !isPasswordVisible;
@@ -49,6 +62,33 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     setState(() {
       isConfirmPasswordVisible = !isConfirmPasswordVisible;
     });
+  }
+
+  final toast = CustomToast();
+
+  void createUser() {
+    bool admin = false;
+    if (_nameController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _schoolIdController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      toast.errorCreationUser(context);
+      return;
+    }
+    if (_nameController.text == 'vanesse') {
+      admin = true;
+    }
+
+    userDb.createNewUser(
+        _nameController.text,
+        int.parse(_schoolIdController.text),
+        selectedCourse!,
+        selectedYear.toString(),
+        _passwordController.text,
+        admin,
+        '');
+
+    toast.successfullyCreatedUser(context);
   }
 
   @override
@@ -79,7 +119,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -223,7 +263,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 5.0, 40.0, 0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: createUser,
               child: Container(
                 width: widget.buttonWidth,
                 decoration: BoxDecoration(

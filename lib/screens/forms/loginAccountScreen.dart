@@ -51,6 +51,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   //toast
   final toast = CustomToast();
 
+  //login user
   void userValidate() {
     final name = _usersBox.containsKey(_nameController.text);
 
@@ -66,8 +67,16 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       return;
     }
 
+    if (user.schoolId != int.parse(_schoolIdController.text)) {
+      toast.userIdNotCorrect(context);
+      return;
+    }
+
     toast.loginSuccessfully(context, user.userName);
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => MenuScreen()));
+    _nameController.clear();
+    _passwordController.clear();
+    _schoolIdController.clear();
   }
 
   @override

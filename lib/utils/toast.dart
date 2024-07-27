@@ -37,4 +37,40 @@ class CustomToast {
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
+
+  void userIdNotCorrect(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: Text("Login Failed"),
+      description: Text("User id not correct"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void successfullyCreatedUser(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: Text("Account Created"),
+      description: Text("Account Successfully Created"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void errorCreationUser(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: Text("User Not Created"),
+      description: Text("Please fill the forms"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
 }

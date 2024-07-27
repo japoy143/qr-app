@@ -28,4 +28,19 @@ class UsersDatabase {
 
     return _box;
   }
+
+  void createNewUser(String userName, int schoolId, String userCourse,
+      String userYear, String userPassword, bool isAdmin, String userProfile) {
+    _box.put(
+        userName,
+        UsersType(
+            schoolId: schoolId,
+            key: userName,
+            userName: userName,
+            userCourse: userCourse,
+            userYear: userYear,
+            userPassword: userPassword,
+            isAdmin: isAdmin,
+            userProfile: userProfile));
+  }
 }
