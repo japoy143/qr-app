@@ -41,6 +41,7 @@ dependencies:
   path_provider:
   uuid:
   intl:
+  toastification:
 
 dev_dependencies:
   flutter_test:

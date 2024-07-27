@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
 import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
-import 'package:qr_app/screens/homescree.dart';
+import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/menuscreen.dart';
+import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/utils/toast.dart';
 
 class LoginScreenAccount extends StatefulWidget {
   final Color textColor;
@@ -27,10 +31,43 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
   bool isVisible = true;
 
+  //users database
+  late Box<UsersType> _usersBox;
+  final usersdb = UsersDatabase();
+
+  @override
+  void initState() {
+    _usersBox = usersdb.UsersDatabaseInitialization();
+
+    super.initState();
+  }
+
   void toggleVisibility() {
     setState(() {
       isVisible = !isVisible;
     });
+  }
+
+  //toast
+  final toast = CustomToast();
+
+  void userValidate() {
+    final name = _usersBox.containsKey(_nameController.text);
+
+    if (!name) {
+      toast.userNotExist(context);
+      return;
+    }
+
+    final user = _usersBox.get(_nameController.text);
+
+    if (user!.userPassword != _passwordController.text) {
+      toast.passwordIncorrect(context);
+      return;
+    }
+
+    toast.loginSuccessfully(context, user.userName);
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MenuScreen()));
   }
 
   @override
@@ -126,8 +163,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 10),
             child: GestureDetector(
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => MenuScreen())),
+              onTap: userValidate,
               child: Container(
                 width: widget.width,
                 decoration: BoxDecoration(

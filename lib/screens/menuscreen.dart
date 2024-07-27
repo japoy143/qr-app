@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_app/screens/eventscreen.dart';
-import 'package:qr_app/screens/homescree.dart';
+import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
