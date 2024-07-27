@@ -12,7 +12,7 @@ void main() async {
 
   //events
   Hive.registerAdapter<EventType>(EventTypeAdapter());
-  await Hive.openBox<EventType>('eventsBox');
+  await Hive.openBox<EventType>('eventBox');
   runApp(const MyApp());
 }
 

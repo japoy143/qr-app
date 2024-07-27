@@ -16,6 +16,10 @@ class EventType {
   DateTime eventDate;
   @HiveField(5)
   String? eventStatus;
+  @HiveField(6)
+  String key;
+  @HiveField(7)
+  String eventPlace;
 
   EventType(
       {required this.id,
@@ -23,5 +27,7 @@ class EventType {
       required this.eventDescription,
       required this.eventDate,
       required this.startTime,
-      this.eventStatus});
+      this.eventStatus,
+      required this.eventPlace,
+      required this.key});
 }

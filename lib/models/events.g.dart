@@ -23,13 +23,15 @@ class EventTypeAdapter extends TypeAdapter<EventType> {
       eventDate: fields[4] as DateTime,
       startTime: fields[3] as DateTime,
       eventStatus: fields[5] as String?,
+      eventPlace: fields[7] as String,
+      key: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, EventType obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class EventTypeAdapter extends TypeAdapter<EventType> {
       ..writeByte(4)
       ..write(obj.eventDate)
       ..writeByte(5)
-      ..write(obj.eventStatus);
+      ..write(obj.eventStatus)
+      ..writeByte(6)
+      ..write(obj.key)
+      ..writeByte(7)
+      ..write(obj.eventPlace);
   }
 
   @override

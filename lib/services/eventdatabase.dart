@@ -8,10 +8,24 @@ class EventDatabase {
 
   Box<EventType> EventDatabaseInitialization() {
     var key = id.v1();
-    _box = Hive.box<EventType>('eventsBox');
+    DateTime date = DateTime.now();
+    _box = Hive.box<EventType>('eventBox');
 
-    if(_box.isEmpty){
-      _box.put(key, EventType(id: key, eventName: eventName, eventDescription: eventDescription, eventDate: eventDate, startTime: startTime))
+    if (_box.isEmpty) {
+      _box.put(
+          key,
+          EventType(
+              id: 2001,
+              eventName: "Drug Awareness Symposium",
+              eventDescription:
+                  'A seminar on awareness and prevention of illegal drugs',
+              eventDate: date,
+              startTime: date,
+              key: key,
+              eventPlace: 'Gym',
+              eventStatus: 'Ongoing'));
     }
+
+    return _box;
   }
 }
