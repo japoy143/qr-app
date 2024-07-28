@@ -1,11 +1,27 @@
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/utils/toast.dart';
 import 'package:uuid/uuid.dart';
 
 class UsersDatabase {
   var id = Uuid();
   late Box<UsersType> _box;
+
+  List<int> adminIds = [
+    00000001,
+    00000002,
+    00000003,
+    00000004,
+    00000005,
+    00000006,
+    00000007,
+    00000008,
+    00000009,
+    000000010,
+    000000011,
+    000000012
+  ];
 
   Box<UsersType> UsersDatabaseInitialization() {
     var key = id.v1();
@@ -30,7 +46,13 @@ class UsersDatabase {
   }
 
   void createNewUser(String userName, int schoolId, String userCourse,
-      String userYear, String userPassword, bool isAdmin, String userProfile) {
+      String userYear, String userPassword, String userProfile) {
+    bool isAdmin = false;
+
+    if (adminIds.contains(schoolId)) {
+      isAdmin = true;
+    }
+
     _box.put(
         userName,
         UsersType(

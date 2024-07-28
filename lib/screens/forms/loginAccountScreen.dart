@@ -73,10 +73,18 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     }
 
     toast.loginSuccessfully(context, user.userName);
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MenuScreen()));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => MenuScreen(
+              userKey: _nameController.text,
+            )));
+  }
+
+  @override
+  void dispose() {
     _nameController.clear();
     _passwordController.clear();
     _schoolIdController.clear();
+    super.dispose();
   }
 
   @override
@@ -128,7 +136,9 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
-                  hintext: 'enter name', controller: _nameController),
+                  keyBoardType: TextInputType.text,
+                  hintext: 'enter name',
+                  controller: _nameController),
             ],
           ),
         ),
@@ -145,7 +155,9 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
-                  hintext: 'enter school id', controller: _schoolIdController),
+                  keyBoardType: TextInputType.text,
+                  hintext: 'enter school id',
+                  controller: _schoolIdController),
             ],
           ),
         ),

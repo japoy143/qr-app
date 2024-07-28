@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/screens/homescreenUtils/eventbox.dart';
 import 'package:qr_app/screens/homescreenUtils/pastevent.dart';
 import 'package:qr_app/services/eventdatabase.dart';
+import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String userKey;
+  const HomeScreen({super.key, required this.userKey});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,13 +21,15 @@ class _HomeScreenState extends State<HomeScreen> {
   int notification = 1;
 
   final eventDb = EventDatabase();
+  final userDb = UsersDatabase();
   late Box<EventType> _eventBox;
+  late Box<UsersType> _userBox;
   final colortheme = ColorThemeProvider();
 
   @override
   void initState() {
     _eventBox = eventDb.EventDatabaseInitialization();
-
+    _userBox = userDb.UsersDatabaseInitialization();
     super.initState();
   }
 
@@ -41,6 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final event1 = event.elementAt(0);
     final event2 = event.length > 1 ? event.elementAt(1) : null;
     final event3 = event.length > 2 ? event.elementAt(2) : null;
+
+    final userDetails = _userBox.get(widget.userKey);
+    final userName = userDetails!.userName;
+    final isAdmin = userDetails.isAdmin ? "Officer" : "Not";
 
     return Scaffold(
       body: Padding(
@@ -66,12 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Jane'),
-                          Text('LSG Officer'),
+                          Text(userName),
+                          Text(isAdmin),
                         ],
                       ),
                     ],

@@ -64,31 +64,55 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     });
   }
 
-  final toast = CustomToast();
+  void clearAllFields() {
+    _nameController.clear();
+    _schoolIdController.clear();
+    _courseController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+  }
 
-  void createUser() {
-    bool admin = false;
+  bool userValidation() {
     if (_nameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _schoolIdController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       toast.errorCreationUser(context);
-      return;
-    }
-    if (_nameController.text == 'vanesse') {
-      admin = true;
+      return false;
     }
 
+    if (_userBox.containsKey(_nameController.text)) {
+      toast.userAlreadyExist(context);
+      return false;
+    }
+
+    if (_passwordController.text.length < 8) {
+      toast.passwordLengthError(context);
+      return false;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      toast.passwordNotSame(context);
+      return false;
+    }
     userDb.createNewUser(
         _nameController.text,
         int.parse(_schoolIdController.text),
         selectedCourse!,
         selectedYear.toString(),
         _passwordController.text,
-        admin,
         '');
 
     toast.successfullyCreatedUser(context);
+    return true;
+  }
+
+  final toast = CustomToast();
+
+  void createUser() {
+    if (userValidation()) {
+      clearAllFields();
+    }
   }
 
   @override
@@ -119,7 +143,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 26.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -131,7 +155,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
-                  hintext: 'enter name', controller: _nameController),
+                  hintext: 'enter name',
+                  keyBoardType: TextInputType.text,
+                  controller: _nameController),
             ],
           ),
         ),
@@ -153,6 +179,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                     CustomTextField(
                         hintext: 'enter school id',
+                        keyBoardType: TextInputType.number,
                         controller: _schoolIdController),
                   ],
                 ),

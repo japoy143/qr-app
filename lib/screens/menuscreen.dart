@@ -6,7 +6,8 @@ import 'package:qr_app/screens/userscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key});
+  final String userKey;
+  const MenuScreen({super.key, required this.userKey});
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -23,10 +24,16 @@ class _MenuScreenState extends State<MenuScreen> {
 
   int currentIndex = 0;
 
-  List pages = [HomeScreen(), EventScreen(), PenaltyScreen(), UserScreen()];
-
   @override
   Widget build(BuildContext context) {
+    List pages = [
+      HomeScreen(
+        userKey: widget.userKey,
+      ),
+      EventScreen(),
+      PenaltyScreen(),
+      UserScreen()
+    ];
     Color purple = Color(color.hexColor(color.primaryColor));
     return Scaffold(
       body: pages[currentIndex],

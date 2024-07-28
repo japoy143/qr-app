@@ -7,7 +7,7 @@ class CustomToast {
       context: context,
       type: ToastificationType.success,
       style: ToastificationStyle.flatColored,
-      title: Text("Login Successfully"),
+      title: const Text("Login Successfully"),
       description: Text("Welcome Back ${user}"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
@@ -19,8 +19,8 @@ class CustomToast {
       context: context,
       type: ToastificationType.error,
       style: ToastificationStyle.flatColored,
-      title: Text("Login Failed"),
-      description: Text("Incorrect Password"),
+      title: const Text("Login Failed"),
+      description: const Text("Incorrect Password"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
@@ -31,8 +31,8 @@ class CustomToast {
       context: context,
       type: ToastificationType.error,
       style: ToastificationStyle.flatColored,
-      title: Text("Login Failed"),
-      description: Text("User Not Found"),
+      title: const Text("Login Failed"),
+      description: const Text("User Not Found"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
@@ -43,20 +43,21 @@ class CustomToast {
       context: context,
       type: ToastificationType.error,
       style: ToastificationStyle.flatColored,
-      title: Text("Login Failed"),
-      description: Text("User id not correct"),
+      title: const Text("Login Failed"),
+      description: const Text("User id not correct"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
 
+// user creation toast
   void successfullyCreatedUser(context) {
     toastification.show(
       context: context,
       type: ToastificationType.success,
       style: ToastificationStyle.flatColored,
-      title: Text("Account Created"),
-      description: Text("Account Successfully Created"),
+      title: const Text("Account Created"),
+      description: const Text("Account Successfully Created"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
@@ -67,8 +68,44 @@ class CustomToast {
       context: context,
       type: ToastificationType.error,
       style: ToastificationStyle.flatColored,
-      title: Text("User Not Created"),
-      description: Text("Please fill the forms"),
+      title: const Text("User Not Created"),
+      description: const Text("Please fill the forms"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void passwordLengthError(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("User Not Created"),
+      description: const Text("Password must be at least 8 characters"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void passwordNotSame(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("User Not Created"),
+      description: const Text("Password must be thesame"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void userAlreadyExist(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("User Not Created"),
+      description: const Text("User already in use"),
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
