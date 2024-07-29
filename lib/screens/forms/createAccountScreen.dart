@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
-import 'package:qr_app/screens/forms/formUtils/dropDownItem.dart';
-import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
+import 'package:qr_app/utils/formUtils/customtextField.dart';
+import 'package:qr_app/utils/formUtils/passwordTextField.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/utils/toast.dart';
 
@@ -30,7 +27,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _nameController = TextEditingController();
   final _schoolIdController = TextEditingController();
   final _courseController = TextEditingController();
-  final _yearController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -81,7 +77,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     }
 
-    if (_userBox.containsKey(_nameController.text)) {
+    if (_userBox.containsKey(_schoolIdController.text)) {
       toast.userAlreadyExist(context);
       return false;
     }
@@ -98,7 +94,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     userDb.createNewUser(
         _nameController.text,
         int.parse(_schoolIdController.text),
-        selectedCourse!,
+        _courseController.text,
         selectedYear.toString(),
         _passwordController.text,
         '');
@@ -143,7 +139,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 26.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +158,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Row(
             children: [
               Expanded(
@@ -248,7 +244,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -268,7 +264,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -288,7 +284,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.fromLTRB(40.0, 5.0, 40.0, 0),
+            padding: const EdgeInsets.fromLTRB(40.0, 4.0, 40.0, 0),
             child: GestureDetector(
               onTap: createUser,
               child: Container(

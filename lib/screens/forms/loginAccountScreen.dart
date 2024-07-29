@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/screens/forms/formUtils/customtextField.dart';
-import 'package:qr_app/screens/forms/formUtils/passwordTextField.dart';
-import 'package:qr_app/screens/homescreen.dart';
+import 'package:qr_app/utils/formUtils/customtextField.dart';
+import 'package:qr_app/utils/formUtils/passwordTextField.dart';
 import 'package:qr_app/screens/menuscreen.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/utils/toast.dart';
@@ -38,7 +37,6 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   @override
   void initState() {
     _usersBox = usersdb.UsersDatabaseInitialization();
-
     super.initState();
   }
 
@@ -53,14 +51,14 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
   //login user
   void userValidate() {
-    final name = _usersBox.containsKey(_nameController.text);
+    final name = _usersBox.containsKey(_schoolIdController.text.trim());
 
     if (!name) {
       toast.userNotExist(context);
       return;
     }
 
-    final user = _usersBox.get(_nameController.text);
+    final user = _usersBox.get(_schoolIdController.text.trim());
 
     if (user!.userPassword != _passwordController.text) {
       toast.passwordIncorrect(context);
@@ -75,7 +73,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     toast.loginSuccessfully(context, user.userName);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => MenuScreen(
-              userKey: _nameController.text,
+              userKey: _schoolIdController.text.trim(),
             )));
   }
 
@@ -155,7 +153,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
-                  keyBoardType: TextInputType.text,
+                  keyBoardType: TextInputType.number,
                   hintext: 'enter school id',
                   controller: _schoolIdController),
             ],

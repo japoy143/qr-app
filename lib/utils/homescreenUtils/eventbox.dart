@@ -8,13 +8,15 @@ class EventBox extends StatelessWidget {
   final Color colorWhite;
   final String eventStatus;
   final DateTime eventDate;
+  final bool isAdmin;
   EventBox(
       {super.key,
       required this.eventName,
       required this.colorWhite,
       required this.eventDescription,
       required this.eventStatus,
-      required this.eventDate});
+      required this.eventDate,
+      required this.isAdmin});
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +37,15 @@ class EventBox extends StatelessWidget {
                     fontSize: 18.0,
                     fontWeight: FontWeight.w600),
               ),
-              Icon(
-                Icons.qr_code_scanner,
-                color: colorWhite,
-              )
+              isAdmin
+                  ? GestureDetector(
+                      onTap: () {},
+                      child: Icon(
+                        Icons.qr_code_scanner,
+                        color: colorWhite,
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/screens/homescreenUtils/eventBoxes.dart';
-import 'package:qr_app/screens/homescreenUtils/eventbox.dart';
-import 'package:qr_app/screens/homescreenUtils/pastevent.dart';
+import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
+import 'package:qr_app/utils/homescreenUtils/eventbox.dart';
+import 'package:qr_app/utils/homescreenUtils/pastevent.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
@@ -49,7 +49,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final userDetails = _userBox.get(widget.userKey);
     final userName = userDetails!.userName;
-    final isAdmin = userDetails.isAdmin ? "Officer" : "Not";
+    final userSchoolId = userDetails.schoolId;
+    final isAdmin = userDetails.isAdmin;
+
+    Map<dynamic, String> positions = {
+      100001: "Governor",
+      200002: "Vice Governor",
+      300003: "Business Manager",
+      400004: "Treasurer",
+      500005: "Officer",
+      600006: "Officer",
+      700007: "Officer",
+      800008: "Officer",
+      900009: "Officer",
+    };
 
     return Scaffold(
       body: Padding(
@@ -57,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
             child: Column(
           children: [
-            Container(
+            SizedBox(
               height: (screenHeight - statusbarHeight) * 0.10,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,8 +92,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(userName),
-                          Text(isAdmin),
+                          Text(
+                            userName,
+                            style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                              '${isAdmin ? positions[userSchoolId] : "Student"}'),
                         ],
                       ),
                     ],
@@ -98,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Events',
                       style: TextStyle(
                         fontFamily: 'Poppins',
@@ -119,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            Container(
+            SizedBox(
               height: (screenHeight - statusbarHeight) * 0.40,
               child: Column(
                 children: [
@@ -136,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
                                 child: EventBox(
+                              isAdmin: userDetails.isAdmin,
                               eventName: event1.eventName,
                               colorWhite: colortheme.secondaryColor,
                               eventDescription: event1.eventDescription,
@@ -233,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Last Event',
                       style: TextStyle(
                         fontFamily: 'Poppins',

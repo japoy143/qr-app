@@ -54,7 +54,7 @@ class UsersDatabase {
     }
 
     _box.put(
-        userName,
+        schoolId.toString(),
         UsersType(
             schoolId: schoolId,
             key: userName,

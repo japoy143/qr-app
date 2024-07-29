@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_app/screens/forms/createAccountScreen.dart';
-import 'package:qr_app/screens/forms/formUtils/carouselWidget.dart';
-import 'package:qr_app/screens/forms/formUtils/circleButtonWidget.dart';
-import 'package:qr_app/screens/forms/formUtils/textButton.dart';
+import 'package:qr_app/utils/formUtils/carouselWidget.dart';
+import 'package:qr_app/utils/formUtils/circleButtonWidget.dart';
+import 'package:qr_app/utils/formUtils/textButton.dart';
 import 'package:qr_app/screens/forms/landingScreenWidget.dart';
 import 'package:qr_app/screens/forms/loginAccountScreen.dart';
 import 'package:qr_app/theme/colortheme.dart';

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/eventscreen.dart';
 import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
+import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -24,8 +27,20 @@ class _MenuScreenState extends State<MenuScreen> {
 
   int currentIndex = 0;
 
+  final userDb = UsersDatabase();
+  late Box<UsersType> _userBox;
+
+  @override
+  void initState() {
+    _userBox = userDb.UsersDatabaseInitialization();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userDetails = _userBox.get(widget.userKey);
+    final isAdmin = userDetails!.isAdmin;
+
     List pages = [
       HomeScreen(
         userKey: widget.userKey,
@@ -33,6 +48,14 @@ class _MenuScreenState extends State<MenuScreen> {
       EventScreen(),
       PenaltyScreen(),
       UserScreen()
+    ];
+
+    List<BottomNavigationBarItem> bottomNavItems = [
+      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      const BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
+      if (isAdmin)
+        const BottomNavigationBarItem(icon: Icon(Icons.pending), label: 'Penalty'),
+      const BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'User'),
     ];
     Color purple = Color(color.hexColor(color.primaryColor));
     return Scaffold(
@@ -44,13 +67,7 @@ class _MenuScreenState extends State<MenuScreen> {
             currentIndex = newIndex;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
-          BottomNavigationBarItem(icon: Icon(Icons.pending), label: 'Penalty'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'User'),
-        ],
+        items: bottomNavItems,
         selectedItemColor: purple,
         unselectedItemColor: Colors.grey.shade500,
         showUnselectedLabels: true,
