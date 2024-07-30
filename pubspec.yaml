@@ -42,6 +42,7 @@ dependencies:
   uuid:
   intl:
   toastification:
+  bottom_picker:
 
 dev_dependencies:
   flutter_test:

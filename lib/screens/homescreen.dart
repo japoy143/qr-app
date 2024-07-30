@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
-import 'package:qr_app/utils/homescreenUtils/eventbox.dart';
+import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
 import 'package:qr_app/utils/homescreenUtils/pastevent.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
@@ -25,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late Box<EventType> _eventBox;
   late Box<UsersType> _userBox;
   final colortheme = ColorThemeProvider();
+
+  final adminPosition = adminPositions();
 
   @override
   void initState() {
@@ -51,18 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final userName = userDetails!.userName;
     final userSchoolId = userDetails.schoolId;
     final isAdmin = userDetails.isAdmin;
-
-    Map<dynamic, String> positions = {
-      100001: "Governor",
-      200002: "Vice Governor",
-      300003: "Business Manager",
-      400004: "Treasurer",
-      500005: "Officer",
-      600006: "Officer",
-      700007: "Officer",
-      800008: "Officer",
-      900009: "Officer",
-    };
 
     return Scaffold(
       body: Padding(
@@ -100,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.w600),
                           ),
                           Text(
-                              '${isAdmin ? positions[userSchoolId] : "Student"}'),
+                              '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
                         ],
                       ),
                     ],

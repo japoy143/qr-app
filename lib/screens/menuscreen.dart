@@ -45,7 +45,9 @@ class _MenuScreenState extends State<MenuScreen> {
       HomeScreen(
         userKey: widget.userKey,
       ),
-      EventScreen(),
+      EventScreen(
+        userKey: widget.userKey,
+      ),
       PenaltyScreen(),
       UserScreen()
     ];
@@ -54,8 +56,10 @@ class _MenuScreenState extends State<MenuScreen> {
       const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
       const BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
       if (isAdmin)
-        const BottomNavigationBarItem(icon: Icon(Icons.pending), label: 'Penalty'),
-      const BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'User'),
+        const BottomNavigationBarItem(
+            icon: Icon(Icons.pending), label: 'Penalty'),
+      const BottomNavigationBarItem(
+          icon: Icon(Icons.person_outline), label: 'User'),
     ];
     Color purple = Color(color.hexColor(color.primaryColor));
     return Scaffold(
