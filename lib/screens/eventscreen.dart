@@ -1,9 +1,7 @@
-import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
@@ -12,6 +10,7 @@ import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventscreenUtils/addEventModal.dart';
 import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
+import 'package:qr_app/utils/toast.dart';
 
 class EventScreen extends StatefulWidget {
   final String userKey;
@@ -38,20 +37,31 @@ class _EventScreenState extends State<EventScreen> {
   //notification
   int notification = 1;
 
+  //toast
+  final toast = CustomToast();
+
   //controllers
   final _eventNameController = TextEditingController();
   final _eventDescriptionController = TextEditingController();
   final _eventPlaceController = TextEditingController();
   final _eventIdController = TextEditingController();
-  DateTime currentDate = DateTime.now();
-  DateTime currentTime = DateTime.now();
-  DateTime eventTimeEnd = DateTime.now();
+  String currentDate = '';
+  String currentTime = '';
+  String eventTimeEnd = '';
 
   @override
   void initState() {
     _userBox = userdb.UsersDatabaseInitialization();
     _eventBox = eventdb.EventDatabaseInitialization();
     super.initState();
+  }
+
+  void updateEventDetails(String newDate, String newTime, String newEndTime) {
+    setState(() {
+      currentDate = newDate;
+      currentTime = newTime;
+      eventTimeEnd = newEndTime;
+    });
   }
 
   void showAddEvent(double height, double width, Color color) {
@@ -69,11 +79,55 @@ class _EventScreenState extends State<EventScreen> {
             eventDescription: _eventDescriptionController,
             eventPlaceController: _eventPlaceController,
             eventId: _eventIdController,
-            onSave: () {},
+            onSave: addEvent,
             onCancel: () => Navigator.of(context).pop(),
-         
+            onUpdateEventDetails: updateEventDetails,
           );
         });
+  }
+
+  void addEvent() {
+    //form validate
+    if (_eventIdController.text.isEmpty ||
+        _eventDescriptionController.text.isEmpty ||
+        _eventNameController.text.isEmpty ||
+        _eventPlaceController.text.isEmpty) {
+      toast.errorCreationEvent(context);
+      return;
+    }
+
+    //ensure event id is unique
+    if (_eventBox.containsKey(int.parse(_eventIdController.text))) {
+      toast.errorEventIdAlreadyUsed(context);
+      return;
+    }
+
+    //insert event
+    _eventBox.put(
+        int.parse(_eventIdController.text),
+        EventType(
+            id: int.parse(_eventIdController.text),
+            eventName: _eventNameController.text,
+            eventDescription: _eventDescriptionController.text,
+            eventDate: DateTime.parse(currentDate),
+            startTime: DateTime.parse(currentTime),
+            eventPlace: _eventPlaceController.text,
+            key: _eventIdController.text,
+            endTime: DateTime.parse(eventTimeEnd)));
+
+    //clear
+    _eventNameController.clear();
+    _eventPlaceController.clear();
+    _eventDescriptionController.clear();
+    _eventIdController.clear();
+    setState(() {});
+    Navigator.of(context).pop();
+  }
+
+  void onUpdate(BuildContext context) {}
+
+  void onDelete(BuildContext context, int key) {
+    _eventBox.delete(key);
   }
 
   @override
@@ -93,6 +147,8 @@ class _EventScreenState extends State<EventScreen> {
     //events
     final allEvents = _eventBox.values.toList();
 
+    //sort by date
+    allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
     return Scaffold(
       body: Padding(
@@ -173,21 +229,37 @@ class _EventScreenState extends State<EventScreen> {
                 child: ListView.builder(
                     itemCount: allEvents.length,
                     itemBuilder: (context, index) {
-                      final item = _eventBox.getAt(index);
+                      final item = allEvents.elementAt(index);
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Container(
-                          padding: EdgeInsets.all(6.0),
-                          decoration: BoxDecoration(
-                              color: purple,
-                              borderRadius: BorderRadius.circular(8.0)),
-                          child: EventBox(
-                              eventName: item!.eventName,
-                              colorWhite: colortheme.secondaryColor,
-                              eventDescription: item.eventDescription,
-                              eventStatus: 'dada',
-                              eventDate: item.eventDate,
-                              isAdmin: isAdmin),
+                        child: Slidable(
+                          endActionPane:
+                              ActionPane(motion: StretchMotion(), children: [
+                            SlidableAction(
+                              backgroundColor: Colors.redAccent,
+                              onPressed: (context) {
+                                setState(() {
+                                  _eventBox.delete(item.id);
+                                });
+                              },
+                              icon: Icons.delete,
+                              borderRadius: BorderRadius.circular(12.0),
+                            )
+                          ]),
+                          child: Container(
+                            padding: EdgeInsets.all(6.0),
+                            decoration: BoxDecoration(
+                                color: purple,
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: EventBox(
+                                eventPlace: item!.eventPlace,
+                                eventName: item.eventName,
+                                colorWhite: colortheme.secondaryColor,
+                                eventDescription: item.eventDescription,
+                                eventStatus: 'dada',
+                                eventDate: item.eventDate,
+                                isAdmin: isAdmin),
+                          ),
                         ),
                       );
                     }))
@@ -196,10 +268,10 @@ class _EventScreenState extends State<EventScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showAddEvent(
-            (screenHeight - statusbarHeight) * 0.75,
-            screenWIdth * 0.85,
-            purple,
-           ),
+          (screenHeight - statusbarHeight) * 0.68,
+          screenWIdth * 0.85,
+          purple,
+        ),
         child: Icon(Icons.add),
       ),
     );

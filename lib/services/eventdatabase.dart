@@ -9,7 +9,7 @@ class EventDatabase {
   Box<EventType> EventDatabaseInitialization() {
     var key = id.v1();
     DateTime date = DateTime.now();
-    _box = Hive.box<EventType>('eventBox');
+    _box = Hive.box<EventType>('_eventBox');
 
     if (_box.isEmpty) {
       _box.put(
@@ -21,6 +21,7 @@ class EventDatabase {
                   'A seminar on awareness and prevention of illegal drugs',
               eventDate: date,
               startTime: date,
+              endTime: date,
               key: key,
               eventPlace: 'Gym',
               eventStatus: 'Ongoing'));

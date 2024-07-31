@@ -43,6 +43,7 @@ dependencies:
   intl:
   toastification:
   bottom_picker:
+  flutter_slidable:
 
 dev_dependencies:
   flutter_test:

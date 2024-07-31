@@ -147,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
                                 child: EventBox(
+                              eventPlace: event1.eventPlace,
                               isAdmin: userDetails.isAdmin,
                               eventName: event1.eventName,
                               colorWhite: colortheme.secondaryColor,
@@ -269,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
                 decoration: BoxDecoration(
                     color: purple, borderRadius: BorderRadius.circular(4.0)),
-                height: (screenHeight - statusbarHeight) * 0.26,
+                height: (screenHeight - statusbarHeight) * 0.24,
                 child: Column(
                   children: [
                     Expanded(

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 class EventBox extends StatelessWidget {
   final String eventName;
   final String eventDescription;
+  final String eventPlace;
   final Color colorWhite;
   final String eventStatus;
   final DateTime eventDate;
@@ -16,7 +17,8 @@ class EventBox extends StatelessWidget {
       required this.eventDescription,
       required this.eventStatus,
       required this.eventDate,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.eventPlace});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class EventBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Gym',
+                    eventPlace,
                     style: TextStyle(
                         color: Colors.grey.shade300,
                         fontFamily: "Poppins",

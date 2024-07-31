@@ -17,7 +17,7 @@ void main() async {
 
   //events
   Hive.registerAdapter<EventType>(EventTypeAdapter());
-  await Hive.openBox<EventType>('eventBox');
+  await Hive.openBox<EventType>('_eventBox');
 
   runApp(const MyApp());
 }

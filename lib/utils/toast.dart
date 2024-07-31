@@ -110,4 +110,29 @@ class CustomToast {
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
+
+  //events
+  void errorCreationEvent(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Event Not Created"),
+      description: const Text("Please fill the input fields"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void errorEventIdAlreadyUsed(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Event Not Created"),
+      description: const Text("Event Id Already use"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
 }
