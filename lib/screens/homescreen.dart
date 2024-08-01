@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/utils/homescreenUtils/evenntBox.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
 import 'package:qr_app/utils/homescreenUtils/pastevent.dart';
@@ -12,7 +13,8 @@ import 'package:qr_app/theme/colortheme.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userKey;
-  const HomeScreen({super.key, required this.userKey});
+  final Function()? setIndex;
+  const HomeScreen({super.key, required this.userKey, required this.setIndex});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -46,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //events list
     List<EventType> event = _eventBox.values.toList();
+    event.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+
     final event1 = event.elementAt(0);
     final event2 = event.length > 1 ? event.elementAt(1) : null;
     final event3 = event.length > 2 ? event.elementAt(2) : null;
@@ -146,15 +150,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: purple,
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
-                                child: EventBox(
-                              eventPlace: event1.eventPlace,
-                              isAdmin: userDetails.isAdmin,
-                              eventName: event1.eventName,
-                              colorWhite: colortheme.secondaryColor,
-                              eventDescription: event1.eventDescription,
-                              eventStatus: 'Ongoing',
-                              eventDate: event1.eventDate,
-                            )),
+                                child: EventBoxHomescreen(
+                                    eventName: event1.eventName,
+                                    colorWhite: colortheme.secondaryColor,
+                                    eventDescription: event1.eventDescription,
+                                    eventStatus: 'dasd',
+                                    eventDate: event1.eventDate,
+                                    isAdmin: isAdmin,
+                                    eventPlace: event1.eventPlace,
+                                    eventStartTime: event1.startTime,
+                                    eventEnded: event1.endTime)),
                           ),
                         )),
                       ],
@@ -174,12 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(
                                 child: event2 != null
                                     ? EventBoxes(
-                                        eventName: event1.eventName,
+                                        eventName: event2.eventName,
                                         colorWhite: colortheme.secondaryColor,
                                         eventDescription:
-                                            event1.eventDescription,
+                                            event2.eventDescription,
                                         eventStatus: 'Ongoing',
-                                        eventDate: event1.eventDate,
+                                        eventDate: event2.eventDate,
                                       )
                                     : Center(
                                         child: Text(
@@ -228,12 +233,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        child: Text(
-                          'See More',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade600,
-                              fontFamily: 'Poppins'),
+                        child: GestureDetector(
+                          onTap: widget.setIndex,
+                          child: Text(
+                            'See More',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade600,
+                                fontFamily: 'Poppins'),
+                          ),
                         ),
                       )
                     ],

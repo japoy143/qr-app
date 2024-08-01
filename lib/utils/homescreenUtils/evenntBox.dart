@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class EventBox extends StatefulWidget {
+class EventBoxHomescreen extends StatefulWidget {
   final String eventName;
   final String eventDescription;
   final String eventPlace;
@@ -13,8 +13,8 @@ class EventBox extends StatefulWidget {
   final DateTime eventEnded;
   final bool isAdmin;
   final DateTime eventStartTime;
-  final Function()? updateEvent;
-  EventBox({
+
+  EventBoxHomescreen({
     super.key,
     required this.eventName,
     required this.colorWhite,
@@ -25,14 +25,13 @@ class EventBox extends StatefulWidget {
     required this.eventPlace,
     required this.eventStartTime,
     required this.eventEnded,
-    required this.updateEvent,
   });
 
   @override
-  _EventBoxState createState() => _EventBoxState();
+  _EventBoxHomescreenState createState() => _EventBoxHomescreenState();
 }
 
-class _EventBoxState extends State<EventBox> {
+class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
   late Timer _timer;
   late String _eventStatus;
 
@@ -106,14 +105,7 @@ class _EventBoxState extends State<EventBox> {
                         size: 26,
                       ),
                     )
-                  : GestureDetector(
-                      onTap: widget.updateEvent,
-                      child: const Icon(
-                        Icons.edit_note,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

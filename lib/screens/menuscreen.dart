@@ -44,6 +44,11 @@ class _MenuScreenState extends State<MenuScreen> {
     List pages = [
       HomeScreen(
         userKey: widget.userKey,
+        setIndex: () {
+          setState(() {
+            currentIndex = 1;
+          });
+        },
       ),
       EventScreen(
         userKey: widget.userKey,

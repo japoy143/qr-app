@@ -10,6 +10,8 @@ import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventscreenUtils/addEventModal.dart';
 import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
+import 'package:qr_app/utils/eventscreenUtils/formatters.dart';
+import 'package:qr_app/utils/eventscreenUtils/updateEvent.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class EventScreen extends StatefulWidget {
@@ -37,11 +39,17 @@ class _EventScreenState extends State<EventScreen> {
   //notification
   int notification = 1;
 
+  //now
+  DateTime now = DateTime.now();
+
   //toast
   final toast = CustomToast();
 
+  //utils, functions and formatter
+  final formatter = EventScreentFormatterUtils();
+
   //controllers
-  final _eventNameController = TextEditingController();
+  var _eventNameController = TextEditingController();
   final _eventDescriptionController = TextEditingController();
   final _eventPlaceController = TextEditingController();
   final _eventIdController = TextEditingController();
@@ -64,6 +72,18 @@ class _EventScreenState extends State<EventScreen> {
     });
   }
 
+  void clearFields() {
+    _eventNameController.clear();
+    _eventPlaceController.clear();
+    _eventDescriptionController.clear();
+    _eventIdController.clear();
+    currentDate = '';
+    currentTime = '';
+    eventTimeEnd = '';
+    Navigator.of(context).pop();
+  }
+
+  //modal for adding event
   void showAddEvent(double height, double width, Color color) {
     showDialog(
         context: context,
@@ -80,7 +100,7 @@ class _EventScreenState extends State<EventScreen> {
             eventPlaceController: _eventPlaceController,
             eventId: _eventIdController,
             onSave: addEvent,
-            onCancel: () => Navigator.of(context).pop(),
+            onCancel: clearFields,
             onUpdateEventDetails: updateEventDetails,
           );
         });
@@ -98,7 +118,13 @@ class _EventScreenState extends State<EventScreen> {
 
     //ensure event id is unique
     if (_eventBox.containsKey(int.parse(_eventIdController.text))) {
-      toast.errorEventIdAlreadyUsed(context);
+      return;
+    }
+
+    // ensure eventTime must be before
+    if (formatter.ensureEventTimeIsBeforeThanEventEnd(
+        context, currentTime, eventTimeEnd)) {
+      toast.errorEventEnd(context);
       return;
     }
 
@@ -109,22 +135,84 @@ class _EventScreenState extends State<EventScreen> {
             id: int.parse(_eventIdController.text),
             eventName: _eventNameController.text,
             eventDescription: _eventDescriptionController.text,
-            eventDate: DateTime.parse(currentDate),
-            startTime: DateTime.parse(currentTime),
+            eventDate: formatter.dateFormmater(currentDate, currentTime),
+            startTime: formatter.dateFormmater(currentDate, currentTime),
             eventPlace: _eventPlaceController.text,
             key: _eventIdController.text,
-            endTime: DateTime.parse(eventTimeEnd)));
+            endTime: formatter.dateFormmater(currentDate, eventTimeEnd)));
+
+    formatter.dateFormmater(currentTime, eventTimeEnd);
 
     //clear
-    _eventNameController.clear();
-    _eventPlaceController.clear();
-    _eventDescriptionController.clear();
-    _eventIdController.clear();
+    clearFields();
     setState(() {});
-    Navigator.of(context).pop();
   }
 
-  void onUpdate(BuildContext context) {}
+//update
+  void showDialogUpdate(
+      double height, double width, Color color, EventType item) {
+    setState(() {
+      currentDate = item.eventDate.toString();
+      currentTime = item.startTime.toString();
+      eventTimeEnd = item.endTime.toString();
+      _eventNameController.text = item.eventName;
+      _eventDescriptionController.text = item.eventDescription;
+      _eventPlaceController.text = item.eventPlace;
+      _eventIdController.text = item.id.toString();
+    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return UpdateEventDialog(
+            eventTimeEnd: eventTimeEnd,
+            currentDate: currentDate,
+            currentTime: currentTime,
+            color: color,
+            height: height,
+            width: width,
+            eventNameController: _eventNameController,
+            eventDescription: _eventDescriptionController,
+            eventPlaceController: _eventPlaceController,
+            eventId: _eventIdController,
+            onSave: () => updateEvent(item.id),
+            onCancel: clearFields,
+            onUpdateEventDetails: updateEventDetails,
+          );
+        });
+  }
+
+  void updateEvent(int id) {
+    //form validate
+    if (_eventIdController.text.isEmpty ||
+        _eventDescriptionController.text.isEmpty ||
+        _eventNameController.text.isEmpty ||
+        _eventPlaceController.text.isEmpty) {
+      toast.errorCreationEvent(context);
+      return;
+    }
+
+    // ensure eventTime must be before
+    if (formatter.ensureEventTimeIsBeforeThanEventEnd(
+        context, currentTime, eventTimeEnd)) {
+      toast.errorEventEnd(context);
+      return;
+    }
+
+    _eventBox.put(
+        id,
+        EventType(
+            id: int.parse(_eventIdController.text),
+            eventName: _eventNameController.text,
+            eventDescription: _eventDescriptionController.text,
+            eventDate: formatter.dateFormmater(currentDate, currentTime),
+            startTime: formatter.dateFormmater(currentDate, currentTime),
+            eventPlace: _eventPlaceController.text,
+            key: _eventIdController.text,
+            endTime: formatter.dateFormmater(currentDate, eventTimeEnd)));
+
+    clearFields();
+    setState(() {});
+  }
 
   void onDelete(BuildContext context, int key) {
     _eventBox.delete(key);
@@ -252,12 +340,19 @@ class _EventScreenState extends State<EventScreen> {
                                 color: purple,
                                 borderRadius: BorderRadius.circular(8.0)),
                             child: EventBox(
-                                eventPlace: item!.eventPlace,
+                                updateEvent: () => showDialogUpdate(
+                                    (screenHeight - statusbarHeight) * 0.68,
+                                    screenWIdth * 0.85,
+                                    purple,
+                                    item),
+                                eventEnded: item.endTime,
+                                eventPlace: item.eventPlace,
                                 eventName: item.eventName,
                                 colorWhite: colortheme.secondaryColor,
                                 eventDescription: item.eventDescription,
                                 eventStatus: 'dada',
                                 eventDate: item.eventDate,
+                                eventStartTime: item.startTime,
                                 isAdmin: isAdmin),
                           ),
                         ),

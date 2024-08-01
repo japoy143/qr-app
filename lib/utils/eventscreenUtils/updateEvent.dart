@@ -7,7 +7,7 @@ import 'package:qr_app/utils/eventscreenUtils/datePicker.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/toast.dart';
 
-class addEventDialog extends StatefulWidget {
+class UpdateEventDialog extends StatefulWidget {
   final Color color;
   final double height;
   final double width;
@@ -22,7 +22,7 @@ class addEventDialog extends StatefulWidget {
   VoidCallback onCancel;
   final Function(String, String, String) onUpdateEventDetails;
 
-  addEventDialog({
+  UpdateEventDialog({
     super.key,
     required this.color,
     required this.height,
@@ -40,10 +40,10 @@ class addEventDialog extends StatefulWidget {
   });
 
   @override
-  State<addEventDialog> createState() => _addEventDialogState();
+  State<UpdateEventDialog> createState() => _UpdateEventDialogState();
 }
 
-class _addEventDialogState extends State<addEventDialog> {
+class _UpdateEventDialogState extends State<UpdateEventDialog> {
   DateTime _currentDate = DateTime.now();
   DateTime _currentTime = DateTime.now();
   DateTime _eventEndTime = DateTime.now();
@@ -230,7 +230,7 @@ class _addEventDialogState extends State<addEventDialog> {
                       ),
                       Expanded(
                         child: CustomTextField(
-                            isReadOnly: false,
+                            isReadOnly: true,
                             hintext: 'event id',
                             keyBoardType: TextInputType.number,
                             controller: widget.eventId),

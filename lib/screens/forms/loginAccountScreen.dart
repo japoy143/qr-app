@@ -122,7 +122,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 45.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -134,6 +134,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
+                isReadOnly: false,
                   keyBoardType: TextInputType.text,
                   hintext: 'enter name',
                   controller: _nameController),
@@ -141,7 +142,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -153,6 +154,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
+                isReadOnly: false,
                   keyBoardType: TextInputType.number,
                   hintext: 'enter school id',
                   controller: _schoolIdController),
@@ -160,7 +162,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 5, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -180,7 +182,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 10),
+            padding: const EdgeInsets.fromLTRB(40.0, 14.0, 40.0, 10),
             child: GestureDetector(
               onTap: userValidate,
               child: Container(
@@ -189,7 +191,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                     color: widget.textColor,
                     borderRadius: BorderRadius.circular(6.0)),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Center(
                       child: Text(
                     'Login',

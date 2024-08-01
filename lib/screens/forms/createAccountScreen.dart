@@ -42,6 +42,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   late Box<UsersType> _userBox;
   final userDb = UsersDatabase();
 
+  final toast = CustomToast();
+
   @override
   void initState() {
     _userBox = userDb.UsersDatabaseInitialization();
@@ -103,8 +105,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return true;
   }
 
-  final toast = CustomToast();
-
   void createUser() {
     if (userValidation()) {
       clearAllFields();
@@ -139,7 +139,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               fontSize: 14.0),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 10),
+          padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -151,6 +151,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     fontFamily: "Poppins"),
               ),
               CustomTextField(
+                  isReadOnly: false,
                   hintext: 'enter name',
                   keyBoardType: TextInputType.text,
                   controller: _nameController),
@@ -174,6 +175,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           fontFamily: "Poppins"),
                     ),
                     CustomTextField(
+                        isReadOnly: false,
                         hintext: 'enter school id',
                         keyBoardType: TextInputType.number,
                         controller: _schoolIdController),
