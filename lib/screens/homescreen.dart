@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<EventType> event = _eventBox.values.toList();
     event.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
-    final event1 = event.elementAt(0);
+    final event1 = event.length == 1 ? event.elementAt(0) : null;
     final event2 = event.length > 1 ? event.elementAt(1) : null;
     final event3 = event.length > 2 ? event.elementAt(2) : null;
 
@@ -150,16 +150,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: purple,
                                 borderRadius: BorderRadius.circular(4.0)),
                             child: Center(
-                                child: EventBoxHomescreen(
-                                    eventName: event1.eventName,
-                                    colorWhite: colortheme.secondaryColor,
-                                    eventDescription: event1.eventDescription,
-                                    eventStatus: 'dasd',
-                                    eventDate: event1.eventDate,
-                                    isAdmin: isAdmin,
-                                    eventPlace: event1.eventPlace,
-                                    eventStartTime: event1.startTime,
-                                    eventEnded: event1.endTime)),
+                                child: event1 != null
+                                    ? EventBoxHomescreen(
+                                        eventName: event1!.eventName,
+                                        colorWhite: colortheme.secondaryColor,
+                                        eventDescription:
+                                            event1.eventDescription,
+                                        eventStatus: 'dasd',
+                                        eventDate: event1.eventDate,
+                                        isAdmin: isAdmin,
+                                        eventPlace: event1.eventPlace,
+                                        eventStartTime: event1.startTime,
+                                        eventEnded: event1.endTime)
+                                    : Center(
+                                        child: Text(
+                                          'No Data',
+                                          style: TextStyle(
+                                              color: colortheme.secondaryColor,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
                           ),
                         )),
                       ],
@@ -282,12 +293,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: PastEventBox(
-                          eventName: event1.eventName,
-                          colorWhite: colortheme.secondaryColor,
-                          eventDescription: event1.eventDescription,
-                          eventStatus: 'sdada',
-                          eventDate: event1.eventDate),
+                      child: event1 != null
+                            ? EventBoxHomescreen(
+                                eventName: event1!.eventName,
+                                colorWhite: colortheme.secondaryColor,
+                                eventDescription: event1.eventDescription,
+                                eventStatus: 'dasd',
+                                eventDate: event1.eventDate,
+                                isAdmin: isAdmin,
+                                eventPlace: event1.eventPlace,
+                                eventStartTime: event1.startTime,
+                                eventEnded: event1.endTime)
+                            : Center(
+                                child: Text(
+                                  'No Data',
+                                  style: TextStyle(
+                                      color: colortheme.secondaryColor,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              )
                     ),
                   ],
                 )),

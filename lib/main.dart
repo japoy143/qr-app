@@ -5,6 +5,8 @@ import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
+import 'package:qr_app/utils/localNotifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +20,10 @@ void main() async {
   //events
   Hive.registerAdapter<EventType>(EventTypeAdapter());
   await Hive.openBox<EventType>('_eventBox');
+
+  //notification
+  tz.initializeTimeZones();
+  await LocalNotifications.init();
 
   runApp(const MyApp());
 }

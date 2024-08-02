@@ -44,6 +44,8 @@ dependencies:
   toastification:
   bottom_picker:
   flutter_slidable:
+  flutter_local_notifications:
+  timezone:
 
 dev_dependencies:
   flutter_test:

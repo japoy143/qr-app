@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_app/utils/localNotifications.dart';
 
 class EventBox extends StatefulWidget {
   final String eventName;
@@ -36,12 +36,18 @@ class _EventBoxState extends State<EventBox> {
   late Timer _timer;
   late String _eventStatus;
 
+  bool isOngoingNotificationShown = true;
+  bool isEventNotificationShown = true;
+
   @override
   void initState() {
     super.initState();
     _eventStatus = showEventStatus(widget.eventStartTime, widget.eventEnded);
     _startTimer();
   }
+
+  //notifications
+  final notifications = LocalNotifications();
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -59,10 +65,24 @@ class _EventBoxState extends State<EventBox> {
     DateTime now = DateTime.now();
 
     if (now.isAtSameMomentAs(event_end) || now.isAfter(event_end)) {
+      if (isEventNotificationShown) {
+        LocalNotifications.showNotification(
+            'Event Status', 'Event ended attendance is not available');
+
+        //ensure once
+        isEventNotificationShown = false;
+      }
       return 'Event Ended';
     }
 
     if (now.isAtSameMomentAs(date) || now.isAfter(date)) {
+      if (isOngoingNotificationShown) {
+        LocalNotifications.showNotification('Event Status',
+            'Event Ongoing please go to the ${widget.eventPlace}');
+
+        //ensure once
+        isOngoingNotificationShown = false;
+      }
       return 'Ongoing';
     } else {
       String formattedDate = DateFormat("h:mm a").format(date);
