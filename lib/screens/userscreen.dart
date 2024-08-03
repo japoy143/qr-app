@@ -24,6 +24,8 @@ class _UserScreenState extends State<UserScreen> {
   late Box<UsersType> _userBox;
   final userDb = UsersDatabase();
 
+  final appBar = AppBar();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,6 +36,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     //screen queries
+    double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
@@ -65,18 +68,42 @@ class _UserScreenState extends State<UserScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: (screenHeight - statusbarHeight) * 0.12,
+              height: (screenHeight - statusbarHeight - appBarHeight) * 0.12,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: colortheme.secondaryColor,
-                        child: Icon(
-                          Icons.account_circle_outlined,
-                          size: (screenHeight - statusbarHeight) * 0.07,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Icon(
+                                  Icons.account_circle_outlined,
+                                  size: (screenHeight -
+                                          statusbarHeight -
+                                          appBarHeight) *
+                                      0.07,
+                                ),
+                                Positioned(
+                                  left: 36,
+                                  bottom: 14,
+                                  child: Icon(
+                                    Icons.add_a_photo,
+                                    color: Colors.blueGrey,
+                                    size: 17,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(

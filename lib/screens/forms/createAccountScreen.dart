@@ -96,7 +96,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     userDb.createNewUser(
         _nameController.text,
         int.parse(_schoolIdController.text),
-        _courseController.text,
+        selectedCourse.toString(),
         selectedYear.toString(),
         _passwordController.text,
         '');
