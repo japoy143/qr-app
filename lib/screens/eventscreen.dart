@@ -8,6 +8,8 @@ import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/theme/notification_active.dart';
+import 'package:qr_app/theme/notification_none.dart';
 import 'package:qr_app/utils/eventscreenUtils/addEventModal.dart';
 import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
 import 'package:qr_app/utils/eventscreenUtils/formatters.dart';
@@ -241,11 +243,10 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 20, 14, 0),
-        child: SafeArea(
-            child: Column(
+        child: Column(
           children: [
             SizedBox(
-              height: (screenHeight - statusbarHeight) * 0.10,
+              height: (screenHeight - statusbarHeight) * 0.12,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -256,22 +257,25 @@ class _EventScreenState extends State<EventScreen> {
                         backgroundColor: colortheme.secondaryColor,
                         child: Icon(
                           Icons.account_circle_outlined,
-                          size: (screenHeight - statusbarHeight) * 0.05,
+                          size: (screenHeight - statusbarHeight) * 0.07,
                         ),
                       ),
                       const SizedBox(
-                        width: 10.0,
+                        width: 20.0,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            userName,
-                            style: const TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: Text(
+                              userName,
+                              style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                           Text(
                               '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
@@ -279,11 +283,17 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                     ],
                   ),
-                  CircleAvatar(
-                      backgroundColor: colortheme.secondaryColor,
-                      child: Image.asset(notification != 0
-                          ? 'assets/imgs/isnotified.png'
-                          : 'assets/imgs/notified.png'))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                    child: Container(
+                      child: notification != 0
+                          ? const NotificationActive(height: 26, width: 26)
+                          : const NotificationNone(
+                              height: 26,
+                              width: 26,
+                            ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -359,7 +369,7 @@ class _EventScreenState extends State<EventScreen> {
                       );
                     }))
           ],
-        )),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showAddEvent(

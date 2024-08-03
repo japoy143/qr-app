@@ -46,7 +46,7 @@ dependencies:
   flutter_slidable:
   flutter_local_notifications:
   timezone:
-  pretty_qr_code: 
+  pretty_qr_code:
 
 dev_dependencies:
   flutter_test:

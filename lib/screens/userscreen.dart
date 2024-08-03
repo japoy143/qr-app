@@ -5,6 +5,8 @@ import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/theme/notification_active.dart';
+import 'package:qr_app/theme/notification_none.dart';
 
 class UserScreen extends StatefulWidget {
   final String userKey;
@@ -60,11 +62,10 @@ class _UserScreenState extends State<UserScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 20, 14, 0),
-        child: SafeArea(
-            child: Column(
+        child: Column(
           children: [
             SizedBox(
-              height: (screenHeight - statusbarHeight) * 0.10,
+              height: (screenHeight - statusbarHeight) * 0.12,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,22 +76,25 @@ class _UserScreenState extends State<UserScreen> {
                         backgroundColor: colortheme.secondaryColor,
                         child: Icon(
                           Icons.account_circle_outlined,
-                          size: (screenHeight - statusbarHeight) * 0.05,
+                          size: (screenHeight - statusbarHeight) * 0.07,
                         ),
                       ),
                       const SizedBox(
-                        width: 10.0,
+                        width: 20.0,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            userName,
-                            style: const TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: Text(
+                              userName,
+                              style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                           Text(
                               '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
@@ -98,11 +102,17 @@ class _UserScreenState extends State<UserScreen> {
                       ),
                     ],
                   ),
-                  CircleAvatar(
-                      backgroundColor: colortheme.secondaryColor,
-                      child: Image.asset(notification != 0
-                          ? 'assets/imgs/isnotified.png'
-                          : 'assets/imgs/notified.png'))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                    child: Container(
+                      child: notification != 0
+                          ? const NotificationActive(height: 26, width: 26)
+                          : const NotificationNone(
+                              height: 26,
+                              width: 26,
+                            ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -116,21 +126,93 @@ class _UserScreenState extends State<UserScreen> {
                     fontWeight: FontWeight.w600),
               ),
             ),
-            Text('Scan this code to verify your attendance'),
+            const Text('Scan this code to verify your attendance'),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+              padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
               child: Container(
                 height: (screenHeight - statusbarHeight) * 0.34,
-                decoration: BoxDecoration(color: colortheme.secondaryColor),
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    color: colortheme.secondaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      width: 4,
+                      color: Colors.grey.shade300,
+                    )),
                 child: PrettyQrView.data(
                     data: qrData,
                     decoration: const PrettyQrDecoration(
                         image: PrettyQrDecorationImage(
-                            image: AssetImage('assets/imgs/logo.png')))),
+                            image: AssetImage('assets/imgs/lsg_logo.png')))),
               ),
-            )
+            ),
+            Text(
+              userName,
+              style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
+            ),
+            Text(
+              '$userCourse-$userYear',
+              style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text('Event Summary'),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '10',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Total Events')
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '8',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Events attended')
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '2',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Events missed')
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
-        )),
+        ),
       ),
     );
   }
