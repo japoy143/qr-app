@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<EventType> event = _eventBox.values.toList();
     event.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
-    final event1 = event.length == 1 ? event.elementAt(0) : null;
+    final event1 = event.length >= 1 ? event.elementAt(0) : null;
     final event2 = event.length > 1 ? event.elementAt(1) : null;
     final event3 = event.length > 2 ? event.elementAt(2) : null;
 
@@ -293,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: event1 != null
+                        child: event1 != null
                             ? EventBoxHomescreen(
                                 eventName: event1!.eventName,
                                 colorWhite: colortheme.secondaryColor,
@@ -312,8 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w600),
                                 ),
-                              )
-                    ),
+                              )),
                   ],
                 )),
             Row(

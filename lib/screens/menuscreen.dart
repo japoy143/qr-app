@@ -54,7 +54,9 @@ class _MenuScreenState extends State<MenuScreen> {
         userKey: widget.userKey,
       ),
       PenaltyScreen(),
-      UserScreen()
+      UserScreen(
+        userKey: widget.userKey,
+      )
     ];
 
     List<BottomNavigationBarItem> bottomNavItems = [
