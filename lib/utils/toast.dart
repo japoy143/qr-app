@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
+import 'package:vibration/vibration.dart';
 
 class CustomToast {
   void loginSuccessfully(context, String user) {
@@ -24,6 +25,7 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+    Vibration.vibrate();
   }
 
   void userNotExist(context) {
@@ -36,6 +38,7 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+    Vibration.vibrate();
   }
 
   void userIdNotCorrect(context) {
@@ -48,6 +51,7 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+    Vibration.vibrate();
   }
 
 // user creation toast
@@ -73,6 +77,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void passwordLengthError(context) {
@@ -85,6 +91,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void passwordNotSame(context) {
@@ -97,6 +105,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void userAlreadyExist(context) {
@@ -109,6 +119,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   //events
@@ -122,6 +134,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void errorEventIdAlreadyUsed(context) {
@@ -134,6 +148,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void errorEventEnd(context) {
@@ -146,6 +162,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   void errorEventTimeNotSet(context) {
@@ -158,6 +176,8 @@ class CustomToast {
       alignment: Alignment.topLeft,
       autoCloseDuration: const Duration(seconds: 4),
     );
+
+    Vibration.vibrate();
   }
 
   // userScreen

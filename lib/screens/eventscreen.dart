@@ -227,8 +227,8 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     //screen queries
-    double appBarHeight = appBar.preferredSize.height;
-    double screenWIdth = MediaQuery.of(context).size.width;
+
+    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
 
@@ -247,153 +247,152 @@ class _EventScreenState extends State<EventScreen> {
     allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: (screenHeight - statusbarHeight - appBarHeight) * 0.12,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14.0, 0, 14, 0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: (screenHeight - statusbarHeight) * 0.12,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      userProfile == ""
-                          ? Icon(
-                              Icons.account_circle_outlined,
-                              size: (screenHeight -
-                                      statusbarHeight -
-                                      appBarHeight) *
-                                  0.07,
-                            )
-                          : CircleAvatar(
-                              radius: (screenHeight -
-                                      statusbarHeight -
-                                      appBarHeight) *
-                                  0.035,
-                              backgroundImage: FileImage(File(userProfile)),
-                              backgroundColor: Colors.transparent,
-                            ),
-                      const SizedBox(
-                        width: 10.0,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Text(
-                              userName,
-                              style: const TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w600),
-                            ),
+                          userProfile == ""
+                              ? Icon(
+                                  Icons.account_circle_outlined,
+                                  size: (screenHeight - statusbarHeight) * 0.07,
+                                )
+                              : CircleAvatar(
+                                  radius:
+                                      (screenHeight - statusbarHeight) * 0.035,
+                                  backgroundImage: FileImage(File(userProfile)),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                          const SizedBox(
+                            width: 10.0,
                           ),
-                          Text(
-                              '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Text(
+                                  userName,
+                                  style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Text(
+                                  '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                            ],
+                          ),
                         ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                        child: Container(
+                          child: notification != 0
+                              ? const NotificationActive(height: 26, width: 26)
+                              : const NotificationNone(
+                                  height: 26,
+                                  width: 26,
+                                ),
+                        ),
+                      )
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                    child: Container(
-                      child: notification != 0
-                          ? const NotificationActive(height: 26, width: 26)
-                          : const NotificationNone(
-                              height: 26,
-                              width: 26,
-                            ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                Row(
                   children: [
-                    const Text(
-                      'Events',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      'Upcoming Events',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.grey.shade400,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: allEvents.length,
-                    itemBuilder: (context, index) {
-                      final item = allEvents.elementAt(index);
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Slidable(
-                          endActionPane:
-                              ActionPane(motion: StretchMotion(), children: [
-                            SlidableAction(
-                              backgroundColor: Colors.redAccent,
-                              onPressed: (context) {
-                                setState(() {
-                                  _eventBox.delete(item.id);
-                                });
-                              },
-                              icon: Icons.delete,
-                              borderRadius: BorderRadius.circular(12.0),
-                            )
-                          ]),
-                          child: Container(
-                            padding: EdgeInsets.all(6.0),
-                            decoration: BoxDecoration(
-                                color: purple,
-                                borderRadius: BorderRadius.circular(8.0)),
-                            child: EventBox(
-                                updateEvent: () => showDialogUpdate(
-                                    (screenHeight - statusbarHeight) * 0.68,
-                                    screenWIdth * 0.85,
-                                    purple,
-                                    item),
-                                eventEnded: item.endTime,
-                                eventPlace: item.eventPlace,
-                                eventName: item.eventName,
-                                colorWhite: colortheme.secondaryColor,
-                                eventDescription: item.eventDescription,
-                                eventStatus: 'dada',
-                                eventDate: item.eventDate,
-                                eventStartTime: item.startTime,
-                                isAdmin: isAdmin),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Events',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                      );
-                    }))
-          ],
+                        Text(
+                          'Upcoming Events',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.grey.shade400,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Expanded(
+                    child: ListView.builder(
+                        itemCount: allEvents.length,
+                        itemBuilder: (context, index) {
+                          final item = allEvents.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
+                            child: Slidable(
+                              endActionPane: ActionPane(
+                                  motion: StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      backgroundColor: Colors.redAccent,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          _eventBox.delete(item.id);
+                                        });
+                                      },
+                                      icon: Icons.delete,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    )
+                                  ]),
+                              child: Container(
+                                padding: EdgeInsets.all(6.0),
+                                decoration: BoxDecoration(
+                                    color: purple,
+                                    borderRadius: BorderRadius.circular(8.0)),
+                                child: EventBox(
+                                    updateEvent: () => showDialogUpdate(
+                                        (screenHeight - statusbarHeight) * 0.68,
+                                        screenWidth * 0.85,
+                                        purple,
+                                        item),
+                                    eventEnded: item.endTime,
+                                    eventPlace: item.eventPlace,
+                                    eventName: item.eventName,
+                                    colorWhite: colortheme.secondaryColor,
+                                    eventDescription: item.eventDescription,
+                                    eventStatus: 'dada',
+                                    eventDate: item.eventDate,
+                                    eventStartTime: item.startTime,
+                                    isAdmin: isAdmin),
+                              ),
+                            ),
+                          );
+                        }))
+              ],
+            ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showAddEvent(
-          (screenHeight - statusbarHeight) * 0.68,
-          screenWIdth * 0.85,
-          purple,
-        ),
-        child: Icon(Icons.add),
-      ),
-    );
+        floatingActionButton: isAdmin
+            ? FloatingActionButton(
+                onPressed: () => showAddEvent(
+                  (screenHeight - statusbarHeight) * 0.68,
+                  screenWidth * 0.85,
+                  purple,
+                ),
+                child: Icon(Icons.add),
+              )
+            : null);
   }
 }

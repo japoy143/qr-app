@@ -68,294 +68,294 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProfile = userDetails.userProfile;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: (screenHeight - statusbarHeight - appBarHeight) * 0.12,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      userProfile == ""
-                          ? Icon(
-                              Icons.account_circle_outlined,
-                              size: (screenHeight -
-                                      statusbarHeight -
-                                      appBarHeight) *
-                                  0.07,
-                            )
-                          : CircleAvatar(
-                              radius: (screenHeight -
-                                      statusbarHeight -
-                                      appBarHeight) *
-                                  0.035,
-                              backgroundImage: FileImage(File(userProfile)),
-                              backgroundColor: Colors.transparent,
-                            ),
-                      const SizedBox(
-                        width: 10.0,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Text(
-                              userName,
-                              style: const TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          Text(
-                              '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                    child: Container(
-                      child: notification != 0
-                          ? const NotificationActive(height: 26, width: 26)
-                          : const NotificationNone(
-                              height: 26,
-                              width: 26,
-                            ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14.0, 0, 14, 0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: (screenHeight - statusbarHeight) * 0.12,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Events',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      'Upcoming Events',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.grey.shade400,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(
-              height: (screenHeight - statusbarHeight) * 0.40,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Row(
+                    Row(
                       children: [
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: purple,
-                                borderRadius: BorderRadius.circular(4.0)),
-                            child: Center(
-                                child: event1 != null
-                                    ? EventBoxHomescreen(
-                                        eventName: event1!.eventName,
-                                        colorWhite: colortheme.secondaryColor,
-                                        eventDescription:
-                                            event1.eventDescription,
-                                        eventStatus: 'dasd',
-                                        eventDate: event1.eventDate,
-                                        isAdmin: isAdmin,
-                                        eventPlace: event1.eventPlace,
-                                        eventStartTime: event1.startTime,
-                                        eventEnded: event1.endTime)
-                                    : Center(
-                                        child: Text(
-                                          'No Data',
-                                          style: TextStyle(
-                                              color: colortheme.secondaryColor,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      )),
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: purple,
-                                borderRadius: BorderRadius.circular(4.0)),
-                            child: Center(
-                                child: event2 != null
-                                    ? EventBoxes(
-                                        eventName: event2.eventName,
-                                        colorWhite: colortheme.secondaryColor,
-                                        eventDescription:
-                                            event2.eventDescription,
-                                        eventStatus: 'Ongoing',
-                                        eventDate: event2.eventDate,
-                                      )
-                                    : Center(
-                                        child: Text(
-                                          'No Data',
-                                          style: TextStyle(
-                                              color: colortheme.secondaryColor,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      )),
-                          ),
-                        )),
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: purple,
-                                borderRadius: BorderRadius.circular(4.0)),
-                            child: Center(
-                                child: event3 != null
-                                    ? EventBoxes(
-                                        eventName: event3.eventName,
-                                        colorWhite: colortheme.secondaryColor,
-                                        eventDescription:
-                                            event3.eventDescription,
-                                        eventStatus: 'Ongoing',
-                                        eventDate: event3.eventDate,
-                                      )
-                                    : Center(
-                                        child: Text(
-                                          'No Data',
-                                          style: TextStyle(
-                                              color: colortheme.secondaryColor,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      )),
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        child: GestureDetector(
-                          onTap: widget.setIndex,
-                          child: Text(
-                            'See More',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade600,
-                                fontFamily: 'Poppins'),
-                          ),
+                        userProfile == ""
+                            ? Icon(
+                                Icons.account_circle_outlined,
+                                size: (screenHeight - statusbarHeight) * 0.07,
+                              )
+                            : CircleAvatar(
+                                radius:
+                                    (screenHeight - statusbarHeight) * 0.035,
+                                backgroundImage: FileImage(File(userProfile)),
+                                backgroundColor: Colors.transparent,
+                              ),
+                        const SizedBox(
+                          width: 10.0,
                         ),
-                      )
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Text(
+                                userName,
+                                style: const TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Text(
+                                '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                      child: Container(
+                        child: notification != 0
+                            ? const NotificationActive(height: 26, width: 26)
+                            : const NotificationNone(
+                                height: 26,
+                                width: 26,
+                              ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Events',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        'Upcoming Events',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.grey.shade400,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   )
                 ],
               ),
-            ),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Last Event',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      'Summary',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.grey.shade400,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            Container(
-                decoration: BoxDecoration(
-                    color: purple, borderRadius: BorderRadius.circular(4.0)),
-                height: (screenHeight - statusbarHeight) * 0.24,
+              SizedBox(
+                height: (screenHeight - statusbarHeight) * 0.40,
                 child: Column(
                   children: [
                     Expanded(
-                        child: event1 != null
-                            ? EventBoxHomescreen(
-                                eventName: event1!.eventName,
-                                colorWhite: colortheme.secondaryColor,
-                                eventDescription: event1.eventDescription,
-                                eventStatus: 'dasd',
-                                eventDate: event1.eventDate,
-                                isAdmin: isAdmin,
-                                eventPlace: event1.eventPlace,
-                                eventStartTime: event1.startTime,
-                                eventEnded: event1.endTime)
-                            : Center(
-                                child: Text(
-                                  'No Data',
-                                  style: TextStyle(
-                                      color: colortheme.secondaryColor,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              )),
+                      flex: 5,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: purple,
+                                  borderRadius: BorderRadius.circular(4.0)),
+                              child: Center(
+                                  child: event1 != null
+                                      ? EventBoxHomescreen(
+                                          eventName: event1!.eventName,
+                                          colorWhite: colortheme.secondaryColor,
+                                          eventDescription:
+                                              event1.eventDescription,
+                                          eventStatus: 'dasd',
+                                          eventDate: event1.eventDate,
+                                          isAdmin: isAdmin,
+                                          eventPlace: event1.eventPlace,
+                                          eventStartTime: event1.startTime,
+                                          eventEnded: event1.endTime)
+                                      : Center(
+                                          child: Text(
+                                            'No Event',
+                                            style: TextStyle(
+                                                color:
+                                                    colortheme.secondaryColor,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        )),
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: purple,
+                                  borderRadius: BorderRadius.circular(4.0)),
+                              child: Center(
+                                  child: event2 != null
+                                      ? EventBoxes(
+                                          eventName: event2.eventName,
+                                          colorWhite: colortheme.secondaryColor,
+                                          eventDescription:
+                                              event2.eventDescription,
+                                          eventStatus: 'Ongoing',
+                                          eventDate: event2.eventDate,
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            'No Event',
+                                            style: TextStyle(
+                                                color:
+                                                    colortheme.secondaryColor,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        )),
+                            ),
+                          )),
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: purple,
+                                  borderRadius: BorderRadius.circular(4.0)),
+                              child: Center(
+                                  child: event3 != null
+                                      ? EventBoxes(
+                                          eventName: event3.eventName,
+                                          colorWhite: colortheme.secondaryColor,
+                                          eventDescription:
+                                              event3.eventDescription,
+                                          eventStatus: 'Ongoing',
+                                          eventDate: event3.eventDate,
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            'No Event',
+                                            style: TextStyle(
+                                                color:
+                                                    colortheme.secondaryColor,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        )),
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                          child: GestureDetector(
+                            onTap: widget.setIndex,
+                            child: Text(
+                              'See More',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade600,
+                                  fontFamily: 'Poppins'),
+                            ),
+                          ),
+                        )
+                      ],
+                    )
                   ],
-                )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                  child: Text(
-                    'See More',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade600,
-                        fontFamily: 'Poppins'),
-                  ),
-                )
-              ],
-            )
-          ],
+                ),
+              ),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Last Event',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        'Summary',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.grey.shade400,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Container(
+                  decoration: BoxDecoration(
+                      color: purple, borderRadius: BorderRadius.circular(4.0)),
+                  height: (screenHeight - statusbarHeight) * 0.24,
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: event1 != null
+                              ? EventBoxHomescreen(
+                                  eventName: event1!.eventName,
+                                  colorWhite: colortheme.secondaryColor,
+                                  eventDescription: event1.eventDescription,
+                                  eventStatus: 'dasd',
+                                  eventDate: event1.eventDate,
+                                  isAdmin: isAdmin,
+                                  eventPlace: event1.eventPlace,
+                                  eventStartTime: event1.startTime,
+                                  eventEnded: event1.endTime)
+                              : Center(
+                                  child: Text(
+                                    'No Event',
+                                    style: TextStyle(
+                                        color: colortheme.secondaryColor,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                )),
+                    ],
+                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: Text(
+                      'See More',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade600,
+                          fontFamily: 'Poppins'),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -118,26 +118,27 @@ class _EventBoxState extends State<EventBox> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              _eventStatus == "Ongoing"
-                  ? GestureDetector(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => QrCodeScanner())),
-                      child: const Icon(
-                        Icons.qr_code_scanner,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    )
-                  : GestureDetector(
-                      // onTap: widget.updateEvent,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => QrCodeScanner())),
-                      child: const Icon(
-                        Icons.edit_note,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    )
+              widget.isAdmin
+                  ? _eventStatus == "Ongoing"
+                      ? GestureDetector(
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => QrCodeScanner())),
+                          child: const Icon(
+                            Icons.qr_code_scanner,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: widget.updateEvent,
+                          child: const Icon(
+                            Icons.edit_note,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                        )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),

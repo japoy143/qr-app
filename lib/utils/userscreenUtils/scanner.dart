@@ -65,6 +65,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                 Icons.account_circle_rounded,
                 size: 200.0,
               ),
+              // child: CircleAvatar(
+              //   radius: 100,
+              //   backgroundColor: Colors.red,
+              // ),
             ),
             Text(
               userName,

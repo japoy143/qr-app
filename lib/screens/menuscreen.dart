@@ -53,7 +53,10 @@ class _MenuScreenState extends State<MenuScreen> {
       EventScreen(
         userKey: widget.userKey,
       ),
-      PenaltyScreen(),
+      if (isAdmin)
+        {
+          PenaltyScreen(),
+        },
       UserScreen(
         userKey: widget.userKey,
       )
