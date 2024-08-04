@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
@@ -33,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final adminPosition = adminPositions();
 
+  final appBar = AppBar();
+
   @override
   void initState() {
     _eventBox = eventDb.EventDatabaseInitialization();
@@ -42,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
@@ -60,29 +65,39 @@ class _HomeScreenState extends State<HomeScreen> {
     final userName = userDetails!.userName;
     final userSchoolId = userDetails.schoolId;
     final isAdmin = userDetails.isAdmin;
+    final userProfile = userDetails.userProfile;
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 20, 14, 0),
+        padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
         child: Column(
           children: [
             SizedBox(
-              height: (screenHeight - statusbarHeight) * 0.12,
+              height: (screenHeight - statusbarHeight - appBarHeight) * 0.12,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: colortheme.secondaryColor,
-                        child: Icon(
-                          Icons.account_circle_outlined,
-                          size: (screenHeight - statusbarHeight) * 0.07,
-                        ),
-                      ),
+                      userProfile == ""
+                          ? Icon(
+                              Icons.account_circle_outlined,
+                              size: (screenHeight -
+                                      statusbarHeight -
+                                      appBarHeight) *
+                                  0.07,
+                            )
+                          : CircleAvatar(
+                              radius: (screenHeight -
+                                      statusbarHeight -
+                                      appBarHeight) *
+                                  0.035,
+                              backgroundImage: FileImage(File(userProfile)),
+                              backgroundColor: Colors.transparent,
+                            ),
                       const SizedBox(
-                        width: 20.0,
+                        width: 10.0,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
@@ -23,6 +26,31 @@ class _UserScreenState extends State<UserScreen> {
 
   late Box<UsersType> _userBox;
   final userDb = UsersDatabase();
+
+  //image type
+  XFile? selectedimage;
+
+  getImage(int id, String userName, String userCourse, String userYear,
+      String userPassword, bool isAdmin) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      selectedimage = image;
+    });
+
+    _userBox.put(
+        id.toString(),
+        UsersType(
+            schoolId: id,
+            key: userName,
+            userName: userName,
+            userCourse: userCourse,
+            userYear: userYear,
+            userPassword: userPassword,
+            isAdmin: isAdmin,
+            userProfile: image!.path));
+  }
 
   final appBar = AppBar();
 
@@ -50,6 +78,8 @@ class _UserScreenState extends State<UserScreen> {
     final userCourse = userDetails.userCourse;
     final userYear = userDetails.userYear;
     final isAdmin = userDetails.isAdmin;
+    final userPassword = userDetails.userPassword;
+    final userProfile = userDetails.userProfile;
 
     //for qr data
     String qrData = [
@@ -64,7 +94,7 @@ class _UserScreenState extends State<UserScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 20, 14, 0),
+        padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
         child: Column(
           children: [
             SizedBox(
@@ -76,23 +106,34 @@ class _UserScreenState extends State<UserScreen> {
                   Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                         child: GestureDetector(
-                          onTap: () {},
-                          child: Container(
+                          onTap: () => getImage(userSchoolId, userName,
+                              userCourse, userYear, userPassword, isAdmin),
+                          child: SizedBox(
                             width: 60,
                             height: 60,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                Icon(
-                                  Icons.account_circle_outlined,
-                                  size: (screenHeight -
-                                          statusbarHeight -
-                                          appBarHeight) *
-                                      0.07,
-                                ),
-                                Positioned(
+                                userProfile == ""
+                                    ? Icon(
+                                        Icons.account_circle_outlined,
+                                        size: (screenHeight -
+                                                statusbarHeight -
+                                                appBarHeight) *
+                                            0.07,
+                                      )
+                                    : CircleAvatar(
+                                        radius: (screenHeight -
+                                                statusbarHeight -
+                                                appBarHeight) *
+                                            0.035,
+                                        backgroundImage:
+                                            FileImage(File(userProfile)),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                const Positioned(
                                   left: 36,
                                   bottom: 14,
                                   child: Icon(
@@ -107,7 +148,7 @@ class _UserScreenState extends State<UserScreen> {
                         ),
                       ),
                       const SizedBox(
-                        width: 20.0,
+                        width: 10.0,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
