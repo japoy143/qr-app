@@ -10,6 +10,7 @@ import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
+import 'package:qr_app/utils/toast.dart';
 
 class UserScreen extends StatefulWidget {
   final String userKey;
@@ -24,8 +25,15 @@ class _UserScreenState extends State<UserScreen> {
   int notification = 1;
   final adminPosition = adminPositions();
 
+  //toast
+  final toast = CustomToast();
+
   late Box<UsersType> _userBox;
   final userDb = UsersDatabase();
+
+  void showToast() {
+    toast.profileSuccessfullyChange(context);
+  }
 
   //image type
   XFile? selectedimage;
@@ -49,7 +57,9 @@ class _UserScreenState extends State<UserScreen> {
             userYear: userYear,
             userPassword: userPassword,
             isAdmin: isAdmin,
-            userProfile: image!.path));
+            userProfile: image == null ? '' : image.path));
+
+    showToast();
   }
 
   final appBar = AppBar();

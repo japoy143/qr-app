@@ -49,11 +49,13 @@ dependencies:
   flutter_local_notifications:
   pretty_qr_code:
   introduction_screen:
+  flutter_barcode_scanner:
   #utils
   uuid:
   intl:
   timezone:
   shared_preferences:
+  get:
 
 dev_dependencies:
   flutter_test:

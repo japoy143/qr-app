@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/utils/localNotifications.dart';
+import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventBox extends StatefulWidget {
   final String eventName;
@@ -119,7 +120,8 @@ class _EventBoxState extends State<EventBox> {
               ),
               _eventStatus == "Ongoing"
                   ? GestureDetector(
-                      onTap: () {},
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => QrCodeScanner())),
                       child: const Icon(
                         Icons.qr_code_scanner,
                         color: Colors.white,
@@ -127,7 +129,9 @@ class _EventBoxState extends State<EventBox> {
                       ),
                     )
                   : GestureDetector(
-                      onTap: widget.updateEvent,
+                      // onTap: widget.updateEvent,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => QrCodeScanner())),
                       child: const Icon(
                         Icons.edit_note,
                         color: Colors.white,

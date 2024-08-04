@@ -159,4 +159,18 @@ class CustomToast {
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
+
+  // userScreen
+
+  void profileSuccessfullyChange(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: const Text("User Profile"),
+      description: Text("Profile Picture Changed"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
 }
