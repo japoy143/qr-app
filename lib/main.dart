@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/landingscreen.dart';
@@ -20,6 +21,10 @@ void main() async {
   //events
   Hive.registerAdapter<EventType>(EventTypeAdapter());
   await Hive.openBox<EventType>('_eventBox');
+
+  //event attendance
+  Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());
+  await Hive.openBox("eventAttendanceBox");
 
   //notification
   tz.initializeTimeZones();

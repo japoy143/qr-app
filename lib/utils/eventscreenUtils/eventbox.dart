@@ -5,6 +5,7 @@ import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventBox extends StatefulWidget {
+  final int eventId;
   final String eventName;
   final String eventDescription;
   final String eventPlace;
@@ -15,6 +16,7 @@ class EventBox extends StatefulWidget {
   final bool isAdmin;
   final DateTime eventStartTime;
   final Function()? updateEvent;
+  final String userkey;
   EventBox({
     super.key,
     required this.eventName,
@@ -27,6 +29,8 @@ class EventBox extends StatefulWidget {
     required this.eventStartTime,
     required this.eventEnded,
     required this.updateEvent,
+    required this.eventId,
+    required this.userkey,
   });
 
   @override
@@ -121,9 +125,12 @@ class _EventBoxState extends State<EventBox> {
               widget.isAdmin
                   ? _eventStatus == "Ongoing"
                       ? GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => QrCodeScanner())),
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QrCodeScanner(
+                                        EventId: widget.eventId,
+                                        userKey: widget.userkey,
+                                      ))),
                           child: const Icon(
                             Icons.qr_code_scanner,
                             color: Colors.white,

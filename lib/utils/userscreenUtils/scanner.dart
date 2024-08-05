@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:qr_app/models/eventattendance.dart';
+import 'package:qr_app/services/eventAttendanceDatabase.dart';
 
 class QrCodeScanner extends StatefulWidget {
-  const QrCodeScanner({super.key});
+  int EventId;
+  String userKey;
+  QrCodeScanner({super.key, required this.EventId, required this.userKey});
 
   @override
   State<QrCodeScanner> createState() => _QrCodeScannerState();
@@ -17,6 +22,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   String userName = 'Student Name';
   String userCourse = 'BSIT';
   String userYear = '4';
+
+  //database
+  late Box<EventAttendance> _eventAttendanceBox;
+  final eventAttendanceDb = EventAttendanceDatabase();
 
   startscan() async {
     var result;
@@ -38,7 +47,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     });
   }
 
-  //user details formatter
+  //user details formatter and save the scanned data
   formatUserDetails(String data) {
     final details = data.split("|");
     setState(() {
@@ -47,6 +56,23 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userCourse = details[2];
       userYear = details[3];
     });
+    _eventAttendanceBox.put(
+        details[0],
+        EventAttendance(
+            id: int.parse(details[0]),
+            eventId: widget.EventId,
+            officerName: widget.userKey,
+            studentId: int.parse(details[0]),
+            studentName: details[1],
+            studentCourse: details[2],
+            studentYear: details[3]));
+  }
+
+  @override
+  void initState() {
+    _eventAttendanceBox =
+        eventAttendanceDb.eventAttendanceDatabaseInitialization();
+    super.initState();
   }
 
   @override
@@ -59,8 +85,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 80.0, 0, 0),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 80.0, 0, 0),
               child: Icon(
                 Icons.account_circle_rounded,
                 size: 200.0,

@@ -367,6 +367,8 @@ class _EventScreenState extends State<EventScreen> {
                                         screenWidth * 0.85,
                                         purple,
                                         item),
+                                    userkey: widget.userKey,
+                                    eventId: item.id,
                                     eventEnded: item.endTime,
                                     eventPlace: item.eventPlace,
                                     eventName: item.eventName,

@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Center(
                                   child: event1 != null
                                       ? EventBoxHomescreen(
-                                          eventName: event1!.eventName,
+                                          eventName: event1.eventName,
                                           colorWhite: colortheme.secondaryColor,
                                           eventDescription:
                                               event1.eventDescription,
@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                           child: event1 != null
                               ? EventBoxHomescreen(
-                                  eventName: event1!.eventName,
+                                  eventName: event1.eventName,
                                   colorWhite: colortheme.secondaryColor,
                                   eventDescription: event1.eventDescription,
                                   eventStatus: 'dasd',
