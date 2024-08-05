@@ -224,10 +224,7 @@ class _UserScreenState extends State<UserScreen> {
                         color: Colors.grey.shade300,
                       )),
                   child: PrettyQrView.data(
-                      data: qrData,
-                      decoration: const PrettyQrDecoration(
-                          image: PrettyQrDecorationImage(
-                              image: AssetImage('assets/imgs/lsg_logo.png')))),
+                      data: qrData, decoration: const PrettyQrDecoration()),
                 ),
               ),
               Text(
