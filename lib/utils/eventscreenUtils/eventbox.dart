@@ -138,7 +138,13 @@ class _EventBoxState extends State<EventBox> {
                           ),
                         )
                       : GestureDetector(
-                          onTap: widget.updateEvent,
+                          // onTap: widget.updateEvent,
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QrCodeScanner(
+                                        EventId: widget.eventId,
+                                        userKey: widget.userkey,
+                                      ))),
                           child: const Icon(
                             Icons.edit_note,
                             color: Colors.white,

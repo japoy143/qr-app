@@ -5,7 +5,7 @@ class EventAttendanceDatabase {
   late Box<EventAttendance> _box;
 
   Box<EventAttendance> eventAttendanceDatabaseInitialization() {
-    _box = Hive.box("eventAttendanceBox");
+    _box = Hive.box<EventAttendance>("_eventAttendanceBox");
 
     return _box;
   }

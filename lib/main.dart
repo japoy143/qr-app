@@ -24,7 +24,7 @@ void main() async {
 
   //event attendance
   Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());
-  await Hive.openBox("eventAttendanceBox");
+  await Hive.openBox<EventAttendance>("_eventAttendanceBox");
 
   //notification
   tz.initializeTimeZones();
