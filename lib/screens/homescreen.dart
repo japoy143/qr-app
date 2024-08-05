@@ -9,8 +9,6 @@ import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
 import 'package:qr_app/utils/homescreenUtils/evenntBox.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
-import 'package:qr_app/utils/eventscreenUtils/eventbox.dart';
-import 'package:qr_app/utils/homescreenUtils/pastevent.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';

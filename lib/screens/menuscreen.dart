@@ -41,26 +41,41 @@ class _MenuScreenState extends State<MenuScreen> {
     final userDetails = _userBox.get(widget.userKey);
     final isAdmin = userDetails!.isAdmin;
 
-    List pages = [
-      HomeScreen(
-        userKey: widget.userKey,
-        setIndex: () {
-          setState(() {
-            currentIndex = 1;
-          });
-        },
-      ),
-      EventScreen(
-        userKey: widget.userKey,
-      ),
-      if (isAdmin)
-        {
-          PenaltyScreen(),
-        },
-      UserScreen(
-        userKey: widget.userKey,
-      )
-    ];
+    List pages = isAdmin
+        ? [
+            HomeScreen(
+              userKey: widget.userKey,
+              setIndex: () {
+                setState(() {
+                  currentIndex = 1;
+                });
+              },
+            ),
+            EventScreen(
+              userKey: widget.userKey,
+            ),
+            PenaltyScreen(),
+            UserScreen(
+              userKey: widget.userKey,
+            )
+          ]
+        : [
+            HomeScreen(
+              userKey: widget.userKey,
+              setIndex: () {
+                setState(() {
+                  currentIndex = 1;
+                });
+              },
+            ),
+            EventScreen(
+              userKey: widget.userKey,
+            ),
+            PenaltyScreen(),
+            UserScreen(
+              userKey: widget.userKey,
+            )
+          ];
 
     List<BottomNavigationBarItem> bottomNavItems = [
       const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
