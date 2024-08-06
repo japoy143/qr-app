@@ -122,7 +122,7 @@ class _EventBoxState extends State<EventBox> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                item.eventEnded.toString(),
+                item.eventName,
                 style: TextStyle(
                   color: colorTheme.secondaryColor,
                   fontFamily: "Poppins",

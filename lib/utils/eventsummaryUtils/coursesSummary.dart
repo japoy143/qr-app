@@ -101,7 +101,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                               ),
                               GestureDetector(
                                 child: Text(
-                                  'See more',
+                                  'Student attended',
                                   style: TextStyle(
                                       color: colorscheme.secondaryColor,
                                       fontWeight: FontWeight.w500),

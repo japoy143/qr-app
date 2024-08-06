@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:qr_app/models/eventattendance.dart';
-import 'package:qr_app/models/types.dart';
-import 'package:qr_app/services/eventAttendanceDatabase.dart';
+import 'package:qr_app/models/events.dart';
+import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
 
 class EventSummaryScreen extends StatefulWidget {
   const EventSummaryScreen({super.key});
@@ -13,33 +13,33 @@ class EventSummaryScreen extends StatefulWidget {
 }
 
 class _EventSummaryScreenState extends State<EventSummaryScreen> {
-  int totalEvent = 29;
+  int totalEvent = 0;
 
-  final colorscheme = ColorThemeProvider();
+  //color theme
+  final colortheme = ColorThemeProvider();
 
-  late Box<EventAttendance> _eventAttendanceBox;
-  final eventAttendanceDB = EventAttendanceDatabase();
+  //database
+  late Box<EventType> _eventBox;
+  final eventDb = EventDatabase();
 
   @override
   void initState() {
-    _eventAttendanceBox =
-        eventAttendanceDB.eventAttendanceDatabaseInitialization();
+    _eventBox = eventDb.EventDatabaseInitialization();
     super.initState();
   }
 
-  // courses in a list
-  List<CoursesPenaltyType> penalty = [
-    CoursesPenaltyType(courseName: 'BSIT', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSCS', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSIS', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSCPE', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSECE', eventMissedCount: 0),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final eventAttendanceList = _eventAttendanceBox.values.toList();
-    Color purple = Color(colorscheme.hexColor(colorscheme.primaryColor));
+    Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
+
+    //list of events
+    List<EventType> events = _eventBox.values.toList();
+
+    //sort event by date
+    events.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+
+    //list of event ended
+    final eventEnded = events.where((event) => event.eventEnded == true);
 
     return Scaffold(
       body: Padding(
@@ -57,7 +57,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
               ),
             ),
             Text(
-              'Total Events: $totalEvent',
+              'Events Ended',
               style: TextStyle(
                 fontFamily: 'Poppins',
                 color: Colors.grey.shade400,
@@ -67,49 +67,18 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
             ),
             Expanded(
                 child: ListView.builder(
-                    itemCount: penalty.length,
+                    itemCount: eventEnded.length,
                     itemBuilder: (context, index) {
-                      final item = penalty.elementAt(index);
+                      final item = eventEnded.elementAt(index);
+
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: purple,
-                              borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(34),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.courseName,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: colorscheme.secondaryColor,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  Text(
-                                    'Total event attended: ${item.eventMissedCount}',
-                                    style: TextStyle(
-                                        color: colorscheme.secondaryColor,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                              GestureDetector(
-                                child: Text(
-                                  'See more',
-                                  style: TextStyle(
-                                      color: colorscheme.secondaryColor,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                                color: purple,
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: EventSummayBox(items: item)),
                       );
                     }))
           ],
