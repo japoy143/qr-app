@@ -7,7 +7,7 @@ class EventDatabase {
   late Box<EventType> _box;
 
   Box<EventType> EventDatabaseInitialization() {
-    _box = Hive.box<EventType>('_eventBox');
+    _box = Hive.box<EventType>('eventBox');
 
     return _box;
   }

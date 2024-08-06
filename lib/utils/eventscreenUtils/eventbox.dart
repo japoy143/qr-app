@@ -1,36 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_app/models/events.dart';
+import 'package:qr_app/services/eventdatabase.dart';
+import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventBox extends StatefulWidget {
-  final int eventId;
-  final String eventName;
-  final String eventDescription;
-  final String eventPlace;
-  final Color colorWhite;
-  final String eventStatus;
-  final DateTime eventDate;
-  final DateTime eventEnded;
-  final bool isAdmin;
-  final DateTime eventStartTime;
+  final EventType items;
   final Function()? updateEvent;
   final String userkey;
+  final bool isAdmin;
   EventBox({
     super.key,
-    required this.eventName,
-    required this.colorWhite,
-    required this.eventDescription,
-    required this.eventStatus,
-    required this.eventDate,
-    required this.isAdmin,
-    required this.eventPlace,
-    required this.eventStartTime,
-    required this.eventEnded,
     required this.updateEvent,
-    required this.eventId,
     required this.userkey,
+    required this.items,
+    required this.isAdmin,
   });
 
   @override
@@ -40,14 +28,24 @@ class EventBox extends StatefulWidget {
 class _EventBoxState extends State<EventBox> {
   late Timer _timer;
   late String _eventStatus;
+  late EventType item;
+
+  //database
+  late Box<EventType> _eventBox;
+  final eventDB = EventDatabase();
 
   bool isOngoingNotificationShown = true;
   bool isEventNotificationShown = true;
 
+  //color
+  final colorTheme = ColorThemeProvider();
+
   @override
   void initState() {
+    item = widget.items;
+    _eventBox = eventDB.EventDatabaseInitialization();
     super.initState();
-    _eventStatus = showEventStatus(widget.eventStartTime, widget.eventEnded);
+    _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
   }
 
@@ -57,9 +55,8 @@ class _EventBoxState extends State<EventBox> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        _eventStatus =
-            showEventStatus(widget.eventStartTime, widget.eventEnded);
-        if (DateTime.now().isAfter(widget.eventEnded)) {
+        _eventStatus = showEventStatus(item.startTime, item.endTime);
+        if (DateTime.now().isAfter(item.endTime)) {
           _timer.cancel();
         }
       });
@@ -77,13 +74,22 @@ class _EventBoxState extends State<EventBox> {
         //ensure once
         isEventNotificationShown = false;
       }
+
+      //update only event ended
+      var eventObject = _eventBox.get(item.id);
+      if (eventObject != null) {
+        eventObject.eventEnded = true;
+      }
+
+      _eventBox.put(item.id, eventObject!);
+
       return 'Event Ended';
     }
 
     if (now.isAtSameMomentAs(date) || now.isAfter(date)) {
       if (isOngoingNotificationShown) {
         LocalNotifications.showNotification('Event Status',
-            'Event Ongoing please go to the ${widget.eventPlace}');
+            'Event Ongoing please go to the ${item.eventPlace}');
 
         //ensure once
         isOngoingNotificationShown = false;
@@ -103,7 +109,7 @@ class _EventBoxState extends State<EventBox> {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('MMM d').format(widget.eventDate);
+    String formattedDate = DateFormat('MMM d').format(item.eventDate);
     List splittedDate = formattedDate.split(" ");
 
     return Column(
@@ -114,9 +120,9 @@ class _EventBoxState extends State<EventBox> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.eventName,
+                item.eventEnded.toString(),
                 style: TextStyle(
-                  color: widget.colorWhite,
+                  color: colorTheme.secondaryColor,
                   fontFamily: "Poppins",
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,
@@ -128,7 +134,7 @@ class _EventBoxState extends State<EventBox> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
-                                        EventId: widget.eventId,
+                                        EventId: item.id,
                                         userKey: widget.userkey,
                                       ))),
                           child: const Icon(
@@ -142,7 +148,7 @@ class _EventBoxState extends State<EventBox> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
-                                        EventId: widget.eventId,
+                                        EventId: item.id,
                                         userKey: widget.userkey,
                                       ))),
                           child: const Icon(
@@ -163,7 +169,7 @@ class _EventBoxState extends State<EventBox> {
               Expanded(
                 flex: 3,
                 child: Text(
-                  widget.eventDescription,
+                  item.eventDescription,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.grey.shade300,
@@ -189,7 +195,7 @@ class _EventBoxState extends State<EventBox> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.eventPlace,
+                    item.eventPlace,
                     style: TextStyle(
                       color: Colors.grey.shade300,
                       fontFamily: "Poppins",
@@ -202,7 +208,7 @@ class _EventBoxState extends State<EventBox> {
                     child: Text(
                       _eventStatus,
                       style: TextStyle(
-                        color: widget.colorWhite,
+                        color: colorTheme.secondaryColor,
                         fontFamily: "Poppins",
                         fontSize: 19.0,
                         fontWeight: FontWeight.w500,
@@ -216,7 +222,7 @@ class _EventBoxState extends State<EventBox> {
                   Text(
                     splittedDate[0],
                     style: TextStyle(
-                      color: widget.colorWhite,
+                      color: colorTheme.secondaryColor,
                       fontFamily: "Poppins",
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
@@ -225,7 +231,7 @@ class _EventBoxState extends State<EventBox> {
                   Text(
                     splittedDate[1],
                     style: TextStyle(
-                      color: widget.colorWhite,
+                      color: colorTheme.secondaryColor,
                       fontFamily: "Poppins",
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,

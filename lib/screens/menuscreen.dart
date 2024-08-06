@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/eventscreen.dart';
 import 'package:qr_app/screens/homescreen.dart';
-import 'package:qr_app/screens/penaltyscreen.dart';
+import 'package:qr_app/screens/eventsummaryscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
@@ -54,7 +54,7 @@ class _MenuScreenState extends State<MenuScreen> {
             EventScreen(
               userKey: widget.userKey,
             ),
-            PenaltyScreen(),
+            EventSummaryScreen(),
             UserScreen(
               userKey: widget.userKey,
             )
@@ -71,7 +71,6 @@ class _MenuScreenState extends State<MenuScreen> {
             EventScreen(
               userKey: widget.userKey,
             ),
-            PenaltyScreen(),
             UserScreen(
               userKey: widget.userKey,
             )
@@ -82,7 +81,7 @@ class _MenuScreenState extends State<MenuScreen> {
       const BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
       if (isAdmin)
         const BottomNavigationBarItem(
-            icon: Icon(Icons.pending), label: 'Penalty'),
+            icon: Icon(Icons.calendar_month_outlined), label: 'Event Summary'),
       const BottomNavigationBarItem(
           icon: Icon(Icons.person_outline), label: 'User'),
     ];

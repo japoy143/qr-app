@@ -20,7 +20,7 @@ void main() async {
 
   //events
   Hive.registerAdapter<EventType>(EventTypeAdapter());
-  await Hive.openBox<EventType>('_eventBox');
+  await Hive.openBox<EventType>('eventBox');
 
   //event attendance
   Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());

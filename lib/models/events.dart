@@ -22,6 +22,8 @@ class EventType {
   String eventPlace;
   @HiveField(8)
   DateTime endTime;
+  @HiveField(9)
+  bool eventEnded;
 
   EventType(
       {required this.id,
@@ -32,5 +34,6 @@ class EventType {
       this.eventStatus,
       required this.eventPlace,
       required this.key,
-      required this.endTime});
+      required this.endTime,
+      required this.eventEnded});
 }

@@ -143,7 +143,8 @@ class _EventScreenState extends State<EventScreen> {
             startTime: formatter.dateFormmater(currentDate, currentTime),
             eventPlace: _eventPlaceController.text,
             key: _eventIdController.text,
-            endTime: formatter.dateFormmater(currentDate, eventTimeEnd)));
+            endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
+            eventEnded: false));
 
     formatter.dateFormmater(currentTime, eventTimeEnd);
 
@@ -212,7 +213,8 @@ class _EventScreenState extends State<EventScreen> {
             startTime: formatter.dateFormmater(currentDate, currentTime),
             eventPlace: _eventPlaceController.text,
             key: _eventIdController.text,
-            endTime: formatter.dateFormmater(currentDate, eventTimeEnd)));
+            endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
+            eventEnded: false));
 
     clearFields();
     setState(() {});
@@ -224,6 +226,12 @@ class _EventScreenState extends State<EventScreen> {
 
   final appBar = AppBar();
 
+  //setter
+  setter() {
+    print('sett');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     //screen queries
@@ -234,6 +242,7 @@ class _EventScreenState extends State<EventScreen> {
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
+    //user details
     final userDetails = _userBox.get(widget.userKey);
     final userName = userDetails!.userName;
     final userSchoolId = userDetails.schoolId;
@@ -245,6 +254,11 @@ class _EventScreenState extends State<EventScreen> {
 
     //sort by date
     allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+
+    //TODO:make this value lisnable builder
+    //filter event ended
+    final sortedEventNotEnded =
+        allEvents.where((event) => event.eventEnded == false);
 
     return Scaffold(
         body: SafeArea(
@@ -336,9 +350,9 @@ class _EventScreenState extends State<EventScreen> {
                 ),
                 Expanded(
                     child: ListView.builder(
-                        itemCount: allEvents.length,
+                        itemCount: sortedEventNotEnded.length,
                         itemBuilder: (context, index) {
-                          final item = allEvents.elementAt(index);
+                          final item = sortedEventNotEnded.elementAt(index);
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
                             child: Slidable(
@@ -362,22 +376,15 @@ class _EventScreenState extends State<EventScreen> {
                                     color: purple,
                                     borderRadius: BorderRadius.circular(8.0)),
                                 child: EventBox(
-                                    updateEvent: () => showDialogUpdate(
-                                        (screenHeight - statusbarHeight) * 0.68,
-                                        screenWidth * 0.85,
-                                        purple,
-                                        item),
-                                    userkey: widget.userKey,
-                                    eventId: item.id,
-                                    eventEnded: item.endTime,
-                                    eventPlace: item.eventPlace,
-                                    eventName: item.eventName,
-                                    colorWhite: colortheme.secondaryColor,
-                                    eventDescription: item.eventDescription,
-                                    eventStatus: 'dada',
-                                    eventDate: item.eventDate,
-                                    eventStartTime: item.startTime,
-                                    isAdmin: isAdmin),
+                                  updateEvent: () => showDialogUpdate(
+                                      (screenHeight - statusbarHeight) * 0.68,
+                                      screenWidth * 0.85,
+                                      purple,
+                                      item),
+                                  items: item,
+                                  userkey: widget.userKey,
+                                  isAdmin: isAdmin,
+                                ),
                               ),
                             ),
                           );

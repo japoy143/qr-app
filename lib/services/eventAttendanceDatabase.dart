@@ -7,6 +7,18 @@ class EventAttendanceDatabase {
   Box<EventAttendance> eventAttendanceDatabaseInitialization() {
     _box = Hive.box<EventAttendance>("_eventAttendanceBox");
 
+    if (_box.isEmpty) {
+      _box.put(
+          220,
+          EventAttendance(
+              id: 220,
+              eventId: 220,
+              officerName: 'Lowe',
+              studentId: 220,
+              studentName: 'James',
+              studentCourse: 'BSIT',
+              studentYear: '4'));
+    }
     return _box;
   }
 }
