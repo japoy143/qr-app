@@ -5,14 +5,14 @@ import 'package:qr_app/models/types.dart';
 import 'package:qr_app/services/eventAttendanceDatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
-class EventSummaryScreen extends StatefulWidget {
-  const EventSummaryScreen({super.key});
+class CoursesSummaryScreen extends StatefulWidget {
+  const CoursesSummaryScreen({super.key});
 
   @override
-  State<EventSummaryScreen> createState() => _EventSummaryScreenState();
+  State<CoursesSummaryScreen> createState() => _CoursesSummaryScreenState();
 }
 
-class _EventSummaryScreenState extends State<EventSummaryScreen> {
+class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   int totalEvent = 29;
 
   final colorscheme = ColorThemeProvider();

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
@@ -7,7 +6,7 @@ import 'package:qr_app/models/positions.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
-import 'package:qr_app/utils/homescreenUtils/evenntBox.dart';
+import 'package:qr_app/utils/homescreenUtils/eventBox.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
@@ -53,11 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //events list
     List<EventType> event = _eventBox.values.toList();
+
+    //sort by date
     event.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
-    final event1 = event.length >= 1 ? event.elementAt(0) : null;
-    final event2 = event.length > 1 ? event.elementAt(1) : null;
-    final event3 = event.length > 2 ? event.elementAt(2) : null;
+    //filter all event ended
+    final filterEventEnded = event.where((event) => event.eventEnded == false);
+
+    final event1 = filterEventEnded.isNotEmpty ? event.elementAt(0) : null;
+    final event2 = filterEventEnded.length > 1 ? event.elementAt(1) : null;
+    final event3 = filterEventEnded.length > 2 ? event.elementAt(2) : null;
 
     final userDetails = _userBox.get(widget.userKey);
     final userName = userDetails!.userName;
@@ -171,16 +175,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Center(
                                   child: event1 != null
                                       ? EventBoxHomescreen(
-                                          eventName: event1.eventName,
-                                          colorWhite: colortheme.secondaryColor,
-                                          eventDescription:
-                                              event1.eventDescription,
-                                          eventStatus: 'dasd',
-                                          eventDate: event1.eventDate,
                                           isAdmin: isAdmin,
-                                          eventPlace: event1.eventPlace,
-                                          eventStartTime: event1.startTime,
-                                          eventEnded: event1.endTime)
+                                          item: event1,
+                                        )
                                       : Center(
                                           child: Text(
                                             'No Event',
@@ -317,15 +314,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                           child: event1 != null
                               ? EventBoxHomescreen(
-                                  eventName: event1.eventName,
-                                  colorWhite: colortheme.secondaryColor,
-                                  eventDescription: event1.eventDescription,
-                                  eventStatus: 'dasd',
-                                  eventDate: event1.eventDate,
                                   isAdmin: isAdmin,
-                                  eventPlace: event1.eventPlace,
-                                  eventStartTime: event1.startTime,
-                                  eventEnded: event1.endTime)
+                                  item: event1,
+                                )
                               : Center(
                                   child: Text(
                                     'No Event',

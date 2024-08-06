@@ -227,7 +227,7 @@ class _EventScreenState extends State<EventScreen> {
   final appBar = AppBar();
 
   //setter
-  setter() {
+  void setter() {
     print('sett');
     setState(() {});
   }
@@ -250,12 +250,12 @@ class _EventScreenState extends State<EventScreen> {
     final userProfile = userDetails.userProfile;
 
     //events
-    final allEvents = _eventBox.values.toList();
+    List<EventType> allEvents = _eventBox.values.toList();
 
     //sort by date
     allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
-    //TODO:make this value lisnable builder
+
     //filter event ended
     final sortedEventNotEnded =
         allEvents.where((event) => event.eventEnded == false);
@@ -384,6 +384,7 @@ class _EventScreenState extends State<EventScreen> {
                                   items: item,
                                   userkey: widget.userKey,
                                   isAdmin: isAdmin,
+                                  setter: setter,
                                 ),
                               ),
                             ),

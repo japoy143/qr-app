@@ -97,6 +97,8 @@ class _addEventDialogState extends State<addEventDialog> {
   }
 
   void timeStartPicker() {
+    int currentHour = DateTime.now().hour;
+    int currentMinute = DateTime.now().minute;
     BottomPicker.time(
       pickerTitle: Text(
         'Set your next meeting time',
@@ -133,12 +135,15 @@ class _addEventDialogState extends State<addEventDialog> {
       bottomPickerTheme: BottomPickerTheme.plumPlate,
       use24hFormat: false,
       initialTime: Time(
-        minutes: 10,
+        hours: currentHour,
+        minutes: currentMinute,
       ),
     ).show(context);
   }
 
   void timeEndPicker() {
+    int currentHour = DateTime.now().hour;
+    int currentMinute = DateTime.now().minute;
     BottomPicker.time(
       pickerTitle: Text(
         'Set your next meeting time',
@@ -175,7 +180,8 @@ class _addEventDialogState extends State<addEventDialog> {
       bottomPickerTheme: BottomPickerTheme.plumPlate,
       use24hFormat: false,
       initialTime: Time(
-        minutes: 10,
+        hours: currentHour,
+        minutes: currentMinute,
       ),
     ).show(context);
   }

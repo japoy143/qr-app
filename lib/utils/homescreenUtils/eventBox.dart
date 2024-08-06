@@ -2,30 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_app/models/events.dart';
+import 'package:qr_app/theme/colortheme.dart';
 
 class EventBoxHomescreen extends StatefulWidget {
-  final String eventName;
-  final String eventDescription;
-  final String eventPlace;
-  final Color colorWhite;
-  final String eventStatus;
-  final DateTime eventDate;
-  final DateTime eventEnded;
+  final EventType item;
   final bool isAdmin;
-  final DateTime eventStartTime;
 
-  EventBoxHomescreen({
-    super.key,
-    required this.eventName,
-    required this.colorWhite,
-    required this.eventDescription,
-    required this.eventStatus,
-    required this.eventDate,
-    required this.isAdmin,
-    required this.eventPlace,
-    required this.eventStartTime,
-    required this.eventEnded,
-  });
+  EventBoxHomescreen({super.key, required this.isAdmin, required this.item});
 
   @override
   _EventBoxHomescreenState createState() => _EventBoxHomescreenState();
@@ -35,19 +19,25 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
   late Timer _timer;
   late String _eventStatus;
 
+  //items
+  late EventType item;
+
+  //colors
+  final colorTheme = ColorThemeProvider();
+
   @override
   void initState() {
+    item = widget.item;
     super.initState();
-    _eventStatus = showEventStatus(widget.eventStartTime, widget.eventEnded);
+    _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
   }
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        _eventStatus =
-            showEventStatus(widget.eventStartTime, widget.eventEnded);
-        if (DateTime.now().isAfter(widget.eventEnded)) {
+        _eventStatus = showEventStatus(item.startTime, item.endTime);
+        if (DateTime.now().isAfter(item.endTime)) {
           _timer.cancel();
         }
       });
@@ -77,7 +67,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('MMM d').format(widget.eventDate);
+    String formattedDate = DateFormat('MMM d').format(item.eventDate);
     List splittedDate = formattedDate.split(" ");
 
     return Column(
@@ -88,9 +78,9 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.eventName,
+                item.eventName,
                 style: TextStyle(
-                  color: widget.colorWhite,
+                  color: colorTheme.secondaryColor,
                   fontFamily: "Poppins",
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,
@@ -117,7 +107,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
               Expanded(
                 flex: 3,
                 child: Text(
-                  widget.eventDescription,
+                  item.eventDescription,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.grey.shade300,
@@ -143,7 +133,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.eventPlace,
+                    item.eventPlace,
                     style: TextStyle(
                       color: Colors.grey.shade300,
                       fontFamily: "Poppins",
@@ -156,7 +146,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                     child: Text(
                       _eventStatus,
                       style: TextStyle(
-                        color: widget.colorWhite,
+                        color: colorTheme.secondaryColor,
                         fontFamily: "Poppins",
                         fontSize: 19.0,
                         fontWeight: FontWeight.w500,
@@ -170,7 +160,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                   Text(
                     splittedDate[0],
                     style: TextStyle(
-                      color: widget.colorWhite,
+                      color: colorTheme.secondaryColor,
                       fontFamily: "Poppins",
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
@@ -179,7 +169,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                   Text(
                     splittedDate[1],
                     style: TextStyle(
-                      color: widget.colorWhite,
+                      color: colorTheme.secondaryColor,
                       fontFamily: "Poppins",
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
