@@ -131,7 +131,7 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               ),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CoursesSummaryScreen())),
+                    builder: (context) => CoursesSummaryScreen(eventId: item.id,))),
                 child: Text('See more',
                     style: TextStyle(
                       color: colorTheme.secondaryColor,

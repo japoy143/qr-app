@@ -4,12 +4,24 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/eventattendance.dart';
+import 'package:qr_app/models/eventlistattendance.dart';
+import 'package:qr_app/models/types.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventAttendanceDatabase.dart';
+import 'package:qr_app/services/eventListAttendance.dart';
+import 'package:qr_app/services/usersdatabase.dart';
 
 class QrCodeScanner extends StatefulWidget {
   int EventId;
+  String EventName;
   String userKey;
-  QrCodeScanner({super.key, required this.EventId, required this.userKey});
+
+  QrCodeScanner({
+    super.key,
+    required this.EventId,
+    required this.EventName,
+    required this.userKey,
+  });
 
   @override
   State<QrCodeScanner> createState() => _QrCodeScannerState();
@@ -24,8 +36,12 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   String userYear = '4';
 
   //database
-  late Box<EventAttendance> _eventAttendanceBox;
-  final eventAttendanceDb = EventAttendanceDatabase();
+  late Box<EventAttendanceList> _eventAttendanceListBox;
+  final eventAttendanceListDb = EventListAttendanceDatabase();
+
+  //officer
+  late Box<UsersType> _usersBox;
+  final usersDb = UsersDatabase();
 
   startscan() async {
     var result;
@@ -49,6 +65,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   //user details formatter and save the scanned data
   formatUserDetails(String data) {
+    //student details
     final details = data.split("|");
     setState(() {
       userSchoolId = details[0];
@@ -56,22 +73,35 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userCourse = details[2];
       userYear = details[3];
     });
-    _eventAttendanceBox.put(
-        details[0],
-        EventAttendance(
-            id: int.parse(details[0]),
+
+    //TODO: put officer details by quering
+    //officer details
+    final officerDetails = _usersBox.get(int.parse(widget.userKey));
+    final officerName = officerDetails!.userName;
+
+    //save student details
+    _eventAttendanceListBox.put(
+        widget.EventId,
+        EventAttendanceList(
             eventId: widget.EventId,
-            officerName: widget.userKey,
-            studentId: int.parse(details[0]),
-            studentName: details[1],
-            studentCourse: details[2],
-            studentYear: details[3]));
+            eventName: widget.EventName,
+            attendanceList: <EventListAttendanceType>[
+              EventListAttendanceType(
+                  eventId: widget.EventId,
+                  officerId: int.parse(widget.userKey),
+                  officerName: officerName,
+                  studentId: int.parse(userSchoolId),
+                  studentName: userName,
+                  studentCourse: userCourse,
+                  studentYear: userYear)
+            ]));
   }
 
   @override
   void initState() {
-    _eventAttendanceBox =
-        eventAttendanceDb.eventAttendanceDatabaseInitialization();
+    _eventAttendanceListBox =
+        eventAttendanceListDb.EventAttendanceListDatabaseIntialization();
+    _usersBox = usersDb.UsersDatabaseInitialization();
     super.initState();
   }
 

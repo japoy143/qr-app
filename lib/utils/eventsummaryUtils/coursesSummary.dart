@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/services/eventAttendanceDatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
 
 class CoursesSummaryScreen extends StatefulWidget {
-  const CoursesSummaryScreen({super.key});
+  final int eventId;
+  const CoursesSummaryScreen({super.key, required this.eventId});
 
   @override
   State<CoursesSummaryScreen> createState() => _CoursesSummaryScreenState();
@@ -18,52 +21,83 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   final colorscheme = ColorThemeProvider();
 
   late Box<EventAttendance> _eventAttendanceBox;
-  final eventAttendanceDB = EventAttendanceDatabase();
 
   @override
   void initState() {
-    _eventAttendanceBox =
-        eventAttendanceDB.eventAttendanceDatabaseInitialization();
     super.initState();
   }
 
   // courses in a list
-  List<CoursesPenaltyType> penalty = [
-    CoursesPenaltyType(courseName: 'BSIT', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSCS', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSIS', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSCPE', eventMissedCount: 0),
-    CoursesPenaltyType(courseName: 'BSECE', eventMissedCount: 0),
+  List<CoursesEventType> penalty = [
+    CoursesEventType(courseName: 'BSIT', eventAttended: 0),
+    CoursesEventType(courseName: 'BSCS', eventAttended: 0),
+    CoursesEventType(courseName: 'BSIS', eventAttended: 0),
+    CoursesEventType(courseName: 'BSCPE', eventAttended: 0),
+    CoursesEventType(courseName: 'BSECE', eventAttended: 0),
   ];
+  List<int> year = [1, 2, 3, 4];
+  int? selectedYear = 1;
 
   @override
   Widget build(BuildContext context) {
-    final eventAttendanceList = _eventAttendanceBox.values.toList();
     Color purple = Color(colorscheme.hexColor(colorscheme.primaryColor));
 
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
+        padding: const EdgeInsets.fromLTRB(14.0, 8, 14, 0),
         child: SafeArea(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Events Summary',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18.0,
-                fontWeight: FontWeight.w800,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Events Summary',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      'Total Events: $totalEvent',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.grey.shade400,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.grey.shade900)),
+                    child: DropDown(
+                      initialValue: selectedYear,
+                      showUnderline: false,
+                      items: year,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedYear = val;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'Total Events: $totalEvent',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                color: Colors.grey.shade400,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w600,
-              ),
+            SizedBox(
+              height: 10,
             ),
             Expanded(
                 child: ListView.builder(
@@ -92,7 +126,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
-                                    'Total event attended: ${item.eventMissedCount}',
+                                    'Total event attended: ${item.eventAttended}',
                                     style: TextStyle(
                                         color: colorscheme.secondaryColor,
                                         fontWeight: FontWeight.w600),
@@ -100,6 +134,14 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                 ],
                               ),
                               GestureDetector(
+                                onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            StudentListSummary(
+                                              courseName: item.courseName,
+                                              yearLevel: selectedYear,
+                                              eventId:widget.eventId ,
+                                            ))),
                                 child: Text(
                                   'Student attended',
                                   style: TextStyle(

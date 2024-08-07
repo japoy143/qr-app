@@ -137,6 +137,7 @@ class _EventBoxState extends State<EventBox> {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
                                         EventId: item.id,
+                                        EventName: item.eventName,
                                         userKey: widget.userkey,
                                       ))),
                           child: const Icon(
@@ -151,6 +152,7 @@ class _EventBoxState extends State<EventBox> {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
                                         EventId: item.id,
+                                        EventName: item.eventName,
                                         userKey: widget.userkey,
                                       ))),
                           child: const Icon(

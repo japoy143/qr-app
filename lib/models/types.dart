@@ -1,8 +1,27 @@
 // courses penalty type
-class CoursesPenaltyType {
+class CoursesEventType {
   String courseName;
-  int eventMissedCount;
+  int eventAttended;
 
-  CoursesPenaltyType(
-      {required this.courseName, required this.eventMissedCount});
+  CoursesEventType(
+      {required this.courseName, required this.eventAttended});
+}
+
+class EventListAttendanceType {
+  int eventId;
+  int officerId;
+  String officerName;
+  int studentId;
+  String studentName;
+  String studentCourse;
+  String studentYear;
+
+  EventListAttendanceType(
+      {required this.eventId,
+      required this.officerId,
+      required this.officerName,
+      required this.studentId,
+      required this.studentName,
+      required this.studentCourse,
+      required this.studentYear});
 }

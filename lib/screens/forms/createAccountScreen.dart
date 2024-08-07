@@ -201,6 +201,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: Colors.grey.shade900)),
                     child: DropDown(
+                      showUnderline: false,
                       initialValue: selectedCourse,
                       items: courses,
                       onChanged: (val) {
@@ -232,6 +233,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         border: Border.all(color: Colors.grey.shade900)),
                     child: DropDown(
                       initialValue: selectedYear,
+                      showUnderline: false,
                       items: year,
                       onChanged: (val) {
                         setState(() {

@@ -6,6 +6,7 @@ import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
+import 'package:qr_app/utils/allInitialization.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -14,17 +15,11 @@ void main() async {
   final dir = await path.getApplicationDocumentsDirectory();
   Hive.init(dir.path);
 
-  //users
-  Hive.registerAdapter<UsersType>(UsersTypeAdapter());
-  await Hive.openBox<UsersType>('usersBox');
+  //all db init
+  final _allInit = AllInitialization();
 
-  //events
-  Hive.registerAdapter<EventType>(EventTypeAdapter());
-  await Hive.openBox<EventType>('eventBox');
-
-  //event attendance
-  Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());
-  await Hive.openBox<EventAttendance>("_eventAttendanceBox");
+  // all hive database initialization for hive boxes user, event ...
+  _allInit.AllDatabaseInit();
 
   //notification
   tz.initializeTimeZones();
