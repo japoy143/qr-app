@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/models/positions.dart';
+import 'package:qr_app/models/types.dart';
+
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
