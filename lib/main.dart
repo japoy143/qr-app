@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:qr_app/models/eventattendance.dart';
-import 'package:qr_app/models/events.dart';
-import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;

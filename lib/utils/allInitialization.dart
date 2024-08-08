@@ -14,9 +14,9 @@ class AllInitialization {
     Hive.registerAdapter<EventType>(EventTypeAdapter());
     await Hive.openBox<EventType>('eventBox');
 
-    // //event attendance
-    // Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());
-    // await Hive.openBox<EventAttendance>("_eventAttendanceBox");
+    //event attendance
+    Hive.registerAdapter<EventAttendance>(EventAttendanceAdapter());
+    await Hive.openBox<EventAttendance>("eventAttendanceBox");
 
     //eventAttendanceList
     Hive.registerAdapter<EventAttendanceList>(EventAttendanceListAdapter());

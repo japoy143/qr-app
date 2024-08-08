@@ -376,6 +376,7 @@ class _EventScreenState extends State<EventScreen> {
                                     color: purple,
                                     borderRadius: BorderRadius.circular(8.0)),
                                 child: EventBox(
+                                  officerName: userName,
                                   updateEvent: () => showDialogUpdate(
                                       (screenHeight - statusbarHeight) * 0.68,
                                       screenWidth * 0.85,

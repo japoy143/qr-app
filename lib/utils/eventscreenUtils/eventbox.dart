@@ -14,13 +14,15 @@ class EventBox extends StatefulWidget {
   final VoidCallback setter;
   final String userkey;
   final bool isAdmin;
+  final String officerName;
   EventBox(
       {super.key,
       required this.updateEvent,
       required this.userkey,
       required this.items,
       required this.isAdmin,
-      required this.setter});
+      required this.setter,
+      required this.officerName});
 
   @override
   _EventBoxState createState() => _EventBoxState();
@@ -136,6 +138,7 @@ class _EventBoxState extends State<EventBox> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
+                                        officerName: widget.officerName,
                                         EventId: item.id,
                                         EventName: item.eventName,
                                         userKey: widget.userkey,
@@ -151,6 +154,7 @@ class _EventBoxState extends State<EventBox> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => QrCodeScanner(
+                                        officerName: widget.officerName,
                                         EventId: item.id,
                                         EventName: item.eventName,
                                         userKey: widget.userkey,

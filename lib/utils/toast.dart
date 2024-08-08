@@ -193,4 +193,43 @@ class CustomToast {
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
+
+  // Scanner
+  void errorStudentNotSave(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Error Attendance"),
+      description: const Text("Student Data Not Save"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+
+    Vibration.vibrate();
+  }
+
+  void AttendanceSuccessfullySave(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Attendance Save"),
+      description: Text("Student Successfully Save"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
+
+  void AlreadyAttended(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Attendance Already Save"),
+      description: Text("User Already Attended At The Event"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
 }

@@ -10,17 +10,20 @@ import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventAttendanceDatabase.dart';
 import 'package:qr_app/services/eventListAttendance.dart';
 import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/utils/toast.dart';
 
 class QrCodeScanner extends StatefulWidget {
   int EventId;
   String EventName;
   String userKey;
+  String officerName;
 
   QrCodeScanner({
     super.key,
     required this.EventId,
     required this.EventName,
     required this.userKey,
+    required this.officerName,
   });
 
   @override
@@ -35,13 +38,12 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   String userCourse = 'BSIT';
   String userYear = '4';
 
-  //database
-  late Box<EventAttendanceList> _eventAttendanceListBox;
-  final eventAttendanceListDb = EventListAttendanceDatabase();
+  //toast
+  final toast = CustomToast();
 
-  //officer
-  late Box<UsersType> _usersBox;
-  final usersDb = UsersDatabase();
+  //database
+  late Box<EventAttendance> _eventAttendance;
+  final eventAttendanceDB = EventAttendanceDatabase();
 
   startscan() async {
     var result;
@@ -74,34 +76,34 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userYear = details[3];
     });
 
-    //TODO: put officer details by quering
-    //officer details
-    final officerDetails = _usersBox.get(int.parse(widget.userKey));
-    final officerName = officerDetails!.userName;
+    //check if student already attended
+    final isAttended = _eventAttendance.containsKey(userSchoolId);
+    if (isAttended) {
+      toast.AlreadyAttended(context);
+      return;
+    }
 
-    //save student details
-    _eventAttendanceListBox.put(
-        widget.EventId,
-        EventAttendanceList(
-            eventId: widget.EventId,
-            eventName: widget.EventName,
-            attendanceList: <EventListAttendanceType>[
-              EventListAttendanceType(
-                  eventId: widget.EventId,
-                  officerId: int.parse(widget.userKey),
-                  officerName: officerName,
-                  studentId: int.parse(userSchoolId),
-                  studentName: userName,
-                  studentCourse: userCourse,
-                  studentYear: userYear)
-            ]));
+    try {
+      _eventAttendance.put(
+          userSchoolId,
+          EventAttendance(
+              id: int.parse(userSchoolId),
+              eventId: widget.EventId,
+              officerName: widget.officerName,
+              studentId: int.parse(userSchoolId),
+              studentName: userName,
+              studentCourse: userCourse,
+              studentYear: userYear));
+      toast.AttendanceSuccessfullySave(context);
+    } catch (e) {
+      toast.errorStudentNotSave(context);
+    }
   }
 
   @override
   void initState() {
-    _eventAttendanceListBox =
-        eventAttendanceListDb.EventAttendanceListDatabaseIntialization();
-    _usersBox = usersDb.UsersDatabaseInitialization();
+    _eventAttendance =
+        eventAttendanceDB.eventAttendanceDatabaseInitialization();
     super.initState();
   }
 

@@ -140,7 +140,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                             StudentListSummary(
                                               courseName: item.courseName,
                                               yearLevel: selectedYear,
-                                              eventId:widget.eventId ,
+                                              eventId: widget.eventId,
                                             ))),
                                 child: Text(
                                   'Student attended',

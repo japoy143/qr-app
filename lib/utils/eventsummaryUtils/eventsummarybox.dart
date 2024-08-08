@@ -1,13 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
-import 'package:qr_app/utils/localNotifications.dart';
-import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventSummayBox extends StatefulWidget {
   final EventType items;
@@ -61,13 +56,15 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(
-                '${splittedDate[0]} ${splittedDate[1]}',
-                style: TextStyle(
-                  color: colorTheme.secondaryColor,
-                  fontFamily: "Poppins",
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
+              GestureDetector(
+                child: Text(
+                  '${splittedDate[0]} ${splittedDate[1]}',
+                  style: TextStyle(
+                    color: colorTheme.secondaryColor,
+                    fontFamily: "Poppins",
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -91,7 +88,7 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
               ),
             ],
@@ -131,7 +128,9 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               ),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CoursesSummaryScreen(eventId: item.id,))),
+                    builder: (context) => CoursesSummaryScreen(
+                          eventId: item.id,
+                        ))),
                 child: Text('See more',
                     style: TextStyle(
                       color: colorTheme.secondaryColor,
