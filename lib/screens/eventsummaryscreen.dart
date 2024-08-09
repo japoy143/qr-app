@@ -61,7 +61,6 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                 child: ValueListenableBuilder<Box<EventType>>(
                     valueListenable: _eventBox.listenable(),
                     builder: (context, Box<EventType> box, _) {
-                      
                       //list of events
                       List<EventType> events = box.values.toList();
 
