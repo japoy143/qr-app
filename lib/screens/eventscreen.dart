@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
-
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
@@ -227,12 +226,6 @@ class _EventScreenState extends State<EventScreen> {
 
   final appBar = AppBar();
 
-  //setter
-  void setter() {
-    print('sett');
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     //screen queries
@@ -249,17 +242,6 @@ class _EventScreenState extends State<EventScreen> {
     final userSchoolId = userDetails.schoolId;
     final isAdmin = userDetails.isAdmin;
     final userProfile = userDetails.userProfile;
-
-    //events
-    List<EventType> allEvents = _eventBox.values.toList();
-
-    //sort by date
-    allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
-
-
-    //filter event ended
-    final sortedEventNotEnded =
-        allEvents.where((event) => event.eventEnded == false);
 
     return Scaffold(
         body: SafeArea(
@@ -350,48 +332,67 @@ class _EventScreenState extends State<EventScreen> {
                   ],
                 ),
                 Expanded(
-                    child: ListView.builder(
-                        itemCount: sortedEventNotEnded.length,
-                        itemBuilder: (context, index) {
-                          final item = sortedEventNotEnded.elementAt(index);
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
-                            child: Slidable(
-                              endActionPane: ActionPane(
-                                  motion: StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      backgroundColor: Colors.redAccent,
-                                      onPressed: (context) {
-                                        setState(() {
-                                          _eventBox.delete(item.id);
-                                        });
-                                      },
-                                      icon: Icons.delete,
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    )
-                                  ]),
-                              child: Container(
-                                padding: EdgeInsets.all(6.0),
-                                decoration: BoxDecoration(
-                                    color: purple,
-                                    borderRadius: BorderRadius.circular(8.0)),
-                                child: EventBox(
-                                  officerName: userName,
-                                  updateEvent: () => showDialogUpdate(
-                                      (screenHeight - statusbarHeight) * 0.68,
-                                      screenWidth * 0.85,
-                                      purple,
-                                      item),
-                                  items: item,
-                                  userkey: widget.userKey,
-                                  isAdmin: isAdmin,
-                                  setter: setter,
-                                ),
-                              ),
-                            ),
-                          );
-                        }))
+                    child: ValueListenableBuilder<Box<EventType>>(
+                        valueListenable: _eventBox.listenable(),
+                        builder: (context, Box<EventType> box, _) {
+                          //events
+                          List<EventType> allEvents = box.values.toList();
+
+                          //sort by date
+                          allEvents.sort(
+                              (a, b) => a.eventDate.compareTo(b.eventDate));
+
+                          //filter event ended
+                          final sortedEventNotEnded = allEvents
+                              .where((event) => event.eventEnded == false);
+
+                          return ListView.builder(
+                              itemCount: sortedEventNotEnded.length,
+                              itemBuilder: (context, index) {
+                                final item =
+                                    sortedEventNotEnded.elementAt(index);
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 6, 0, 10),
+                                  child: Slidable(
+                                    endActionPane: ActionPane(
+                                        motion: const StretchMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            backgroundColor: Colors.redAccent,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                _eventBox.delete(item.id);
+                                              });
+                                            },
+                                            icon: Icons.delete,
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          )
+                                        ]),
+                                    child: Container(
+                                      padding: EdgeInsets.all(6.0),
+                                      decoration: BoxDecoration(
+                                          color: purple,
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                      child: EventBox(
+                                        officerName: userName,
+                                        updateEvent: () => showDialogUpdate(
+                                            (screenHeight - statusbarHeight) *
+                                                0.68,
+                                            screenWidth * 0.85,
+                                            purple,
+                                            item),
+                                        items: item,
+                                        userkey: widget.userKey,
+                                        isAdmin: isAdmin,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        })),
               ],
             ),
           ),

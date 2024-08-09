@@ -11,7 +11,6 @@ import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 class EventBox extends StatefulWidget {
   final EventType items;
   final Function()? updateEvent;
-  final VoidCallback setter;
   final String userkey;
   final bool isAdmin;
   final String officerName;
@@ -21,7 +20,6 @@ class EventBox extends StatefulWidget {
       required this.userkey,
       required this.items,
       required this.isAdmin,
-      required this.setter,
       required this.officerName});
 
   @override
@@ -85,8 +83,6 @@ class _EventBoxState extends State<EventBox> {
       }
 
       _eventBox.put(item.id, eventObject!);
-      widget.setter();
-
       return 'Event Ended';
     }
 
