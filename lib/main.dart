@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/screens/landingscreen.dart';
+import 'package:qr_app/state/EventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
@@ -31,15 +33,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = ColorThemeProvider();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Color(color.hexColor(color.primaryColor))),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => EventProvider())],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(color.hexColor(color.primaryColor))),
+          useMaterial3: true,
+        ),
+        home: const LandingScreen(),
       ),
-      home: const LandingScreen(),
     );
   }
 }

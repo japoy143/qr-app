@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   #svgs
   flutter_svg: ^2.0.10+1
+  #state management
+  provider:
   #database
   hive:
   hive_flutter:

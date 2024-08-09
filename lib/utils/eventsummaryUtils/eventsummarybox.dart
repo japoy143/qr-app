@@ -4,19 +4,19 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 
-class EventSummayBox extends StatefulWidget {
+class EventSummaryBox extends StatefulWidget {
   final EventType items;
 
-  EventSummayBox({
+  EventSummaryBox({
     super.key,
     required this.items,
   });
 
   @override
-  _EventSummayBoxState createState() => _EventSummayBoxState();
+  _EventSummaryBoxState createState() => _EventSummaryBoxState();
 }
 
-class _EventSummayBoxState extends State<EventSummayBox> {
+class _EventSummaryBoxState extends State<EventSummaryBox> {
   late EventType item;
 
   //color

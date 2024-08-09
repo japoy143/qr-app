@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/services/eventdatabase.dart';
+import 'package:qr_app/state/EventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
@@ -31,10 +33,6 @@ class _EventBoxState extends State<EventBox> {
   late String _eventStatus;
   late EventType item;
 
-  //database
-  late Box<EventType> _eventBox;
-  final eventDB = EventDatabase();
-
   bool isOngoingNotificationShown = true;
   bool isEventNotificationShown = true;
 
@@ -44,7 +42,6 @@ class _EventBoxState extends State<EventBox> {
   @override
   void initState() {
     item = widget.items;
-    _eventBox = eventDB.EventDatabaseInitialization();
     super.initState();
     _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
@@ -65,6 +62,7 @@ class _EventBoxState extends State<EventBox> {
   }
 
   String showEventStatus(DateTime date, DateTime event_end) {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
     DateTime now = DateTime.now();
 
     if (now.isAtSameMomentAs(event_end) || now.isAfter(event_end)) {
@@ -76,13 +74,19 @@ class _EventBoxState extends State<EventBox> {
         isEventNotificationShown = false;
       }
 
-      //update only event ended
-      var eventObject = _eventBox.get(item.id);
+      // Retrieve the event object
+      var eventObject = eventProvider.FindEvent(item.id);
+
       if (eventObject != null) {
+        // Update the eventEnded field
         eventObject.eventEnded = true;
+        () => eventProvider.UpdateEvent(item.id, eventObject);
+        // Save the updated event object back to the Hive box
+      } else {
+        // Handle the case where the event object is not found
+        print('Event not found');
       }
 
-      _eventBox.put(item.id, eventObject!);
       return 'Event Ended';
     }
 

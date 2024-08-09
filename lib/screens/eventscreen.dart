@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/state/EventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
@@ -32,10 +34,6 @@ class _EventScreenState extends State<EventScreen> {
   //user database
   late Box<UsersType> _userBox;
   final userdb = UsersDatabase();
-
-  //events database
-  late Box<EventType> _eventBox;
-  final eventdb = EventDatabase();
 
   //admin positions || role
   final adminPosition = adminPositions();
@@ -64,7 +62,6 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     _userBox = userdb.UsersDatabaseInitialization();
-    _eventBox = eventdb.EventDatabaseInitialization();
     super.initState();
   }
 
@@ -111,6 +108,7 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void addEvent() {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
     //form validate
     if (_eventIdController.text.isEmpty ||
         _eventDescriptionController.text.isEmpty ||
@@ -121,7 +119,7 @@ class _EventScreenState extends State<EventScreen> {
     }
 
     //ensure event id is unique
-    if (_eventBox.containsKey(int.parse(_eventIdController.text))) {
+    if (eventProvider.ContainsKey(int.parse(_eventIdController.text))) {
       return;
     }
 
@@ -132,8 +130,8 @@ class _EventScreenState extends State<EventScreen> {
       return;
     }
 
-    //insert event
-    _eventBox.put(
+    //insert
+    eventProvider.AddEvent(
         int.parse(_eventIdController.text),
         EventType(
             id: int.parse(_eventIdController.text),
@@ -147,10 +145,8 @@ class _EventScreenState extends State<EventScreen> {
             eventEnded: false));
 
     formatter.dateFormmater(currentTime, eventTimeEnd);
-
     //clear
     clearFields();
-    setState(() {});
   }
 
 //update
@@ -187,6 +183,7 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   void updateEvent(int id) {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
     //form validate
     if (_eventIdController.text.isEmpty ||
         _eventDescriptionController.text.isEmpty ||
@@ -203,7 +200,7 @@ class _EventScreenState extends State<EventScreen> {
       return;
     }
 
-    _eventBox.put(
+    eventProvider.AddEvent(
         id,
         EventType(
             id: int.parse(_eventIdController.text),
@@ -217,11 +214,11 @@ class _EventScreenState extends State<EventScreen> {
             eventEnded: false));
 
     clearFields();
-    setState(() {});
   }
 
   void onDelete(BuildContext context, int key) {
-    _eventBox.delete(key);
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    eventProvider.DeleteEvent(key);
   }
 
   final appBar = AppBar();
@@ -243,169 +240,164 @@ class _EventScreenState extends State<EventScreen> {
     final isAdmin = userDetails.isAdmin;
     final userProfile = userDetails.userProfile;
 
-    return Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14.0, 0, 14, 0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: (screenHeight - statusbarHeight) * 0.12,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          userProfile == ""
-                              ? Icon(
-                                  Icons.account_circle_outlined,
-                                  size: (screenHeight - statusbarHeight) * 0.07,
-                                )
-                              : CircleAvatar(
-                                  radius:
-                                      (screenHeight - statusbarHeight) * 0.035,
-                                  backgroundImage: FileImage(File(userProfile)),
-                                  backgroundColor: Colors.transparent,
+    return Consumer<EventProvider>(builder: (context, eventProvider, child) {
+      //events
+      List<EventType> allEvents = eventProvider.getAllEvents();
+
+      //sort by date
+      allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+
+      //filter event ended
+      final sortedEventNotEnded =
+          allEvents.where((event) => event.eventEnded == false);
+
+      return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14.0, 0, 14, 0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: (screenHeight - statusbarHeight) * 0.12,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            userProfile == ""
+                                ? Icon(
+                                    Icons.account_circle_outlined,
+                                    size:
+                                        (screenHeight - statusbarHeight) * 0.07,
+                                  )
+                                : CircleAvatar(
+                                    radius: (screenHeight - statusbarHeight) *
+                                        0.035,
+                                    backgroundImage:
+                                        FileImage(File(userProfile)),
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Text(
+                                    userName,
+                                    style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
-                          const SizedBox(
-                            width: 10.0,
+                                Text(
+                                    '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                          child: Container(
+                            child: notification != 0
+                                ? const NotificationActive(
+                                    height: 26, width: 26)
+                                : const NotificationNone(
+                                    height: 26,
+                                    width: 26,
+                                  ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                child: Text(
-                                  userName,
-                                  style: const TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              Text(
-                                  '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
-                            ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Events',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            'Upcoming Events',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.grey.shade400,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                        child: Container(
-                          child: notification != 0
-                              ? const NotificationActive(height: 26, width: 26)
-                              : const NotificationNone(
-                                  height: 26,
-                                  width: 26,
-                                ),
-                        ),
                       )
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Events',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        Text(
-                          'Upcoming Events',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.grey.shade400,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Expanded(
-                    child: ValueListenableBuilder<Box<EventType>>(
-                        valueListenable: _eventBox.listenable(),
-                        builder: (context, Box<EventType> box, _) {
-                          //events
-                          List<EventType> allEvents = box.values.toList();
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: sortedEventNotEnded.length,
+                          itemBuilder: (context, index) {
+                            final item = sortedEventNotEnded.elementAt(index);
 
-                          //sort by date
-                          allEvents.sort(
-                              (a, b) => a.eventDate.compareTo(b.eventDate));
-
-                          //filter event ended
-                          final sortedEventNotEnded = allEvents
-                              .where((event) => event.eventEnded == false);
-
-                          return ListView.builder(
-                              itemCount: sortedEventNotEnded.length,
-                              itemBuilder: (context, index) {
-                                final item =
-                                    sortedEventNotEnded.elementAt(index);
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 6, 0, 10),
-                                  child: Slidable(
-                                    endActionPane: ActionPane(
-                                        motion: const StretchMotion(),
-                                        children: [
-                                          SlidableAction(
-                                            backgroundColor: Colors.redAccent,
-                                            onPressed: (context) {
-                                              setState(() {
-                                                _eventBox.delete(item.id);
-                                              });
-                                            },
-                                            icon: Icons.delete,
-                                            borderRadius:
-                                                BorderRadius.circular(12.0),
-                                          )
-                                        ]),
-                                    child: Container(
-                                      padding: EdgeInsets.all(6.0),
-                                      decoration: BoxDecoration(
-                                          color: purple,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0)),
-                                      child: EventBox(
-                                        officerName: userName,
-                                        updateEvent: () => showDialogUpdate(
-                                            (screenHeight - statusbarHeight) *
-                                                0.68,
-                                            screenWidth * 0.85,
-                                            purple,
-                                            item),
-                                        items: item,
-                                        userkey: widget.userKey,
-                                        isAdmin: isAdmin,
-                                      ),
-                                    ),
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
+                              child: Slidable(
+                                endActionPane: ActionPane(
+                                    motion: const StretchMotion(),
+                                    children: [
+                                      SlidableAction(
+                                        backgroundColor: Colors.redAccent,
+                                        onPressed: (context) =>
+                                            onDelete(context, item.id),
+                                        icon: Icons.delete,
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      )
+                                    ]),
+                                child: Container(
+                                  padding: EdgeInsets.all(6.0),
+                                  decoration: BoxDecoration(
+                                      color: purple,
+                                      borderRadius: BorderRadius.circular(8.0)),
+                                  child: EventBox(
+                                    officerName: userName,
+                                    updateEvent: () => showDialogUpdate(
+                                        (screenHeight - statusbarHeight) * 0.68,
+                                        screenWidth * 0.85,
+                                        purple,
+                                        item),
+                                    items: item,
+                                    userkey: widget.userKey,
+                                    isAdmin: isAdmin,
                                   ),
-                                );
-                              });
-                        })),
-              ],
+                                ),
+                              ),
+                            );
+                          })),
+                ],
+              ),
             ),
           ),
-        ),
-        floatingActionButton: isAdmin
-            ? FloatingActionButton(
-                onPressed: () => showAddEvent(
-                  (screenHeight - statusbarHeight) * 0.68,
-                  screenWidth * 0.85,
-                  purple,
-                ),
-                child: Icon(Icons.add),
-              )
-            : null);
+          floatingActionButton: isAdmin
+              ? FloatingActionButton(
+                  onPressed: () => showAddEvent(
+                    (screenHeight - statusbarHeight) * 0.68,
+                    screenWidth * 0.85,
+                    purple,
+                  ),
+                  child: Icon(Icons.add),
+                )
+              : null);
+    });
   }
 }
