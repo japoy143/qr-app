@@ -11,4 +11,16 @@ class EventDatabase {
 
     return _box;
   }
+
+  Future<void> UpdateEvent(int id) async {
+    await EventDatabaseInitialization();
+
+    //update only event ended
+    var eventObject = _box.get(id);
+    if (eventObject != null) {
+      eventObject.eventEnded = true;
+    }
+
+    _box.put(id, eventObject!);
+  }
 }

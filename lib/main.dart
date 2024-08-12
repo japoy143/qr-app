@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/screens/landingscreen.dart';
+import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
@@ -11,9 +12,16 @@ import 'package:workmanager/workmanager.dart';
 //work manager initialization
 @pragma('vm:entry-point')
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    print(
-        "Native called background task: $task"); //simpleTask will be emitted here.
+  Workmanager().executeTask((task, inputData) async {
+    final _eventDB = EventDatabase();
+    switch (task) {
+      case 'updateEvent':
+        _eventDB.UpdateEvent(inputData!['id']);
+        print('event Updated');
+        break;
+
+      default:
+    }
     return Future.value(true);
   });
 }
@@ -38,7 +46,6 @@ void main() async {
       isInDebugMode:
           true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
-  
   runApp(const MyApp());
 }
 
