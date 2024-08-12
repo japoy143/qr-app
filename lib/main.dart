@@ -6,6 +6,17 @@ import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:workmanager/workmanager.dart';
+
+//work manager initialization
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) {
+    print(
+        "Native called background task: $task"); //simpleTask will be emitted here.
+    return Future.value(true);
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +33,12 @@ void main() async {
   tz.initializeTimeZones();
   await LocalNotifications.init();
 
+  Workmanager().initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode:
+          true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      );
+  
   runApp(const MyApp());
 }
 

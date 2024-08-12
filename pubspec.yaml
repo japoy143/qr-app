@@ -57,6 +57,7 @@ dependencies:
   timezone:
   shared_preferences:
   get:
+  workmanager:
 
 dev_dependencies:
   flutter_test:
