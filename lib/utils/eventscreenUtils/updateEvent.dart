@@ -141,7 +141,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
   void timeEndPicker() {
     BottomPicker.time(
       pickerTitle: Text(
-        'Set your next meeting time',
+        'Set the event time end',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 15,

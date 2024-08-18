@@ -203,21 +203,22 @@ class _EventScreenState extends State<EventScreen> {
       return;
     }
 
-    _eventBox.put(
-        id,
-        EventType(
-            id: int.parse(_eventIdController.text),
-            eventName: _eventNameController.text,
-            eventDescription: _eventDescriptionController.text,
-            eventDate: formatter.dateFormmater(currentDate, currentTime),
-            startTime: formatter.dateFormmater(currentDate, currentTime),
-            eventPlace: _eventPlaceController.text,
-            key: _eventIdController.text,
-            endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
-            eventEnded: false));
+    setState(() {
+      _eventBox.put(
+          id,
+          EventType(
+              id: int.parse(_eventIdController.text),
+              eventName: _eventNameController.text,
+              eventDescription: _eventDescriptionController.text,
+              eventDate: formatter.dateFormmater(currentDate, currentTime),
+              startTime: formatter.dateFormmater(currentDate, currentTime),
+              eventPlace: _eventPlaceController.text,
+              key: _eventIdController.text,
+              endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
+              eventEnded: false));
+    });
 
     clearFields();
-    setState(() {});
   }
 
   void onDelete(BuildContext context, int key) {

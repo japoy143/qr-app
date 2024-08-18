@@ -146,7 +146,7 @@ class _addEventDialogState extends State<addEventDialog> {
     int currentMinute = DateTime.now().minute;
     BottomPicker.time(
       pickerTitle: Text(
-        'Set your next meeting time',
+        'Set the event time end',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 15,

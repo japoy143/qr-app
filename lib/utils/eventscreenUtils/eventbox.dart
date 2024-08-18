@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/services/eventdatabase.dart';
@@ -49,18 +50,6 @@ class _EventBoxState extends State<EventBox> {
     super.initState();
     _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
-    calculateInitialDelay(item.endTime);
-    Workmanager().registerOneOffTask('updateEnd', 'updateEnd',
-        inputData: <String, dynamic>{'id': item.id},
-        initialDelay: Duration(seconds: 10));
-  }
-
-  Duration calculateInitialDelay(DateTime endTime) {
-    final now = DateTime.now();
-    final difference = endTime.difference(now);
-
-    // Ensure the delay is positive
-    return difference.isNegative ? Duration.zero : difference;
   }
 
   //notifications
@@ -93,6 +82,7 @@ class _EventBoxState extends State<EventBox> {
       var eventObject = _eventBox.get(item.id);
       if (eventObject != null) {
         eventObject.eventEnded = true;
+        _eventBox.put(item.id, eventObject);
       }
 
       return 'Event Ended';
@@ -143,12 +133,14 @@ class _EventBoxState extends State<EventBox> {
               widget.isAdmin
                   ? _eventStatus == "Ongoing"
                       ? GestureDetector(
-                          // onTap: () =>
-
-                          onTap: () async {
-                            Workmanager().registerOneOffTask('end', 'romil',
-                                initialDelay: Duration(seconds: 10));
-                          },
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QrCodeScanner(
+                                        EventId: item.id,
+                                        userKey: widget.userkey,
+                                        officerName: widget.officerName,
+                                        EventName: item.eventName,
+                                      ))),
                           child: const Icon(
                             Icons.qr_code_scanner,
                             color: Colors.white,
@@ -156,8 +148,7 @@ class _EventBoxState extends State<EventBox> {
                           ),
                         )
                       : GestureDetector(
-                          // onTap: widget.updateEvent,
-
+                          onTap: widget.updateEvent,
                           child: const Icon(
                             Icons.edit_note,
                             color: Colors.white,
