@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/screens/landingscreen.dart';
+import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +24,9 @@ void main() async {
   tz.initializeTimeZones();
   await LocalNotifications.init();
 
-  
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => EventProvider())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

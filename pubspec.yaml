@@ -58,6 +58,7 @@ dependencies:
   shared_preferences:
   get:
   workmanager:
+  provider:
 
 dev_dependencies:
   flutter_test:
