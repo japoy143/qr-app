@@ -5,11 +5,13 @@ import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 
 class EventSummayBox extends StatefulWidget {
+  final double screeHeight;
   final EventType items;
 
   EventSummayBox({
     super.key,
     required this.items,
+    required this.screeHeight
   });
 
   @override
@@ -129,6 +131,7 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CoursesSummaryScreen(
+                      screenHeight: widget.screeHeight,
                           eventId: item.id,
                         ))),
                 child: Text('See more',

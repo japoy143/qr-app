@@ -8,6 +8,7 @@ import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class UpdateEventDialog extends StatefulWidget {
+    final double screenHeight;
   final Color color;
   final double height;
   final double width;
@@ -37,6 +38,7 @@ class UpdateEventDialog extends StatefulWidget {
     required this.eventId,
     required this.eventTimeEnd,
     required this.onUpdateEventDetails,
+    required this.screenHeight,
   });
 
   @override
@@ -209,6 +211,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
                   child: CustomTextField(
+                         height: widget.screenHeight,
                       isReadOnly: false,
                       hintext: 'enter event name',
                       keyBoardType: TextInputType.text,
@@ -220,6 +223,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                     children: [
                       Expanded(
                         child: CustomTextField(
+                               height: widget.screenHeight,
                             isReadOnly: false,
                             hintext: 'description',
                             keyBoardType: TextInputType.text,
@@ -230,6 +234,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                       ),
                       Expanded(
                         child: CustomTextField(
+                               height: widget.screenHeight,
                             isReadOnly: true,
                             hintext: 'event id',
                             keyBoardType: TextInputType.number,
@@ -395,6 +400,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                   child: CustomTextField(
+                         height: widget.screenHeight,
                       isReadOnly: false,
                       hintext: 'enter event place',
                       keyBoardType: TextInputType.text,

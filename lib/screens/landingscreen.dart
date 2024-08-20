@@ -29,6 +29,34 @@ class _LandingScreenState extends State<LandingScreen> {
     });
   }
 
+  //scree sizes for small to large
+  double screenSizes(double height, double screenHeight, double appBarHeight,
+      double statusbarHeight) {
+    if (height >= 900) {
+      return (screenHeight - appBarHeight - statusbarHeight) * 0.80;
+    }
+
+    if (height <= 900) {
+      return (screenHeight - appBarHeight - statusbarHeight) * 0.85;
+    }
+
+    return (screenHeight - appBarHeight - statusbarHeight) * 0.90;
+  }
+
+  //carousel sizes  for small to large
+  double carouselSizes(double height, double screenHeight, double appBarHeight,
+      double statusbarHeight) {
+    if (height >= 900) {
+      return (screenHeight - appBarHeight - statusbarHeight) * 0.20;
+    }
+
+    if (height <= 900) {
+      return (screenHeight - appBarHeight - statusbarHeight) * 0.15;
+    }
+
+    return (screenHeight - appBarHeight - statusbarHeight) * 0.10;
+  }
+
   @override
   Widget build(BuildContext context) {
     double appBarHeight = appBar.preferredSize.height;
@@ -42,11 +70,13 @@ class _LandingScreenState extends State<LandingScreen> {
         width: screenWIdth * 0.80,
       ),
       LoginScreenAccount(
+        height: (appBarHeight + screenHeight + statusbarHeight),
         textColor: purple,
         width: screenWIdth,
         textColorWhite: color.secondaryColor,
       ),
       CreateAccountScreen(
+        height: (appBarHeight + screenHeight + statusbarHeight),
         textColorWhite: color.secondaryColor,
         textColor: purple,
         width: screenHeight * 0.02,
@@ -93,14 +123,16 @@ class _LandingScreenState extends State<LandingScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: (screenHeight - appBarHeight - statusbarHeight) * 0.80,
+              height: screenSizes(
+                  screenHeight, screenHeight, appBarHeight, statusbarHeight),
               child: pages[pageIndex],
             ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 0, horizontal: 44.0),
               child: SizedBox(
-                height: (screenHeight - appBarHeight - statusbarHeight) * 0.20,
+                height: carouselSizes(
+                    screenHeight, screenHeight, appBarHeight, statusbarHeight),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

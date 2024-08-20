@@ -54,7 +54,7 @@ class _MenuScreenState extends State<MenuScreen> {
             EventScreen(
               userKey: widget.userKey,
             ),
-            EventSummaryScreen(),
+            const EventSummaryScreen(),
             UserScreen(
               userKey: widget.userKey,
             )

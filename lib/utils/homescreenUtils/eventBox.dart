@@ -2,14 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/localNotifications.dart';
+import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventBoxHomescreen extends StatefulWidget {
-  final EventType item;
+  final EventType items;
   final bool isAdmin;
+  final String userKey;
+  final String officerName;
 
-  EventBoxHomescreen({super.key, required this.isAdmin, required this.item});
+  EventBoxHomescreen(
+      {super.key,
+      required this.isAdmin,
+      required this.items,
+      required this.userKey,
+      required this.officerName});
 
   @override
   _EventBoxHomescreenState createState() => _EventBoxHomescreenState();
@@ -18,20 +29,24 @@ class EventBoxHomescreen extends StatefulWidget {
 class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
   late Timer _timer;
   late String _eventStatus;
-
-  //items
   late EventType item;
 
-  //colors
+  bool isOngoingNotificationShown = true;
+  bool isEventNotificationShown = true;
+
+  //color
   final colorTheme = ColorThemeProvider();
 
   @override
   void initState() {
-    item = widget.item;
+    item = widget.items;
     super.initState();
     _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
   }
+
+  //notifications
+  final notifications = LocalNotifications();
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -45,13 +60,31 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
   }
 
   String showEventStatus(DateTime date, DateTime event_end) {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
     DateTime now = DateTime.now();
 
     if (now.isAtSameMomentAs(event_end) || now.isAfter(event_end)) {
+      if (isEventNotificationShown) {
+        LocalNotifications.showNotification(
+            'Event Status', 'Event ended attendance is not available');
+
+        //ensure once
+        isEventNotificationShown = false;
+      }
+
+      eventProvider.updateEventEndedData(widget.items.id);
+
       return 'Event Ended';
     }
 
     if (now.isAtSameMomentAs(date) || now.isAfter(date)) {
+      if (isOngoingNotificationShown) {
+        LocalNotifications.showNotification('Event Status',
+            'Event Ongoing please go to the ${item.eventPlace}');
+
+        //ensure once
+        isOngoingNotificationShown = false;
+      }
       return 'Ongoing';
     } else {
       String formattedDate = DateFormat("h:mm a").format(date);
@@ -86,16 +119,25 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              _eventStatus == "Ongoing"
-                  ? GestureDetector(
-                      onTap: () {},
-                      child: const Icon(
-                        Icons.qr_code_scanner,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    )
-                  : SizedBox.shrink(),
+              widget.isAdmin
+                  ? _eventStatus == "Ongoing"
+                      ? GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QrCodeScanner(
+                                        EventId: item.id,
+                                        userKey: widget.userKey,
+                                        officerName: widget.officerName,
+                                        EventName: item.eventName,
+                                      ))),
+                          child: const Icon(
+                            Icons.qr_code_scanner,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                        )
+                      : SizedBox.shrink()
+                  : SizedBox.shrink()
             ],
           ),
         ),

@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
+import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
+import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/formUtils/passwordTextField.dart';
 import 'package:qr_app/screens/menuscreen.dart';
 import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/utils/formUtils/textHeadingResponsive.dart';
+import 'package:qr_app/utils/formUtils/textSubtitleResposive.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class LoginScreenAccount extends StatefulWidget {
   final Color textColor;
   final double width;
+  final double height;
   final Color textColorWhite;
 
-  const LoginScreenAccount({
-    super.key,
-    required this.textColor,
-    required this.width,
-    required this.textColorWhite,
-  });
+  const LoginScreenAccount(
+      {super.key,
+      required this.textColor,
+      required this.width,
+      required this.textColorWhite,
+      required this.height});
 
   @override
   State<LoginScreenAccount> createState() => _LoginScreenAccountState();
@@ -90,51 +96,28 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'LSG',
-          style: TextStyle(
-              color: widget.textColor,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins',
-              fontSize: 24.0),
-        ),
-        const Text(
-          'Welcome Back',
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 40.0,
-              fontWeight: FontWeight.w600),
-        ),
-        Text(
-          'Glad to see you again',
-          style: TextStyle(
-              fontFamily: "Poppins",
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0),
-        ),
-        Text(
-          'Login to your account below',
-          style: TextStyle(
-              fontFamily: "Poppins",
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0),
-        ),
+        TextParagraphResponsive(
+            color: widget.textColor, height: widget.height, text: 'LSG'),
+        TextHeadingResponsive(
+            color: Colors.black, height: widget.height, text: 'Welcome Back'),
+        TextSubtitleResponsive(
+            color: Colors.grey.shade500,
+            height: widget.height,
+            text: 'Glad to see you again'),
+        TextSubtitleResponsive(
+            color: Colors.grey.shade500,
+            height: widget.height,
+            text: 'Login to your account below'),
         Padding(
           padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Name',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black, height: widget.height, text: 'Name'),
               CustomTextField(
-                isReadOnly: false,
+                  height: widget.height,
+                  isReadOnly: false,
                   keyBoardType: TextInputType.text,
                   hintext: 'enter name',
                   controller: _nameController),
@@ -146,15 +129,13 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'School Id',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black,
+                  height: widget.height,
+                  text: 'School Id'),
               CustomTextField(
-                isReadOnly: false,
+                  height: widget.height,
+                  isReadOnly: false,
                   keyBoardType: TextInputType.number,
                   hintext: 'enter school id',
                   controller: _schoolIdController),
@@ -166,13 +147,8 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Password',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black, height: widget.height, text: 'Password'),
               PasswordTextField(
                   hintext: 'enter password',
                   controller: _passwordController,
@@ -184,26 +160,13 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 14.0, 40.0, 10),
             child: GestureDetector(
-              onTap: userValidate,
-              child: Container(
-                width: widget.width,
-                decoration: BoxDecoration(
-                    color: widget.textColor,
-                    borderRadius: BorderRadius.circular(6.0)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Center(
-                      child: Text(
-                    'Login',
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: widget.textColorWhite,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18.0),
-                  )),
-                ),
-              ),
-            )),
+                onTap: userValidate,
+                child: ButtonResponsive(
+                    buttonColor: widget.textColor,
+                    height: widget.height,
+                    text: 'Login',
+                    textColor: widget.textColorWhite,
+                    width: widget.width))),
       ],
     );
   }

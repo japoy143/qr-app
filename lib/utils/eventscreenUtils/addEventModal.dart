@@ -8,6 +8,7 @@ import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class addEventDialog extends StatefulWidget {
+  final double screenHeight;
   final Color color;
   final double height;
   final double width;
@@ -24,6 +25,7 @@ class addEventDialog extends StatefulWidget {
 
   addEventDialog({
     super.key,
+    required this.screenHeight,
     required this.color,
     required this.height,
     required this.width,
@@ -215,6 +217,7 @@ class _addEventDialogState extends State<addEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
                   child: CustomTextField(
+                      height: widget.screenHeight,
                       isReadOnly: false,
                       hintext: 'enter event name',
                       keyBoardType: TextInputType.text,
@@ -226,6 +229,7 @@ class _addEventDialogState extends State<addEventDialog> {
                     children: [
                       Expanded(
                         child: CustomTextField(
+                            height: widget.screenHeight,
                             isReadOnly: false,
                             hintext: 'description',
                             keyBoardType: TextInputType.text,
@@ -236,6 +240,7 @@ class _addEventDialogState extends State<addEventDialog> {
                       ),
                       Expanded(
                         child: CustomTextField(
+                            height: widget.screenHeight,
                             isReadOnly: false,
                             hintext: 'event id',
                             keyBoardType: TextInputType.number,
@@ -401,6 +406,7 @@ class _addEventDialogState extends State<addEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                   child: CustomTextField(
+                      height: widget.screenHeight,
                       isReadOnly: false,
                       hintext: 'enter event place',
                       keyBoardType: TextInputType.text,

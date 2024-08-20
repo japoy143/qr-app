@@ -2,19 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
+import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
+import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/formUtils/passwordTextField.dart';
 import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/utils/formUtils/textHeadingResponsive.dart';
+
+import 'package:qr_app/utils/formUtils/textSubtitleResposive.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   final Color textColor;
   final double width;
+  final double height;
   final double buttonWidth;
   final Color textColorWhite;
   const CreateAccountScreen(
       {super.key,
       required this.textColor,
+      required this.height,
       required this.width,
       required this.buttonWidth,
       required this.textColorWhite});
@@ -111,46 +119,39 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
+  double dropDownPadding(double height) {
+    if (height >= 900) {
+      return 8.0;
+    }
+
+    if (height <= 900) {
+      return 6.0;
+    }
+
+    return 4.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'LSG',
-          style: TextStyle(
-              color: widget.textColor,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins',
-              fontSize: 24.0),
-        ),
-        const Text(
-          'Sign Up',
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 40.0,
-              fontWeight: FontWeight.w600),
-        ),
-        Text(
-          'Please enter your details',
-          style: TextStyle(
-              fontFamily: "Poppins",
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.w600,
-              fontSize: 14.0),
-        ),
+        TextParagraphResponsive(
+            color: widget.textColor, height: widget.height, text: 'LSG'),
+        TextHeadingResponsive(
+            color: Colors.black, height: widget.height, text: 'Sign Up'),
+        TextSubtitleResponsive(
+            color: Colors.grey.shade500,
+            height: widget.height,
+            text: 'Please enter your details'),
         Padding(
           padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Name',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black, height: widget.height, text: 'Name'),
               CustomTextField(
+                  height: widget.height,
                   isReadOnly: false,
                   hintext: 'enter name',
                   keyBoardType: TextInputType.text,
@@ -167,14 +168,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'School Id',
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "Poppins"),
-                    ),
+                    FormHeadersResponsive(
+                        color: Colors.black,
+                        height: widget.height,
+                        text: 'School Id'),
                     CustomTextField(
+                        height: widget.height,
                         isReadOnly: false,
                         hintext: 'enter school id',
                         keyBoardType: TextInputType.number,
@@ -188,15 +187,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Courses',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins"),
-                  ),
+                  FormHeadersResponsive(
+                      color: Colors.black,
+                      height: widget.height,
+                      text: 'Courses'),
                   Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(dropDownPadding(widget.height)),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: Colors.grey.shade900)),
@@ -219,15 +215,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Year',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins"),
-                  ),
+                  FormHeadersResponsive(
+                      color: Colors.black, height: widget.height, text: 'Year'),
                   Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(dropDownPadding(widget.height)),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: Colors.grey.shade900)),
@@ -252,13 +243,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Password',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black, height: widget.height, text: 'Password'),
               PasswordTextField(
                   hintext: 'enter password',
                   controller: _passwordController,
@@ -272,13 +258,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Confirm Password',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Poppins"),
-              ),
+              FormHeadersResponsive(
+                  color: Colors.black,
+                  height: widget.height,
+                  text: 'Confirm Password'),
               PasswordTextField(
                   hintext: 'confirm password',
                   controller: _confirmPasswordController,
@@ -290,26 +273,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 4.0, 40.0, 0),
             child: GestureDetector(
-              onTap: createUser,
-              child: Container(
-                width: widget.buttonWidth,
-                decoration: BoxDecoration(
-                    color: widget.textColor,
-                    borderRadius: BorderRadius.circular(6.0)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Center(
-                      child: Text(
-                    'Create Account',
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: widget.textColorWhite,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18.0),
-                  )),
-                ),
-              ),
-            )),
+                onTap: createUser,
+                child: ButtonResponsive(
+                    buttonColor: widget.textColor,
+                    height: widget.height,
+                    text: 'Create Account',
+                    textColor: widget.textColorWhite,
+                    width: widget.buttonWidth))),
       ],
     );
   }

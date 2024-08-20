@@ -90,11 +90,13 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   //modal for adding event
-  void showAddEvent(double height, double width, Color color) {
+  void showAddEvent(
+      double height, double width, Color color, double screenHeight) {
     showDialog(
         context: context,
         builder: (context) {
           return addEventDialog(
+            screenHeight: screenHeight,
             eventTimeEnd: eventTimeEnd,
             currentDate: currentDate,
             currentTime: currentTime,
@@ -125,6 +127,8 @@ class _EventScreenState extends State<EventScreen> {
 
     //ensure event id is unique
     if (_eventBox.containsKey(int.parse(_eventIdController.text))) {
+      toast.errorEventIdAlreadyUsed(context);
+      print('contains');
       return;
     }
 
@@ -156,7 +160,7 @@ class _EventScreenState extends State<EventScreen> {
 
 //update
   void showDialogUpdate(
-      double height, double width, Color color, EventType item) {
+      double height, double width, Color color, EventType item,  double screenHeight) {
     setState(() {
       currentDate = item.eventDate.toString();
       currentTime = item.startTime.toString();
@@ -170,6 +174,7 @@ class _EventScreenState extends State<EventScreen> {
         context: context,
         builder: (context) {
           return UpdateEventDialog(
+            screenHeight: screenHeight,
             eventTimeEnd: eventTimeEnd,
             currentDate: currentDate,
             currentTime: currentTime,
@@ -232,10 +237,11 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     //screen queries
-
+    double appBarHeight = appBar.preferredSize.height;
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
+    double totalHeight = (screenHeight + statusbarHeight + appBarHeight);
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
@@ -385,7 +391,7 @@ class _EventScreenState extends State<EventScreen> {
                                               0.68,
                                           screenWidth * 0.85,
                                           purple,
-                                          item),
+                                          item, totalHeight),
                                       items: item,
                                       userkey: widget.userKey,
                                       isAdmin: isAdmin,
@@ -404,6 +410,7 @@ class _EventScreenState extends State<EventScreen> {
                       (screenHeight - statusbarHeight) * 0.68,
                       screenWidth * 0.85,
                       purple,
+                      totalHeight,
                     ),
                     child: Icon(Icons.add),
                   )

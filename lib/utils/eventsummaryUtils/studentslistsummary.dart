@@ -6,6 +6,7 @@ import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 
 class StudentListSummary extends StatefulWidget {
+  final double screenHeight;
   final String courseName;
   final int? yearLevel;
   final int eventId;
@@ -15,6 +16,7 @@ class StudentListSummary extends StatefulWidget {
     required this.courseName,
     required this.yearLevel,
     required this.eventId,
+    required this.screenHeight,
   });
 
   @override
@@ -96,6 +98,7 @@ class _StudentListSummaryState extends State<StudentListSummary> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
               CustomTextField(
+                height: widget.screenHeight,
                   hintext: 'enter student name',
                   controller: _studentNameController,
                   keyBoardType: TextInputType.text,
