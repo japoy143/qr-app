@@ -14,11 +14,11 @@ class TextHeadingResponsive extends StatelessWidget {
       return 40.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 700) {
       return 34.0;
     }
 
-    return 28.0;
+    return 20.0;
   }
 
   @override

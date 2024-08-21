@@ -33,28 +33,86 @@ class _LandingScreenState extends State<LandingScreen> {
   double screenSizes(double height, double screenHeight, double appBarHeight,
       double statusbarHeight) {
     if (height >= 900) {
-      return (screenHeight - appBarHeight - statusbarHeight) * 0.80;
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.75;
     }
 
-    if (height <= 900) {
-      return (screenHeight - appBarHeight - statusbarHeight) * 0.85;
+    if (height < 900 && height >= 800) {
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.80;
     }
 
-    return (screenHeight - appBarHeight - statusbarHeight) * 0.90;
+    if (height < 800 && height >= 700) {
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.85;
+    }
+
+    return ((screenHeight + statusbarHeight) - appBarHeight) * 0.90;
   }
 
   //carousel sizes  for small to large
   double carouselSizes(double height, double screenHeight, double appBarHeight,
       double statusbarHeight) {
     if (height >= 900) {
-      return (screenHeight - appBarHeight - statusbarHeight) * 0.20;
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.20;
     }
 
-    if (height <= 900) {
-      return (screenHeight - appBarHeight - statusbarHeight) * 0.15;
+    if (height < 900 && height >= 700) {
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.15;
     }
 
-    return (screenHeight - appBarHeight - statusbarHeight) * 0.10;
+    return ((screenHeight + statusbarHeight) - appBarHeight) * 0.10;
+  }
+
+  //render app if only the screen size is greaterthan 700
+  bool isAppBarShown(double height, double screenHeight, double appBarHeight,
+      double statusbarHeight) {
+    if (height >= 900) {
+      return true;
+    }
+    if (height < 900 && height >= 800) {
+      return true;
+    }
+
+    if (height < 900 && height >= 700) {
+      return false;
+    }
+
+    return false;
+  }
+
+  double avatarSizes(double height, double screenHeight, double appBarHeight,
+      double statusbarHeight) {
+    if (height >= 900) {
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.55;
+    }
+
+    if (height < 900 && height >= 700) {
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.50;
+    }
+
+    return ((screenHeight + statusbarHeight) - appBarHeight) * 0.40;
+  }
+
+  //appbar rendering
+  AppBar? buildAppBar(double totalHeight, double screenHeight,
+      double appBarHeight, double statusbarHeight) {
+    if (!isAppBarShown(
+        totalHeight, screenHeight, appBarHeight, statusbarHeight)) {
+      // Conditions for hiding the AppBar
+      if (pageIndex != 0 || totalHeight <= 600) return null;
+    }
+
+    // Common AppBar title
+    final appBarTitle = pageIndex == 0
+        ? Text(
+            '    LSG',
+            style: TextStyle(
+              color: Color(color.hexColor(color.primaryColor)),
+              fontWeight: FontWeight.w800,
+              fontFamily: 'Poppins',
+            ),
+          )
+        : const Text('');
+
+    return AppBar(title: appBarTitle);
   }
 
   @override
@@ -63,10 +121,18 @@ class _LandingScreenState extends State<LandingScreen> {
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
+    double totalheight = (appBarHeight + screenHeight + statusbarHeight);
     Color purple = Color(color.hexColor(color.primaryColor));
+
+    //show appbar
+    double showAppbar =
+        ((screenHeight + statusbarHeight) - appBarHeight) * 0.80;
+
     List pages = [
       landingScreenWidget(
-        height: (screenHeight - appBarHeight - statusbarHeight) * 0.55,
+        screenHeight: totalheight,
+        height: avatarSizes(
+            totalheight, screenHeight, appBarHeight, statusbarHeight),
         width: screenWIdth * 0.80,
       ),
       LoginScreenAccount(
@@ -86,6 +152,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
     List Buttons = [
       circleButtonWidget(
+        screenHeight: totalheight,
         color: purple,
         elevation: 6,
         ontap: newScreen,
@@ -108,42 +175,50 @@ class _LandingScreenState extends State<LandingScreen> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: pageIndex == 0
-            ? Text(
-                '    LSG',
-                style: TextStyle(
-                    color: Color(color.hexColor(color.primaryColor)),
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Poppins'),
-              )
-            : const Text(''),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: screenSizes(
-                  screenHeight, screenHeight, appBarHeight, statusbarHeight),
-              child: pages[pageIndex],
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 44.0),
-              child: SizedBox(
-                height: carouselSizes(
-                    screenHeight, screenHeight, appBarHeight, statusbarHeight),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CarouselWidget(pageIndex: pageIndex, color: purple),
-                    Buttons[pageIndex],
-                  ],
-                ),
+      appBar:
+          buildAppBar(totalheight, screenHeight, appBarHeight, statusbarHeight),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(
+            0,
+            isAppBarShown(
+                    totalheight, screenHeight, appBarHeight, statusbarHeight)
+                ? 0
+                : pageIndex != 0
+                    ? 40.0
+                    : 0,
+            0,
+            0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: totalheight < 850 && pageIndex == 0
+                    ? showAppbar
+                    : screenSizes(totalheight, screenHeight, appBarHeight,
+                        statusbarHeight),
+                child: pages[pageIndex],
               ),
-            )
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: isAppBarShown(screenHeight, screenHeight,
+                            appBarHeight, statusbarHeight)
+                        ? 44.0
+                        : 8.0),
+                child: SizedBox(
+                  height: carouselSizes(screenHeight, screenHeight,
+                      appBarHeight, statusbarHeight),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CarouselWidget(pageIndex: pageIndex, color: purple),
+                      Buttons[pageIndex],
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

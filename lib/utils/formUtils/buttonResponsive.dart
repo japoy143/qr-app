@@ -18,7 +18,7 @@ class ButtonResponsive extends StatelessWidget {
       return 18.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 600) {
       return 16.0;
     }
 
@@ -30,11 +30,15 @@ class ButtonResponsive extends StatelessWidget {
       return 16.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 700) {
       return 14.0;
     }
 
-    return 8.0;
+    if (height < 700 && height >= 600) {
+      return 8.0;
+    }
+
+    return 6.0;
   }
 
   @override

@@ -14,7 +14,7 @@ class TextSubtitleResponsive extends StatelessWidget {
       return 14.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 700) {
       return 12.0;
     }
 

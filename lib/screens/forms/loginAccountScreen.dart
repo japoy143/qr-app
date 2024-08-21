@@ -109,7 +109,8 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
             height: widget.height,
             text: 'Login to your account below'),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 40.0, 40.0, 10),
+          padding: EdgeInsets.fromLTRB(
+              40.0, widget.height >= 900 ? 40.0 : 4.0, 40.0, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -150,6 +151,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
               FormHeadersResponsive(
                   color: Colors.black, height: widget.height, text: 'Password'),
               PasswordTextField(
+                  screenHeight: widget.height,
                   hintext: 'enter password',
                   controller: _passwordController,
                   obscureText: isVisible,

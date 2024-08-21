@@ -17,14 +17,18 @@ class CustomTextField extends StatelessWidget {
   });
   double TextFieldSizes(double height) {
     if (height >= 900) {
-      return 100;
-    }
-
-    if (height <= 900) {
       return 70;
     }
 
-    return 50;
+    if (height < 900 && height >= 700) {
+      return 55;
+    }
+
+    if (height <= 700 && height >= 600) {
+      return 45;
+    }
+
+    return 30;
   }
 
   @override

@@ -14,7 +14,7 @@ class FormHeadersResponsive extends StatelessWidget {
       return 15.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 600) {
       return 14.0;
     }
 

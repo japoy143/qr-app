@@ -14,11 +14,11 @@ class TextParagraphResponsive extends StatelessWidget {
       return 24.0;
     }
 
-    if (height <= 900) {
-      return 19.0;
+    if (height < 900 && height >= 700) {
+      return 20.0;
     }
 
-    return 16.0;
+    return 18.0;
   }
 
   @override

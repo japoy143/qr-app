@@ -124,11 +124,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return 8.0;
     }
 
-    if (height <= 900) {
+    if (height < 900 && height >= 700) {
       return 6.0;
     }
 
-    return 4.0;
+    return 0.0;
   }
 
   @override
@@ -246,6 +246,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               FormHeadersResponsive(
                   color: Colors.black, height: widget.height, text: 'Password'),
               PasswordTextField(
+                  screenHeight: widget.height,
                   hintext: 'enter password',
                   controller: _passwordController,
                   obscureText: isPasswordVisible,
@@ -263,6 +264,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   height: widget.height,
                   text: 'Confirm Password'),
               PasswordTextField(
+                  screenHeight: widget.height,
                   hintext: 'confirm password',
                   controller: _confirmPasswordController,
                   obscureText: isConfirmPasswordVisible,
