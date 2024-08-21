@@ -28,6 +28,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   @override
   void initState() {
     _eventBox = eventDb.EventDatabaseInitialization();
+    Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
 

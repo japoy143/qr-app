@@ -38,43 +38,50 @@ class landingScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 30, 0),
-              child: AvatarIllustration(height: height, width: width),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'QR Codes\nEffortless Attedance',
-              style: TextStyle(
+    return Padding(
+      padding: height >= 850
+          ? const EdgeInsets.fromLTRB(10, 0, 10, 0)
+          : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: height <= 850
+                    ? const EdgeInsets.fromLTRB(0, 10, 30, 0)
+                    : const EdgeInsets.fromLTRB(0, 10, 20, 0),
+                child: AvatarIllustration(height: height, width: width),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'QR Codes\nEffortless Attedance',
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: responsiveTextSizing(
+                        screenHeight, 30.0, 26.0, 26.0, 24.0),
+                    fontWeight: FontWeight.bold,
+                    color: Color(color.hexColor(color.primaryColor))),
+              ),
+              Text(
+                'Revolutionizing Attendance Tracking with Seamless QR Code Integration.',
+                style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: responsiveTextSizing(
-                      screenHeight, 30.0, 26.0, 26.0, 24.0),
+                      screenHeight, 14.0, 12.0, 10.0, 10.0),
                   fontWeight: FontWeight.bold,
-                  color: Color(color.hexColor(color.primaryColor))),
-            ),
-            Text(
-              'Revolutionizing Attendance Tracking with Seamless \nQR Code Integration.',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize:
-                    responsiveTextSizing(screenHeight, 14.0, 12.0, 10.0, 10.0),
-                fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
-        )
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }

@@ -67,6 +67,7 @@ class _EventScreenState extends State<EventScreen> {
   void initState() {
     _userBox = userdb.UsersDatabaseInitialization();
     _eventBox = eventdb.EventDatabaseInitialization();
+    Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
 
@@ -159,8 +160,8 @@ class _EventScreenState extends State<EventScreen> {
   }
 
 //update
-  void showDialogUpdate(
-      double height, double width, Color color, EventType item,  double screenHeight) {
+  void showDialogUpdate(double height, double width, Color color,
+      EventType item, double screenHeight) {
     setState(() {
       currentDate = item.eventDate.toString();
       currentTime = item.startTime.toString();
@@ -391,7 +392,8 @@ class _EventScreenState extends State<EventScreen> {
                                               0.68,
                                           screenWidth * 0.85,
                                           purple,
-                                          item, totalHeight),
+                                          item,
+                                          totalHeight),
                                       items: item,
                                       userkey: widget.userKey,
                                       isAdmin: isAdmin,

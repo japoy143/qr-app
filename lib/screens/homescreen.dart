@@ -13,10 +13,11 @@ import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/homescreenUtils/eventEndedBox.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userKey;
-  final Function()? setIndex;
+  final Function(int index) setIndex;
   const HomeScreen({super.key, required this.userKey, required this.setIndex});
 
   @override
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _eventBox = eventDb.EventDatabaseInitialization();
     _userBox = userDb.UsersDatabaseInitialization();
+    Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
 
@@ -70,6 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
             filterEventEnded.length > 1 ? filterEventEnded.elementAt(1) : null;
         final event3 =
             filterEventEnded.length > 2 ? filterEventEnded.elementAt(2) : null;
+
+        // show ended event
+        final onlyEventEnded =
+            event.where((event) => event.eventEnded == true).toList();
+
+        //first event ended
+        final firstEventEnded =
+            onlyEventEnded.isNotEmpty ? onlyEventEnded.elementAt(0) : null;
 
         final userDetails = _userBox.get(widget.userKey);
         final userName = userDetails!.userName;
@@ -179,29 +189,33 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                   child: Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: Center(
-                                      child: event1 != null
-                                          ? EventBoxHomescreen(
-                                              isAdmin: isAdmin,
-                                              items: event1,
-                                              officerName: userName,
-                                              userKey: widget.userKey,
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                'No Event',
-                                                style: TextStyle(
-                                                    color: colortheme
-                                                        .secondaryColor,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            )),
+                                child: GestureDetector(
+                                  onTap: () => widget.setIndex(1),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: purple,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Center(
+                                        child: event1 != null
+                                            ? EventBoxHomescreen(
+                                                isAdmin: isAdmin,
+                                                items: event1,
+                                                officerName: userName,
+                                                userKey: widget.userKey,
+                                              )
+                                            : Center(
+                                                child: Text(
+                                                  'No Event',
+                                                  style: TextStyle(
+                                                      color: colortheme
+                                                          .secondaryColor,
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              )),
+                                  ),
                                 ),
                               )),
                             ],
@@ -214,63 +228,71 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                   child: Padding(
                                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: Center(
-                                      child: event2 != null
-                                          ? EventBoxes(
-                                              eventName: event2.eventName,
-                                              colorWhite:
-                                                  colortheme.secondaryColor,
-                                              eventDescription:
-                                                  event2.eventDescription,
-                                              eventStatus: 'Ongoing',
-                                              eventDate: event2.eventDate,
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                'No Event',
-                                                style: TextStyle(
-                                                    color: colortheme
-                                                        .secondaryColor,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            )),
+                                child: GestureDetector(
+                                  onTap: () => widget.setIndex(1),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: purple,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Center(
+                                        child: event2 != null
+                                            ? EventBoxes(
+                                                eventName: event2.eventName,
+                                                colorWhite:
+                                                    colortheme.secondaryColor,
+                                                eventDescription:
+                                                    event2.eventDescription,
+                                                eventStatus: 'Ongoing',
+                                                eventDate: event2.eventDate,
+                                              )
+                                            : Center(
+                                                child: Text(
+                                                  'No Event',
+                                                  style: TextStyle(
+                                                      color: colortheme
+                                                          .secondaryColor,
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              )),
+                                  ),
                                 ),
                               )),
                               Expanded(
                                   child: Padding(
                                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: Center(
-                                      child: event3 != null
-                                          ? EventBoxes(
-                                              eventName: event3.eventName,
-                                              colorWhite:
-                                                  colortheme.secondaryColor,
-                                              eventDescription:
-                                                  event3.eventDescription,
-                                              eventStatus: 'Ongoing',
-                                              eventDate: event3.eventDate,
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                'No Event',
-                                                style: TextStyle(
-                                                    color: colortheme
-                                                        .secondaryColor,
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            )),
+                                child: GestureDetector(
+                                  onTap: () => widget.setIndex(1),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: purple,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Center(
+                                        child: event3 != null
+                                            ? EventBoxes(
+                                                eventName: event3.eventName,
+                                                colorWhite:
+                                                    colortheme.secondaryColor,
+                                                eventDescription:
+                                                    event3.eventDescription,
+                                                eventStatus: 'Ongoing',
+                                                eventDate: event3.eventDate,
+                                              )
+                                            : Center(
+                                                child: Text(
+                                                  'No Event',
+                                                  style: TextStyle(
+                                                      color: colortheme
+                                                          .secondaryColor,
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              )),
+                                  ),
                                 ),
                               )),
                             ],
@@ -282,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
                               child: GestureDetector(
-                                onTap: widget.setIndex,
+                                onTap: () => widget.setIndex(1),
                                 child: Text(
                                   'See More',
                                   style: TextStyle(
@@ -323,43 +345,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: purple,
-                          borderRadius: BorderRadius.circular(4.0)),
-                      height: (screenHeight - statusbarHeight) * 0.24,
-                      child: Column(
-                        children: [
-                          Expanded(
-                              child: event1 != null
-                                  ? EventBoxHomescreen(
-                                      isAdmin: isAdmin,
-                                      items: event1,
-                                      officerName: userName,
-                                      userKey: widget.userKey,
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        'No Event',
-                                        style: TextStyle(
-                                            color: colortheme.secondaryColor,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    )),
-                        ],
-                      )),
+                  GestureDetector(
+                    onTap: () => widget.setIndex(2),
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: purple,
+                            borderRadius: BorderRadius.circular(4.0)),
+                        height: (screenHeight - statusbarHeight) * 0.24,
+                        child: Column(
+                          children: [
+                            Expanded(
+                                child: firstEventEnded != null
+                                    ? EventEndedBoxHomescreen(
+                                        isAdmin: isAdmin,
+                                        items: firstEventEnded,
+                                        officerName: userName,
+                                        userKey: widget.userKey,
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          'No Event',
+                                          style: TextStyle(
+                                              color: colortheme.secondaryColor,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      )),
+                          ],
+                        )),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        child: Text(
-                          'See More',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade600,
-                              fontFamily: 'Poppins'),
+                        child: GestureDetector(
+                          onTap: () => widget.setIndex(2),
+                          child: Text(
+                            'See More',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade600,
+                                fontFamily: 'Poppins'),
+                          ),
                         ),
                       )
                     ],

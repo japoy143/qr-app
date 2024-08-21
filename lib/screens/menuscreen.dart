@@ -45,9 +45,9 @@ class _MenuScreenState extends State<MenuScreen> {
         ? [
             HomeScreen(
               userKey: widget.userKey,
-              setIndex: () {
+              setIndex: (index) {
                 setState(() {
-                  currentIndex = 1;
+                  currentIndex = index;
                 });
               },
             ),
@@ -62,9 +62,9 @@ class _MenuScreenState extends State<MenuScreen> {
         : [
             HomeScreen(
               userKey: widget.userKey,
-              setIndex: () {
+              setIndex: (index) {
                 setState(() {
-                  currentIndex = 1;
+                  currentIndex = index;
                 });
               },
             ),

@@ -113,11 +113,11 @@ class _LandingScreenState extends State<LandingScreen> {
   double avatarSizes(double height, double screenHeight, double appBarHeight,
       double statusbarHeight) {
     if (height >= 900) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.50;
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.45;
     }
 
     if (height < 900 && height >= 700) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.50;
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.45;
     }
 
     return ((screenHeight + statusbarHeight) - appBarHeight) * 0.40;
@@ -159,6 +159,7 @@ class _LandingScreenState extends State<LandingScreen> {
     //show appbar
     double showAppbar =
         ((screenHeight + statusbarHeight) - appBarHeight) * 0.80;
+
     //for ratio
     double ratio = ((screenHeight + statusbarHeight) - appBarHeight);
 
@@ -214,16 +215,11 @@ class _LandingScreenState extends State<LandingScreen> {
       appBar:
           buildAppBar(totalheight, screenHeight, appBarHeight, statusbarHeight),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(
-            0,
-            isAppBarShown(
-                    totalheight, screenHeight, appBarHeight, statusbarHeight)
-                ? 0
-                : pageIndex != 0
-                    ? 40.0
-                    : 0,
-            0,
-            0),
+        padding: screenHeight >= 700 && pageIndex == 0
+            ? const EdgeInsets.fromLTRB(20, 0, 20, 0)
+            : pageIndex == 0
+                ? const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0)
+                : const EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: SingleChildScrollView(
           child: Column(
             children: [
