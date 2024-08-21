@@ -9,6 +9,28 @@ class FormHeadersResponsive extends StatelessWidget {
       required this.color,
       required this.height,
       required this.text});
+
+  double responsiveTextHeaderSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
+    if (height >= 900) {
+      return xlarge;
+    }
+
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
+    }
+
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
+  }
+
   double textSizes(double height) {
     if (height >= 900) {
       return 15.0;
@@ -31,7 +53,7 @@ class FormHeadersResponsive extends StatelessWidget {
           color: color,
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
-          fontSize: textSizes(height)),
+          fontSize: responsiveTextHeaderSizing(height, 15.0, 14.0, 14.0, 10.0)),
     );
   }
 }

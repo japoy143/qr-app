@@ -9,16 +9,26 @@ class TextHeadingResponsive extends StatelessWidget {
       required this.color,
       required this.height,
       required this.text});
-  double textSizes(double height) {
+
+  double responsiveTextSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 40.0;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 34.0;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    return 20.0;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
   }
 
   @override
@@ -31,7 +41,7 @@ class TextHeadingResponsive extends StatelessWidget {
           color: color,
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
-          fontSize: textSizes(height)),
+          fontSize: responsiveTextSizing(height, 40.0, 34.0, 34.0, 20.0)),
     );
   }
 }

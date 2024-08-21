@@ -119,6 +119,27 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
+  double responsiveDropDownSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
+    if (height >= 900) {
+      return xlarge;
+    }
+
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
+    }
+
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
+  }
+
   double dropDownPadding(double height) {
     if (height >= 900) {
       return 8.0;
@@ -192,7 +213,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       height: widget.height,
                       text: 'Courses'),
                   Container(
-                    padding: EdgeInsets.all(dropDownPadding(widget.height)),
+                    padding: EdgeInsets.all(responsiveDropDownSizing(
+                        widget.height, 7.0, 6.0, 4.0, 0.0)),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: Colors.grey.shade900)),
@@ -218,7 +240,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   FormHeadersResponsive(
                       color: Colors.black, height: widget.height, text: 'Year'),
                   Container(
-                    padding: EdgeInsets.all(dropDownPadding(widget.height)),
+                    padding: EdgeInsets.all(responsiveDropDownSizing(
+                        widget.height, 7.0, 6.0, 4.0, 0.0)),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: Colors.grey.shade900)),

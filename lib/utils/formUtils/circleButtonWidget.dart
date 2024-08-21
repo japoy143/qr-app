@@ -12,20 +12,25 @@ class circleButtonWidget extends StatelessWidget {
       required this.elevation,
       required this.ontap});
 
-  double buttonSizes(double height) {
+  double responsiveButtonSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 60.0;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 40.0;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    if (height < 700 && height >= 600) {
-      return 30.0;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
     }
 
-    return 20.0;
+    //default small
+    return small;
   }
 
   @override
@@ -37,8 +42,8 @@ class circleButtonWidget extends StatelessWidget {
         shape: CircleBorder(),
         color: color,
         child: Container(
-          height: buttonSizes(screenHeight),
-          width: buttonSizes(screenHeight),
+          height: responsiveButtonSizing(screenHeight, 60.0, 45.0, 38.0, 30.0),
+          width: responsiveButtonSizing(screenHeight, 60.0, 45.0, 38.0, 30.0),
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,

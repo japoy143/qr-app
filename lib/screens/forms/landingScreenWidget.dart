@@ -15,28 +15,25 @@ class landingScreenWidget extends StatelessWidget {
     required this.width,
   });
 
-  double textHeadingSizes(double height) {
+  double responsiveTextSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 30.0;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 26.0;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    return 24.0;
-  }
-
-  double textSizes(double height) {
-    if (height >= 900) {
-      return 12.0;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
     }
 
-    if (height < 900 && height >= 700) {
-      return 10.0;
-    }
-
-    return 8.0;
+    //default small
+    return small;
   }
 
   @override
@@ -61,7 +58,8 @@ class landingScreenWidget extends StatelessWidget {
               'QR Codes\nEffortless Attedance',
               style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontSize: textHeadingSizes(screenHeight),
+                  fontSize: responsiveTextSizing(
+                      screenHeight, 30.0, 26.0, 26.0, 24.0),
                   fontWeight: FontWeight.bold,
                   color: Color(color.hexColor(color.primaryColor))),
             ),
@@ -69,7 +67,8 @@ class landingScreenWidget extends StatelessWidget {
               'Revolutionizing Attendance Tracking with Seamless \nQR Code Integration.',
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: textSizes(screenHeight),
+                fontSize:
+                    responsiveTextSizing(screenHeight, 14.0, 12.0, 10.0, 10.0),
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -14,26 +14,31 @@ class PasswordTextField extends StatelessWidget {
       required this.isVisible,
       required this.screenHeight});
 
-  double TextFieldSizes(double height) {
+  double responsiveTextFieldSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 70;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 55;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    if (height < 700 && height >= 600) {
-      return 40;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
     }
 
-    return 30;
+    //default small
+    return small;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: TextFieldSizes(screenHeight),
+      height: responsiveTextFieldSizing(screenHeight, 70, 55, 45, 45),
       child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(

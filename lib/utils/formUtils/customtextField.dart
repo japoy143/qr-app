@@ -15,27 +15,34 @@ class CustomTextField extends StatelessWidget {
     required this.isReadOnly,
     required this.height,
   });
-  double TextFieldSizes(double height) {
+
+  double responsiveTextFieldSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 70;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 55;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    if (height <= 700 && height >= 600) {
-      return 45;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
     }
 
-    return 30;
+    //default small
+    return small;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       // Wrap the TextField with a Container
-      height: TextFieldSizes(height), // Set the height of the container
+      height: responsiveTextFieldSizing(
+          height, 70, 55, 50, 45), // Set the height of the container
       child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(

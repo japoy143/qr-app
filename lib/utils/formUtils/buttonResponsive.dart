@@ -13,32 +13,47 @@ class ButtonResponsive extends StatelessWidget {
       required this.text,
       required this.textColor,
       required this.width});
-  double textSizes(double height) {
+
+  double responsiveButtonSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 18.0;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 600) {
-      return 16.0;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    return 10.0;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
   }
 
-  double buttonSizes(double height) {
+  double responsiveTextSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return 16.0;
+      return xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return 14.0;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
     }
 
-    if (height < 700 && height >= 600) {
-      return 8.0;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
     }
 
-    return 6.0;
+    //default small
+    return small;
   }
 
   @override
@@ -50,7 +65,8 @@ class ButtonResponsive extends StatelessWidget {
       decoration: BoxDecoration(
           color: buttonColor, borderRadius: BorderRadius.circular(6.0)),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: buttonSizes(height)),
+        padding: EdgeInsets.symmetric(
+            vertical: responsiveButtonSizing(height, 16.0, 14.0, 10.0, 8.0)),
         child: Center(
             child: Text(
           text,
@@ -58,7 +74,7 @@ class ButtonResponsive extends StatelessWidget {
               fontFamily: 'Poppins',
               color: textColor,
               fontWeight: FontWeight.w600,
-              fontSize: textSizes(height)),
+              fontSize: responsiveButtonSizing(height, 18.0, 16.0, 16.0, 14.0)),
         )),
       ),
     );

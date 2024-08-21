@@ -6,6 +6,7 @@ class CustomTextButton extends StatelessWidget {
   final double fontsize;
   final double padding;
   final Function()? onpress;
+  final double responsivePadding;
   final String text;
   const CustomTextButton(
       {super.key,
@@ -14,7 +15,8 @@ class CustomTextButton extends StatelessWidget {
       required this.text,
       required this.textColor,
       required this.fontsize,
-      required this.padding});
+      required this.padding,
+      required this.responsivePadding});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,8 @@ class CustomTextButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
-            color: color, borderRadius: BorderRadius.circular(10.0)),
+            color: color,
+            borderRadius: BorderRadius.circular(responsivePadding)),
         child: Text(
           text,
           style: TextStyle(

@@ -29,36 +29,68 @@ class _LandingScreenState extends State<LandingScreen> {
     });
   }
 
-  //scree sizes for small to large
-  double screenSizes(double height, double screenHeight, double appBarHeight,
-      double statusbarHeight) {
+  //responsive screen sizes
+  double responsiveScreenSizing(double height, double ratio, double xlarge,
+      double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.75;
+      return ratio * xlarge;
     }
 
+    //if screen is large
     if (height < 900 && height >= 800) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.80;
+      return ratio * large;
     }
 
+    //if screen is medium
     if (height < 800 && height >= 700) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.85;
+      return ratio * medium;
     }
 
-    return ((screenHeight + statusbarHeight) - appBarHeight) * 0.90;
+    //default small
+    return ratio * small;
   }
 
-  //carousel sizes  for small to large
-  double carouselSizes(double height, double screenHeight, double appBarHeight,
-      double statusbarHeight) {
+  double carouselResponsiveSizing(double height, double ratio, double xlarge,
+      double large, double medium, double small) {
+    //if screen is xlarge
     if (height >= 900) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.20;
+      return ratio * xlarge;
     }
 
-    if (height < 900 && height >= 700) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.15;
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return ratio * large;
     }
 
-    return ((screenHeight + statusbarHeight) - appBarHeight) * 0.10;
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return ratio * medium;
+    }
+
+    //default small
+    return ratio * small;
+  }
+
+  double responsiveSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
+    if (height >= 900) {
+      return xlarge;
+    }
+
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
+    }
+
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
   }
 
   //render app if only the screen size is greaterthan 700
@@ -81,7 +113,7 @@ class _LandingScreenState extends State<LandingScreen> {
   double avatarSizes(double height, double screenHeight, double appBarHeight,
       double statusbarHeight) {
     if (height >= 900) {
-      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.55;
+      return ((screenHeight + statusbarHeight) - appBarHeight) * 0.50;
     }
 
     if (height < 900 && height >= 700) {
@@ -127,6 +159,8 @@ class _LandingScreenState extends State<LandingScreen> {
     //show appbar
     double showAppbar =
         ((screenHeight + statusbarHeight) - appBarHeight) * 0.80;
+    //for ratio
+    double ratio = ((screenHeight + statusbarHeight) - appBarHeight);
 
     List pages = [
       landingScreenWidget(
@@ -158,19 +192,21 @@ class _LandingScreenState extends State<LandingScreen> {
         ontap: newScreen,
       ),
       CustomTextButton(
-        padding: 10.0,
+        padding: responsiveSizing(totalheight, 12.0, 8.0, 8.0, 6.0),
         onpress: newScreen,
         color: purple,
         text: 'Create Account',
         textColor: color.secondaryColor,
-        fontsize: 14.0,
+        responsivePadding: responsiveSizing(totalheight, 10.0, 8.0, 8.0, 6.0),
+        fontsize: responsiveSizing(totalheight, 14.0, 13.0, 12.0, 12.0),
       ),
       CustomTextButton(
-          padding: 10.0,
+          padding: responsiveSizing(totalheight, 12.0, 8.0, 8.0, 6.0),
           onpress: newScreen,
-          fontsize: 13.0,
+          fontsize: responsiveSizing(totalheight, 14.0, 13.0, 12.0, 12.0),
           color: purple,
           text: 'Already Have An Account',
+          responsivePadding: responsiveSizing(totalheight, 10.0, 8.0, 8.0, 6.0),
           textColor: color.secondaryColor),
     ];
 
@@ -194,8 +230,8 @@ class _LandingScreenState extends State<LandingScreen> {
               SizedBox(
                 height: totalheight < 850 && pageIndex == 0
                     ? showAppbar
-                    : screenSizes(totalheight, screenHeight, appBarHeight,
-                        statusbarHeight),
+                    : responsiveScreenSizing(
+                        totalheight, ratio, 0.70, 0.80, 0.85, 0.90),
                 child: pages[pageIndex],
               ),
               Padding(
@@ -205,8 +241,8 @@ class _LandingScreenState extends State<LandingScreen> {
                         ? 44.0
                         : 8.0),
                 child: SizedBox(
-                  height: carouselSizes(screenHeight, screenHeight,
-                      appBarHeight, statusbarHeight),
+                  height: carouselResponsiveSizing(
+                      totalheight, ratio, 0.20, 0.15, 0.15, 0.10),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
