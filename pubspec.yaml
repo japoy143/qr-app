@@ -59,6 +59,7 @@ dependencies:
   get:
   workmanager:
   provider:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

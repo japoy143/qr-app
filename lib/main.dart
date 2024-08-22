@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/state/eventProvider.dart';
@@ -11,6 +12,9 @@ import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //for notifications
+  await Permission.notification.request();
+
   final dir = await path.getApplicationDocumentsDirectory();
   Hive.init(dir.path);
 

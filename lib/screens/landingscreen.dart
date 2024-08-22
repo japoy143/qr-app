@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_app/screens/forms/createAccountScreen.dart';
 import 'package:qr_app/utils/formUtils/carouselWidget.dart';
 import 'package:qr_app/utils/formUtils/circleButtonWidget.dart';
