@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
@@ -21,13 +20,8 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   //color theme
   final colortheme = ColorThemeProvider();
 
-  //database
-  late Box<EventType> _eventBox;
-  final eventDb = EventDatabase();
-
   @override
   void initState() {
-    _eventBox = eventDb.EventDatabaseInitialization();
     Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }

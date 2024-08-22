@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
 import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/formUtils/passwordTextField.dart';
-import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/utils/formUtils/textHeadingResponsive.dart';
 
 import 'package:qr_app/utils/formUtils/textSubtitleResposive.dart';
@@ -47,14 +48,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   List<int> year = [1, 2, 3, 4];
   int? selectedYear = 1;
 
-  late Box<UsersType> _userBox;
-  final userDb = UsersDatabase();
-
   final toast = CustomToast();
 
   @override
   void initState() {
-    _userBox = userDb.UsersDatabaseInitialization();
     super.initState();
   }
 
@@ -79,6 +76,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   bool userValidation() {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     if (_nameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _schoolIdController.text.isEmpty ||
@@ -87,7 +85,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     }
 
-    if (_userBox.containsKey(_schoolIdController.text)) {
+    if (userProvider.containsUser(_schoolIdController.text)) {
       toast.userAlreadyExist(context);
       return false;
     }
@@ -101,7 +99,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       toast.passwordNotSame(context);
       return false;
     }
-    userDb.createNewUser(
+    userProvider.createNewUser(
         _nameController.text,
         int.parse(_schoolIdController.text),
         selectedCourse.toString(),

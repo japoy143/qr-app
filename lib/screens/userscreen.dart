@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
@@ -29,9 +30,6 @@ class _UserScreenState extends State<UserScreen> {
   //toast
   final toast = CustomToast();
 
-  late Box<UsersType> _userBox;
-  final userDb = UsersDatabase();
-
   void showToast() {
     toast.profileSuccessfullyChange(context);
   }
@@ -48,7 +46,9 @@ class _UserScreenState extends State<UserScreen> {
       selectedimage = image;
     });
 
-    _userBox.put(
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+
+    userProvider.insertData(
         id.toString(),
         UsersType(
             schoolId: id,
@@ -67,13 +67,12 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    _userBox = userDb.UsersDatabaseInitialization();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     //screen queries
     double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
@@ -83,7 +82,7 @@ class _UserScreenState extends State<UserScreen> {
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
     //userDetails
-    final userDetails = _userBox.get(widget.userKey);
+    final userDetails = userProvider.getUser(widget.userKey);
     final userName = userDetails!.userName;
     final userSchoolId = userDetails.schoolId;
     final userCourse = userDetails.userCourse;

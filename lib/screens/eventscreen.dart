@@ -8,9 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/services/eventdatabase.dart';
-import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
@@ -30,14 +29,6 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen> {
   final colortheme = ColorThemeProvider();
-
-  //user database
-  late Box<UsersType> _userBox;
-  final userdb = UsersDatabase();
-
-  //events database
-  late Box<EventType> _eventBox;
-  final eventdb = EventDatabase();
 
   //admin positions || role
   final adminPosition = adminPositions();
@@ -65,8 +56,6 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   void initState() {
-    _userBox = userdb.UsersDatabaseInitialization();
-    _eventBox = eventdb.EventDatabaseInitialization();
     Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
@@ -127,7 +116,7 @@ class _EventScreenState extends State<EventScreen> {
     }
 
     //ensure event id is unique
-    if (_eventBox.containsKey(int.parse(_eventIdController.text))) {
+    if (eventProvider.containsEvent(int.parse(_eventIdController.text))) {
       toast.errorEventIdAlreadyUsed(context);
       print('contains');
       return;
@@ -229,14 +218,11 @@ class _EventScreenState extends State<EventScreen> {
     clearFields();
   }
 
-  void onDelete(BuildContext context, int key) {
-    _eventBox.delete(key);
-  }
-
   final appBar = AppBar();
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     //screen queries
     double appBarHeight = appBar.preferredSize.height;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -247,7 +233,7 @@ class _EventScreenState extends State<EventScreen> {
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
     //user details
-    final userDetails = _userBox.get(widget.userKey);
+    final userDetails = userProvider.getUser(widget.userKey);
     final userName = userDetails!.userName;
     final userSchoolId = userDetails.schoolId;
     final isAdmin = userDetails.isAdmin;

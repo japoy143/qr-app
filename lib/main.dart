@@ -3,7 +3,10 @@ import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/screens/landingscreen.dart';
+import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
@@ -28,9 +31,13 @@ void main() async {
   tz.initializeTimeZones();
   await LocalNotifications.init();
 
-  runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => EventProvider())],
-      child: const MyApp()));
+  //all providers
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => EventProvider()),
+    ChangeNotifierProvider(create: (context) => EventAttendanceProvider()),
+    ChangeNotifierProvider(create: (context) => EventIdProvider()),
+    ChangeNotifierProvider(create: (context) => UsersProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

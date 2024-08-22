@@ -1,16 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/services/eventdatabase.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
-import 'package:workmanager/workmanager.dart';
 
 class EventBox extends StatefulWidget {
   final EventType items;
@@ -35,10 +31,6 @@ class _EventBoxState extends State<EventBox> {
   late String _eventStatus;
   late EventType item;
 
-  //database
-  late Box<EventType> _eventBox;
-  final eventDB = EventDatabase();
-
   bool isOngoingNotificationShown = true;
   bool isEventNotificationShown = true;
 
@@ -48,7 +40,6 @@ class _EventBoxState extends State<EventBox> {
   @override
   void initState() {
     item = widget.items;
-    _eventBox = eventDB.EventDatabaseInitialization();
     super.initState();
     _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();

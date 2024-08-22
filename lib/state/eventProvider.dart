@@ -12,6 +12,12 @@ class EventProvider extends ChangeNotifier {
     evenList = data;
   }
 
+  //get event specific event
+  bool containsEvent(int id) {
+    var event = eventBox.containsKey(id);
+    return event;
+  }
+
   //insert events
   insertData(EventType event) async {
     await eventBox.put(event.id, event);

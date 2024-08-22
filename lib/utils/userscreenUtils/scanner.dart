@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/eventsid.dart';
-import 'package:qr_app/services/eventAttendanceDatabase.dart';
-import 'package:qr_app/services/eventIdsdatabase.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/utils/toast.dart';
 
 // ignore: must_be_immutable
@@ -37,13 +37,6 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   //toast
   final toast = CustomToast();
 
-  //database
-  late Box<EventAttendance> _eventAttendance;
-  final eventAttendanceDB = EventAttendanceDatabase();
-
-  late Box<EventsId> _eventIdsBox;
-  final eventIdsDB = EventIdDatabase();
-
   startscan() async {
     var result;
 
@@ -64,6 +57,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   //user details formatter and save the scanned data
   formatUserDetails(String data) {
+    final eventAttendanceProvider =
+        Provider.of<EventAttendanceProvider>(context, listen: false);
+    final eventIdProvider =
+        Provider.of<EventIdProvider>(context, listen: false);
     //student details
     final details = data.split("|");
     setState(() {
@@ -74,10 +71,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     });
 
     //check if student already attended
-    final isAttended = _eventAttendance.containsKey(userSchoolId);
+    final isAttended = eventAttendanceProvider.containsStudent(userSchoolId);
 
     //check if ids is already exist
-    final isIdAlreadyExist = _eventIdsBox.containsKey(widget.EventId);
+    final isIdAlreadyExist = eventIdProvider.containsEventId(widget.EventId);
 
     //check if student already scanned
     if (isAttended) {
@@ -89,11 +86,12 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     //if already in the stack then continue. make sure only on id in the stack
     //then remove the id if all the data is sent to the online database
     if (isIdAlreadyExist) {
-      _eventIdsBox.put(widget.EventId, EventsId(eventID: widget.EventId));
+      eventIdProvider.insertData(
+          widget.EventId, EventsId(eventID: widget.EventId));
     }
 
     try {
-      _eventAttendance.put(
+      eventAttendanceProvider.insertData(
           userSchoolId,
           EventAttendance(
               id: int.parse(userSchoolId),
@@ -111,9 +109,6 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   @override
   void initState() {
-    _eventAttendance =
-        eventAttendanceDB.eventAttendanceDatabaseInitialization();
-    _eventIdsBox = eventIdsDB.EventIdDatabaseInitialization();
     super.initState();
   }
 

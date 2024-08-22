@@ -3,14 +3,14 @@ import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/types.dart';
-import 'package:qr_app/services/eventAttendanceDatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
 
 class CoursesSummaryScreen extends StatefulWidget {
   final double screenHeight;
   final int eventId;
-  const CoursesSummaryScreen({super.key, required this.eventId, required this.screenHeight});
+  const CoursesSummaryScreen(
+      {super.key, required this.eventId, required this.screenHeight});
 
   @override
   State<CoursesSummaryScreen> createState() => _CoursesSummaryScreenState();
@@ -139,7 +139,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             StudentListSummary(
-                                              screenHeight:widget.screenHeight ,
+                                              screenHeight: widget.screenHeight,
                                               courseName: item.courseName,
                                               yearLevel: selectedYear,
                                               eventId: widget.eventId,

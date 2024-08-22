@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
 import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/formUtils/passwordTextField.dart';
 import 'package:qr_app/screens/menuscreen.dart';
-import 'package:qr_app/services/usersdatabase.dart';
+
 import 'package:qr_app/utils/formUtils/textHeadingResponsive.dart';
 import 'package:qr_app/utils/formUtils/textSubtitleResposive.dart';
 import 'package:qr_app/utils/toast.dart';
@@ -36,13 +38,8 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
   bool isVisible = true;
 
-  //users database
-  late Box<UsersType> _usersBox;
-  final usersdb = UsersDatabase();
-
   @override
   void initState() {
-    _usersBox = usersdb.UsersDatabaseInitialization();
     super.initState();
   }
 
@@ -57,14 +54,15 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
   //login user
   void userValidate() {
-    final name = _usersBox.containsKey(_schoolIdController.text.trim());
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+    final name = userProvider.containsUser(_schoolIdController.text.trim());
 
     if (!name) {
       toast.userNotExist(context);
       return;
     }
 
-    final user = _usersBox.get(_schoolIdController.text.trim());
+    final user = userProvider.getUser(_schoolIdController.text.trim());
 
     if (user!.userPassword != _passwordController.text) {
       toast.passwordIncorrect(context);

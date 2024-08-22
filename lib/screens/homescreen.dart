@@ -6,12 +6,11 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBox.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
-import 'package:qr_app/services/eventdatabase.dart';
-import 'package:qr_app/services/usersdatabase.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/homescreenUtils/eventEndedBox.dart';
 
@@ -27,10 +26,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int notification = 1;
 
-  final eventDb = EventDatabase();
-  final userDb = UsersDatabase();
-  late Box<EventType> _eventBox;
-  late Box<UsersType> _userBox;
   final colortheme = ColorThemeProvider();
 
   final adminPosition = adminPositions();
@@ -39,14 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _eventBox = eventDb.EventDatabaseInitialization();
-    _userBox = userDb.UsersDatabaseInitialization();
     Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -81,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final firstEventEnded =
             onlyEventEnded.isNotEmpty ? onlyEventEnded.elementAt(0) : null;
 
-        final userDetails = _userBox.get(widget.userKey);
+        final userDetails = userProvider.getUser(widget.userKey);
         final userName = userDetails!.userName;
         final userSchoolId = userDetails.schoolId;
         final isAdmin = userDetails.isAdmin;

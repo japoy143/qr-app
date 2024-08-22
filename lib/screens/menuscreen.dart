@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:qr_app/models/users.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_app/screens/eventscreen.dart';
 import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/eventsummaryscreen.dart';
+import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
-import 'package:qr_app/services/usersdatabase.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -27,18 +27,15 @@ class _MenuScreenState extends State<MenuScreen> {
 
   int currentIndex = 0;
 
-  final userDb = UsersDatabase();
-  late Box<UsersType> _userBox;
-
   @override
   void initState() {
-    _userBox = userDb.UsersDatabaseInitialization();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userDetails = _userBox.get(widget.userKey);
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+    final userDetails = userProvider.getUser(widget.userKey);
     final isAdmin = userDetails!.isAdmin;
 
     List pages = isAdmin
@@ -55,6 +52,7 @@ class _MenuScreenState extends State<MenuScreen> {
               userKey: widget.userKey,
             ),
             const EventSummaryScreen(),
+            PenaltyScreen(),
             UserScreen(
               userKey: widget.userKey,
             )
@@ -82,6 +80,9 @@ class _MenuScreenState extends State<MenuScreen> {
       if (isAdmin)
         const BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month_outlined), label: 'Event Summary'),
+      if (isAdmin)
+        const BottomNavigationBarItem(
+            icon: Icon(Icons.analytics_outlined), label: 'Penalty Screen'),
       const BottomNavigationBarItem(
           icon: Icon(Icons.person_outline), label: 'User'),
     ];
