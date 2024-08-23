@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/notificationProvider.dart';
+import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
@@ -104,8 +108,19 @@ class _EventScreenState extends State<EventScreen> {
         });
   }
 
+  String dateFormatterForNotif(String time) {
+    DateTime convertStringTime = DateTime.parse(time);
+    String monthAndDay = DateFormat('MMM d').format(convertStringTime);
+    String hour = DateFormat('h:mm a').format(convertStringTime);
+    String formattedDate = "$monthAndDay  $hour";
+
+    return formattedDate;
+  }
+
   void addEvent() {
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
     //form validate
     if (_eventIdController.text.isEmpty ||
         _eventDescriptionController.text.isEmpty ||
@@ -140,6 +155,24 @@ class _EventScreenState extends State<EventScreen> {
         key: _eventIdController.text,
         endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
         eventEnded: false));
+
+    String eventDescription = _eventDescriptionController.text;
+    String eventPlace = _eventPlaceController.text;
+    String eventTime =
+        formatter.dateFormmater(currentDate, currentTime).toString();
+    String formattedDate = dateFormatterForNotif(eventTime);
+
+    //add notification
+    notificationProvider.insertData(
+        int.parse(_eventIdController.text),
+        NotificationType(
+            id: int.parse(_eventIdController.text),
+            title: 'New Event!',
+            subtitle: _eventNameController.text,
+            body:
+                '$eventDescription will be held in $eventPlace  at  $formattedDate ',
+            time: DateTime.now().toString(),
+            read: false));
 
     formatter.dateFormmater(currentTime, eventTimeEnd);
 
@@ -242,7 +275,7 @@ class _EventScreenState extends State<EventScreen> {
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
         //events
-        List<EventType> allEvents = provider.evenList;
+        List<EventType> allEvents = provider.eventList;
 
         //sort by date
         allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));

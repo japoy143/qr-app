@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/screens/notificationscreen.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
@@ -41,17 +43,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
+
     double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
 
+    //total height
+    double totalHeight = appBarHeight + screenHeight + statusbarHeight;
+
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
+
+    //notifications
+    final inbox = notificationProvider.notificationList;
+
+    // filter unread notifications
+    final unread = inbox.where((message) => message.read == false).toList();
 
     return Consumer<EventProvider>(
       builder: (cotext, provider, child) {
         //events list
-        List<EventType> event = provider.evenList;
+        List<EventType> event = provider.eventList;
 
         //sort by date
         event.sort((a, b) => a.eventDate.compareTo(b.eventDate));
@@ -133,14 +147,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                          child: Container(
-                            child: notification != 0
-                                ? const NotificationActive(
-                                    height: 26, width: 26)
-                                : const NotificationNone(
-                                    height: 26,
-                                    width: 26,
-                                  ),
+                          child: GestureDetector(
+                            onTap: () =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => NotificationScreen(
+                                          screenHeight: totalHeight,
+                                        ))),
+                            child: Container(
+                              child: unread.isNotEmpty
+                                  ? const NotificationActive(
+                                      height: 26, width: 26)
+                                  : const NotificationNone(
+                                      height: 26,
+                                      width: 26,
+                                    ),
+                            ),
                           ),
                         )
                       ],

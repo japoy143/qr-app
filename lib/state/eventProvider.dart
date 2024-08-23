@@ -5,11 +5,11 @@ import 'package:qr_app/models/events.dart';
 class EventProvider extends ChangeNotifier {
   // create box
   var eventBox = Hive.box<EventType>('eventBox');
-  List<EventType> evenList = [];
+  List<EventType> eventList = [];
 
   getEvents() async {
     var data = eventBox.values.toList();
-    evenList = data;
+    eventList = data;
   }
 
   //get event specific event

@@ -105,7 +105,7 @@ class _EventBoxState extends State<EventBox> {
 
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
-        final event = provider.evenList
+        final event = provider.eventList
             .firstWhere((element) => element.id == widget.items.id);
         return Column(
           children: [

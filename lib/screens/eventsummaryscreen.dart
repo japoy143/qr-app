@@ -39,7 +39,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
         //events
-        List<EventType> allEvents = provider.evenList;
+        List<EventType> allEvents = provider.eventList;
 
         //sort by date
         allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));

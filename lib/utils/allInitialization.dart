@@ -3,6 +3,7 @@ import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/eventlistattendance.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/eventsid.dart';
+import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/users.dart';
 
 class AllInitialization {
@@ -26,5 +27,9 @@ class AllInitialization {
     //eventIds
     Hive.registerAdapter<EventsId>(EventsIdAdapter());
     await Hive.openBox<EventsId>('eventsIdBox');
+
+    //notifications
+    Hive.registerAdapter<NotificationType>(NotificationTypeAdapter());
+    await Hive.openBox<NotificationType>('notificationBox');
   }
 }
