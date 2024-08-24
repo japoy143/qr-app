@@ -60,6 +60,10 @@ dependencies:
   workmanager:
   provider:
   permission_handler:
+  pdf:
+  open_filex:
+  path:
+  printing:
 
 dev_dependencies:
   flutter_test:

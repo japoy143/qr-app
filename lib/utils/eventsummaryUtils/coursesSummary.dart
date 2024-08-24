@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
-import 'package:hive/hive.dart';
-import 'package:qr_app/models/eventattendance.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/generatePdf.dart';
+import 'package:qr_app/utils/eventsummaryUtils/pdfUi.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class CoursesSummaryScreen extends StatefulWidget {
   final double screenHeight;
@@ -20,8 +23,6 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   int totalEvent = 29;
 
   final colorscheme = ColorThemeProvider();
-
-  late Box<EventAttendance> _eventAttendanceBox;
 
   @override
   void initState() {
@@ -42,9 +43,32 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     Color purple = Color(colorscheme.hexColor(colorscheme.primaryColor));
+    final data = penalty.map((e) => [e.courseName, e.eventAttended]).toList();
+    String formattedDate = DateFormat('MMM d').format(DateTime.now());
+    String time = DateFormat('h:mm a').format(DateTime.now());
+    String eventTime = '$formattedDate,$time';
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: GestureDetector(
+                onTap: () async {
+                  SaveAndDownloadPdf.createPdf(
+                      eventTime: eventTime,
+                      eventName: 'Seminar',
+                      eventDescription: 'Drug awarness seminar',
+                      totalAttended: 100,
+                      data: data);
+                },
+                child: const Icon(
+                  Icons.picture_as_pdf,
+                  size: 30,
+                )),
+          )
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 8, 14, 0),
         child: SafeArea(
@@ -58,7 +82,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Events Summary',
+                      'Courses Attended',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
@@ -66,7 +90,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                       ),
                     ),
                     Text(
-                      'Total Events: $totalEvent',
+                      'Students Attended: $totalEvent',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         color: Colors.grey.shade400,
@@ -107,51 +131,62 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                       final item = penalty.elementAt(index);
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: purple,
-                              borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(34),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.courseName,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: colorscheme.secondaryColor,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  Text(
-                                    'Total event attended: ${item.eventAttended}',
-                                    style: TextStyle(
-                                        color: colorscheme.secondaryColor,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            StudentListSummary(
-                                              screenHeight: widget.screenHeight,
-                                              courseName: item.courseName,
-                                              yearLevel: selectedYear,
-                                              eventId: widget.eventId,
-                                            ))),
-                                child: Text(
-                                  'Student attended',
-                                  style: TextStyle(
-                                      color: colorscheme.secondaryColor,
-                                      fontWeight: FontWeight.w500),
+                        child: GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => StudentListSummary(
+                                        screenHeight: widget.screenHeight,
+                                        courseName: item.courseName,
+                                        yearLevel: selectedYear,
+                                        eventId: widget.eventId,
+                                      ))),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: purple,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.all(34),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.courseName,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: colorscheme.secondaryColor,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(
+                                      'Total event attended: ${item.eventAttended}',
+                                      style: TextStyle(
+                                          color: colorscheme.secondaryColor,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
-                              )
-                            ],
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              StudentListSummary(
+                                                screenHeight:
+                                                    widget.screenHeight,
+                                                courseName: item.courseName,
+                                                yearLevel: selectedYear,
+                                                eventId: widget.eventId,
+                                              ))),
+                                  child: Text(
+                                    'Student attended',
+                                    style: TextStyle(
+                                        color: colorscheme.secondaryColor,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );
