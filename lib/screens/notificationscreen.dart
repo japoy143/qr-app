@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
@@ -45,6 +46,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     //notification list
     final notificationList = notificationProvider.notificationList;
 
+    //sort by  date
+    notificationList.sort((a, b) => a.time.compareTo(b.time));
+
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
     return Scaffold(
       body: Padding(
@@ -84,54 +88,93 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                isMessageOpen = !isMessageOpen;
+                                item.isOpen = !item.isOpen;
+                                item.read = true;
                               });
+                              notificationProvider.updateMessageRead(item.id);
                             },
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(color: purple, width: 3)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18),
-                                  ),
-                                  isMessageOpen
-                                      ? Text(item.subtitle,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14))
-                                      : SizedBox.shrink(),
-                                  isMessageOpen
-                                      ? Text(item.body,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14))
-                                      : SizedBox.shrink(),
-                                  !isMessageOpen
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(item.subtitle,
+                            child: Slidable(
+                              endActionPane: ActionPane(
+                                  motion: const StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      backgroundColor: Colors.redAccent,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          notificationProvider
+                                              .deleteNNotification(item.id);
+                                        });
+                                      },
+                                      icon: Icons.delete,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    )
+                                  ]),
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                        color: !item.read
+                                            ? purple
+                                            : Colors.grey.shade400,
+                                        width: 3)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      item.title,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18),
+                                    ),
+                                    item.isOpen
+                                        ? Text(item.subtitle,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15))
+                                        : SizedBox.shrink(),
+                                    item.isOpen
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10.0),
+                                            child: Text(item.body,
                                                 style: const TextStyle(
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 14)),
-                                            Text(dateFormatter(item.time),
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 14))
-                                          ],
-                                        )
-                                      : SizedBox.shrink(),
-                                ],
+                                          )
+                                        : SizedBox.shrink(),
+                                    !item.isOpen
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(item.subtitle,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 14)),
+                                              Text(dateFormatter(item.time),
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 14))
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(dateFormatter(item.time),
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 14))
+                                            ],
+                                          ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

@@ -30,41 +30,56 @@ class _StudentListSummaryState extends State<StudentListSummary> {
 
   @override
   void initState() {
+    super.initState();
     Provider.of<EventAttendanceProvider>(context, listen: false)
         .getEventAttendance();
-    _studentNameController.addListener(() {
-      setState(() {}); // Trigger UI update on text change
+
+    _studentNameController.addListener(_updateNotFoundMessage);
+  }
+
+  @override
+  void dispose() {
+    _studentNameController.removeListener(_updateNotFoundMessage);
+    _studentNameController.dispose();
+    super.dispose();
+  }
+
+  void _updateNotFoundMessage() {
+    final filteredList = _filteredList();
+    setState(() {
+      _showNotFoundMessage =
+          _studentNameController.text.isNotEmpty && filteredList.isEmpty;
     });
-    super.initState();
+  }
+
+  List _filteredList() {
+    final provider =
+        Provider.of<EventAttendanceProvider>(context, listen: false);
+    final attendance = provider.eventAttendanceList;
+
+    final eventIdAttendanceList =
+        attendance.where((event) => event.eventId == widget.eventId).toList();
+
+    final sortedCoursesAndYear = eventIdAttendanceList
+        .where((courseYear) =>
+            courseYear.studentCourse == widget.courseName &&
+            courseYear.studentYear == widget.yearLevel.toString())
+        .toList();
+
+    return _studentNameController.text.isEmpty
+        ? sortedCoursesAndYear
+        : sortedCoursesAndYear
+            .where((search) => search.studentName
+                .toLowerCase()
+                .contains(_studentNameController.text.toLowerCase()))
+            .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<EventAttendanceProvider>(
       builder: (context, provider, child) {
-        //attendance list
-        final attendance = provider.eventAttendanceList;
-        //event attendance list
-        final eventIdAttendanceList =
-            attendance.where((event) => event.eventId == widget.eventId);
-        // sort by course and year
-        final sortedCoursesAndYear = eventIdAttendanceList.where((courseYear) =>
-            courseYear.studentCourse == widget.courseName &&
-            courseYear.studentYear == widget.yearLevel.toString());
-
-        final filteredList = _studentNameController.text.isEmpty
-            ? sortedCoursesAndYear
-            : sortedCoursesAndYear.where((search) => search.studentName
-                .toLowerCase()
-                .contains(_studentNameController.text.toLowerCase()));
-
-        //color purple
         Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
-
-        //setter
-        setState(() {
-          _showNotFoundMessage = filteredList.isEmpty;
-        });
         return Scaffold(
           appBar: AppBar(),
           body: Padding(
@@ -106,9 +121,9 @@ class _StudentListSummaryState extends State<StudentListSummary> {
                       child: _showNotFoundMessage
                           ? const Center(child: Text("Student not found"))
                           : ListView.builder(
-                              itemCount: filteredList.length,
+                              itemCount: _filteredList().length,
                               itemBuilder: (context, index) {
-                                final item = filteredList.elementAt(index);
+                                final item = _filteredList().elementAt(index);
                                 return Container(
                                   padding: EdgeInsets.all(16),
                                   decoration: BoxDecoration(

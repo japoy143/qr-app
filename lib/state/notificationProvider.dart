@@ -25,22 +25,29 @@ class NotificationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // updateEventEndedData(int id) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Retrieve the event object
-  //     var eventObject = notificationBox.get(id);
+  // event Ennded
+  insertEventEndedData(String key, NotificationType message) async {
+    await notificationBox.put(key, message);
+    getNotifications();
+    notifyListeners();
+  }
 
-  //     if (eventObject != null) {
-  //       // Update the eventEnded property
-  //       eventObject.eventEnded = true;
-  //       notificationBox.put(id, eventObject);
-  //     }
+  updateMessageRead(int id) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Retrieve the event object
+      var messages = notificationBox.get(id);
 
-  //     // Refresh events and notify listeners
-  //     getEvents();
-  //     notifyListeners();
-  //   });
-  // }
+      if (messages != null) {
+        // Update the eventEnded property
+        messages.read = true;
+        notificationBox.put(id, messages);
+      }
+
+      // Refresh events and notify listeners
+      getNotifications();
+      notifyListeners();
+    });
+  }
 
   // updateEvent(int id, EventType eventType) async {
   //   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,9 +60,12 @@ class NotificationProvider extends ChangeNotifier {
   //   });
   // }
 
-  // deleteEvent(int id) async {
-  //   notificationBox.delete(id);
-  //   getEvents();
-  //   notifyListeners();
-  // }
+  //update unclose messages
+  updateUncloseMessages() {}
+
+  deleteNNotification(int id) async {
+    notificationBox.delete(id);
+    getNotifications();
+    notifyListeners();
+  }
 }

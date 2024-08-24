@@ -16,6 +16,8 @@ class NotificationType {
   String time;
   @HiveField(5)
   bool read;
+  @HiveField(6)
+  bool isOpen;
 
   NotificationType(
       {required this.id,
@@ -23,5 +25,6 @@ class NotificationType {
       required this.subtitle,
       required this.body,
       required this.time,
-      required this.read});
+      required this.read,
+      required this.isOpen});
 }

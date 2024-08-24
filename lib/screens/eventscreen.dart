@@ -10,6 +10,7 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/screens/notificationscreen.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
@@ -61,6 +62,8 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
+    Provider.of<NotificationProvider>(context, listen: false)
+        .getNotifications();
     super.initState();
   }
 
@@ -172,7 +175,8 @@ class _EventScreenState extends State<EventScreen> {
             body:
                 '$eventDescription will be held in $eventPlace  at  $formattedDate ',
             time: DateTime.now().toString(),
-            read: false));
+            read: false,
+            isOpen: false));
 
     formatter.dateFormmater(currentTime, eventTimeEnd);
 
@@ -256,6 +260,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
+
     //screen queries
     double appBarHeight = appBar.preferredSize.height;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -336,14 +341,33 @@ class _EventScreenState extends State<EventScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                            child: Container(
-                              child: notification != 0
-                                  ? const NotificationActive(
-                                      height: 26, width: 26)
-                                  : const NotificationNone(
-                                      height: 26,
-                                      width: 26,
-                                    ),
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => NotificationScreen(
+                                          screenHeight: screenHeight))),
+                              child: Consumer<NotificationProvider>(
+                                builder:
+                                    (context, notificationProvider, child) {
+                                  //notifications
+                                  final inbox =
+                                      notificationProvider.notificationList;
+
+                                  // filter unread notifications
+                                  final unread = inbox
+                                      .where((message) => message.read == false)
+                                      .toList();
+                                  return Container(
+                                    child: unread.isNotEmpty
+                                        ? const NotificationActive(
+                                            height: 26, width: 26)
+                                        : const NotificationNone(
+                                            height: 26,
+                                            width: 26,
+                                          ),
+                                  );
+                                },
+                              ),
                             ),
                           )
                         ],

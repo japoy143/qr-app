@@ -23,13 +23,14 @@ class NotificationTypeAdapter extends TypeAdapter<NotificationType> {
       body: fields[3] as String,
       time: fields[4] as String,
       read: fields[5] as bool,
+      isOpen: fields[6] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, NotificationType obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class NotificationTypeAdapter extends TypeAdapter<NotificationType> {
       ..writeByte(4)
       ..write(obj.time)
       ..writeByte(5)
-      ..write(obj.read);
+      ..write(obj.read)
+      ..writeByte(6)
+      ..write(obj.isOpen);
   }
 
   @override

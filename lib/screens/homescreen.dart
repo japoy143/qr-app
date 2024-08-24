@@ -43,8 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
-    final notificationProvider =
-        Provider.of<NotificationProvider>(context, listen: false);
 
     double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
@@ -55,12 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
     double totalHeight = appBarHeight + screenHeight + statusbarHeight;
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
-
-    //notifications
-    final inbox = notificationProvider.notificationList;
-
-    // filter unread notifications
-    final unread = inbox.where((message) => message.read == false).toList();
 
     return Consumer<EventProvider>(
       builder: (cotext, provider, child) {
@@ -153,14 +145,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context) => NotificationScreen(
                                           screenHeight: totalHeight,
                                         ))),
-                            child: Container(
-                              child: unread.isNotEmpty
-                                  ? const NotificationActive(
-                                      height: 26, width: 26)
-                                  : const NotificationNone(
-                                      height: 26,
-                                      width: 26,
-                                    ),
+                            child: Consumer<NotificationProvider>(
+                              builder: (context, notificationProvider, child) {
+                                //notifications
+                                final inbox =
+                                    notificationProvider.notificationList;
+
+                                // filter unread notifications
+                                final unread = inbox
+                                    .where((message) => message.read == false)
+                                    .toList();
+
+                                return Container(
+                                    child: unread.isNotEmpty
+                                        ? const NotificationActive(
+                                            height: 26, width: 26)
+                                        : const NotificationNone(
+                                            height: 26,
+                                            width: 26,
+                                          ));
+                              },
                             ),
                           ),
                         )

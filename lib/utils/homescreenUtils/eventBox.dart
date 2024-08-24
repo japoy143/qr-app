@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
@@ -61,6 +63,8 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
 
   String showEventStatus(DateTime date, DateTime event_end) {
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
     DateTime now = DateTime.now();
 
     if (now.isAtSameMomentAs(event_end) || now.isAfter(event_end)) {
@@ -72,7 +76,21 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
         isEventNotificationShown = false;
       }
 
-      eventProvider.updateEventEndedData(widget.items.id);
+      String eventName = item.eventName;
+      String id = item.id.toString();
+
+      eventProvider.updateEventEndedData(item.id);
+      notificationProvider.insertEventEndedData(
+          '$id-ended',
+          NotificationType(
+              id: item.id,
+              title: 'Event Ended',
+              subtitle: item.eventName,
+              body:
+                  ' $eventName is already ended. attendance is already close ',
+              time: item.endTime.toString(),
+              read: false,
+              isOpen: false));
 
       return 'Event Ended';
     }
