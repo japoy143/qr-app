@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
 
 class EventSummaryScreen extends StatefulWidget {
@@ -77,17 +78,27 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
 
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                            child: Container(
-                                padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                    color: purple,
-                                    borderRadius: BorderRadius.circular(8.0)),
-                                child: EventSummayBox(
-                                  items: item,
-                                  screeHeight: (screenHeight +
-                                      statusbarHeight +
-                                      appBarHeight),
-                                )),
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CoursesSummaryScreen(
+                                            eventName: item.eventName,
+                                            screenHeight: screenHeight,
+                                            eventId: item.id,
+                                          ))),
+                              child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                      color: purple,
+                                      borderRadius: BorderRadius.circular(8.0)),
+                                  child: EventSummayBox(
+                                    items: item,
+                                    screeHeight: (screenHeight +
+                                        statusbarHeight +
+                                        appBarHeight),
+                                  )),
+                            ),
                           );
                         })),
               ],

@@ -8,11 +8,7 @@ class EventSummayBox extends StatefulWidget {
   final double screeHeight;
   final EventType items;
 
-  EventSummayBox({
-    super.key,
-    required this.items,
-    required this.screeHeight
-  });
+  EventSummayBox({super.key, required this.items, required this.screeHeight});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -131,7 +127,8 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CoursesSummaryScreen(
-                      screenHeight: widget.screeHeight,
+                          eventName: item.eventName,
+                          screenHeight: widget.screeHeight,
                           eventId: item.id,
                         ))),
                 child: Text('See more',

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/types.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/generatePdf.dart';
-import 'package:qr_app/utils/eventsummaryUtils/pdfUi.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class CoursesSummaryScreen extends StatefulWidget {
+  final String eventName;
   final double screenHeight;
   final int eventId;
   const CoursesSummaryScreen(
-      {super.key, required this.eventId, required this.screenHeight});
+      {super.key,
+      required this.eventId,
+      required this.screenHeight,
+      required this.eventName});
 
   @override
   State<CoursesSummaryScreen> createState() => _CoursesSummaryScreenState();
@@ -40,13 +44,117 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   List<int> year = [1, 2, 3, 4];
   int? selectedYear = 1;
 
+  //filter course attended
+  int filterQuery(String courseName, String courseYear) {
+    final eventAttendanceProvider =
+        Provider.of<EventAttendanceProvider>(context, listen: false);
+    eventAttendanceProvider.getEventAttendance();
+
+    List<EventAttendance> eventAttendance =
+        eventAttendanceProvider.eventAttendanceList;
+
+    List<EventAttendance> eventIdFilter = eventAttendance
+        .where((event) => event.eventId == widget.eventId)
+        .toList();
+
+    List courseFilter = eventIdFilter
+        .where((event) =>
+            event.studentCourse == courseName &&
+            event.studentYear == courseYear)
+        .toList();
+
+    return courseFilter.length;
+  }
+
+  //filter course total
+  int totalCourseAttended(String courseName) {
+    final eventAttendanceProvider =
+        Provider.of<EventAttendanceProvider>(context, listen: false);
+    eventAttendanceProvider.getEventAttendance();
+
+    List<EventAttendance> eventAttendance =
+        eventAttendanceProvider.eventAttendanceList;
+
+    List<EventAttendance> eventIdFilter = eventAttendance
+        .where((event) =>
+            event.eventId == widget.eventId &&
+            event.studentCourse == courseName)
+        .toList();
+
+    return eventIdFilter.length;
+  }
+
+//totalStudent Attended
+  int totalStudentAttended() {
+    final eventAttendanceProvider =
+        Provider.of<EventAttendanceProvider>(context, listen: false);
+    eventAttendanceProvider.getEventAttendance();
+
+    List<EventAttendance> eventAttendance =
+        eventAttendanceProvider.eventAttendanceList;
+
+    List<EventAttendance> eventIdFilter = eventAttendance
+        .where((event) => event.eventId == widget.eventId)
+        .toList();
+
+    return eventIdFilter.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     Color purple = Color(colorscheme.hexColor(colorscheme.primaryColor));
-    final data = penalty.map((e) => [e.courseName, e.eventAttended]).toList();
     String formattedDate = DateFormat('MMM d').format(DateTime.now());
     String time = DateFormat('h:mm a').format(DateTime.now());
-    String eventTime = '$formattedDate,$time';
+    String eventTime = '$formattedDate, $time';
+
+    List<CoursesSummaryType> cellData = [
+      CoursesSummaryType(
+          courseName: 'BSIT',
+          firstYear: filterQuery('BSIT', '1'),
+          secondYear: filterQuery('BSIT', '2'),
+          thirdYear: filterQuery('BSIT', '3'),
+          fourthYear: filterQuery('BSIT', '4'),
+          totalAttended: totalCourseAttended('BSIT')),
+      CoursesSummaryType(
+          courseName: 'BSCS',
+          firstYear: filterQuery('BSCS', '1'),
+          secondYear: filterQuery('BSCS', '2'),
+          thirdYear: filterQuery('BSCS', '3'),
+          fourthYear: filterQuery('BSCS', '4'),
+          totalAttended: totalCourseAttended('BSCS')),
+      CoursesSummaryType(
+          courseName: 'BSIS',
+          firstYear: filterQuery('BSIS', '1'),
+          secondYear: filterQuery('BSIS', '2'),
+          thirdYear: filterQuery('BSIS', '3'),
+          fourthYear: filterQuery('BSIS', '4'),
+          totalAttended: totalCourseAttended('BSIS')),
+      CoursesSummaryType(
+          courseName: 'BSCPE',
+          firstYear: filterQuery('BSCPE', '1'),
+          secondYear: filterQuery('BSCPE', '2'),
+          thirdYear: filterQuery('BSCPE', '3'),
+          fourthYear: filterQuery('BSCPE', '4'),
+          totalAttended: totalCourseAttended('BSCPE')),
+      CoursesSummaryType(
+          courseName: 'BSECE',
+          firstYear: filterQuery('BSECE', '1'),
+          secondYear: filterQuery('BSECE', '2'),
+          thirdYear: filterQuery('BSECE', '3'),
+          fourthYear: filterQuery('BSECE', '4'),
+          totalAttended: totalCourseAttended('BSECE')),
+    ];
+
+    final data = cellData
+        .map((e) => [
+              e.courseName,
+              e.firstYear,
+              e.secondYear,
+              e.thirdYear,
+              e.fourthYear,
+              e.totalAttended
+            ])
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -57,9 +165,9 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                 onTap: () async {
                   SaveAndDownloadPdf.createPdf(
                       eventTime: eventTime,
-                      eventName: 'Seminar',
+                      eventName: widget.eventName,
                       eventDescription: 'Drug awarness seminar',
-                      totalAttended: 100,
+                      totalAttended: totalStudentAttended(),
                       data: data);
                 },
                 child: const Icon(
@@ -90,7 +198,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                       ),
                     ),
                     Text(
-                      'Students Attended: $totalEvent',
+                      'Total Student Attended: ${totalStudentAttended()}',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         color: Colors.grey.shade400,

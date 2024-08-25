@@ -29,10 +29,10 @@ class QrCodeScanner extends StatefulWidget {
 }
 
 class _QrCodeScannerState extends State<QrCodeScanner> {
-  String userSchoolId = '100001';
+  String userSchoolId = 'Student Id';
   String userName = 'Student Name';
-  String userCourse = 'BSIT';
-  String userYear = '4';
+  String userCourse = 'Course';
+  String userYear = 'Year';
 
   //toast
   final toast = CustomToast();

@@ -3,8 +3,25 @@ class CoursesEventType {
   String courseName;
   int eventAttended;
 
-  CoursesEventType(
-      {required this.courseName, required this.eventAttended});
+  CoursesEventType({required this.courseName, required this.eventAttended});
+}
+
+class CoursesSummaryType {
+  String courseName;
+  int firstYear;
+  int secondYear;
+  int thirdYear;
+  int fourthYear;
+  int totalAttended;
+
+  CoursesSummaryType({
+    required this.courseName,
+    required this.firstYear,
+    required this.secondYear,
+    required this.thirdYear,
+    required this.fourthYear,
+    required this.totalAttended,
+  });
 }
 
 class EventListAttendanceType {
@@ -25,7 +42,6 @@ class EventListAttendanceType {
       required this.studentCourse,
       required this.studentYear});
 }
-
 
 class adminPositions {
   Map<dynamic, String> positions = {
