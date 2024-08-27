@@ -38,8 +38,15 @@ class _UserScreenState extends State<UserScreen> {
   //image type
   XFile? selectedimage;
 
-  getImage(int id, String userName, String userCourse, String userYear,
-      String userPassword, bool isAdmin, String userProfile) async {
+  getImage(
+      int id,
+      String userName,
+      String userCourse,
+      String userYear,
+      String userPassword,
+      bool isAdmin,
+      String userProfile,
+      bool isSignUpOnline) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
@@ -67,14 +74,16 @@ class _UserScreenState extends State<UserScreen> {
     userProvider.insertData(
         id.toString(),
         UsersType(
-            schoolId: id,
-            key: userName,
-            userName: userName,
-            userCourse: userCourse,
-            userYear: userYear,
-            userPassword: userPassword,
-            isAdmin: isAdmin,
-            userProfile: image.path));
+          schoolId: id,
+          key: userName,
+          userName: userName,
+          userCourse: userCourse,
+          userYear: userYear,
+          userPassword: userPassword,
+          isAdmin: isAdmin,
+          userProfile: image.path,
+          isSignupOnline: isSignUpOnline,
+        ));
 
     showToast();
   }
@@ -107,6 +116,7 @@ class _UserScreenState extends State<UserScreen> {
     final isAdmin = user.isAdmin;
     final userPassword = user.userPassword;
     final userProfile = user.userProfile;
+    final isSignUpOnline = user.isSignupOnline;
 
     //for qr data
     String qrData = [
@@ -143,7 +153,8 @@ class _UserScreenState extends State<UserScreen> {
                                   userYear,
                                   userPassword,
                                   isAdmin,
-                                  userProfile),
+                                  userProfile,
+                                  isSignUpOnline),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   UsersType? getUser = provider
@@ -157,7 +168,7 @@ class _UserScreenState extends State<UserScreen> {
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        userImage == null
+                                        userImage == ""
                                             ? Icon(
                                                 Icons.account_circle_outlined,
                                                 size: (screenHeight -
@@ -169,7 +180,7 @@ class _UserScreenState extends State<UserScreen> {
                                                         statusbarHeight) *
                                                     0.035,
                                                 backgroundImage:
-                                                    FileImage(File(userImage)),
+                                                    FileImage(File(userImage!)),
                                                 backgroundColor:
                                                     Colors.transparent,
                                               ),

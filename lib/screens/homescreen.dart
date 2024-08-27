@@ -34,10 +34,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final appBar = AppBar();
 
+  void isSignUpOnlineDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(10.0),
+
+          // Adjust padding to make it more compact
+          content: SizedBox(
+            width: 150, // Set a fixed width for the dialog
+            child: Column(
+              children: [
+                Text('Please SignUp Your Account Online'),
+                Text('So That Your Attendance Will Be Save in Database'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Text('Ok')),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  checkIfUserSignUpOnline() {
+    final provider = Provider.of<UsersProvider>(context, listen: false);
+    UsersType user = provider.userData;
+    if (user.isSignupOnline) {
+      return;
+    }
+    isSignUpOnlineDialog(context);
+  }
+
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    checkIfUserSignUpOnline();
     super.initState();
   }
 

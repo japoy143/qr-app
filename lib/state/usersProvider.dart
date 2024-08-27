@@ -16,7 +16,8 @@ class UsersProvider extends ChangeNotifier {
       userYear: '',
       userPassword: '',
       isAdmin: false,
-      userProfile: '');
+      userProfile: '',
+      isSignupOnline: false);
 
   List<int> adminIds = [
     100001,
@@ -62,6 +63,7 @@ class UsersProvider extends ChangeNotifier {
         userPassword: user['user_password'],
         isAdmin: user['is_admin'],
         userProfile: '',
+        isSignupOnline: true,
       );
       notifyListeners();
       return userData;
@@ -132,7 +134,8 @@ class UsersProvider extends ChangeNotifier {
               userYear: userYear,
               userPassword: userPassword,
               isAdmin: isAdmin,
-              userProfile: userProfile));
+              userProfile: userProfile,
+              isSignupOnline: true));
 
       print('data inserted successfully');
     } catch (e) {
@@ -150,7 +153,8 @@ class UsersProvider extends ChangeNotifier {
               userYear: userYear,
               userPassword: userPassword,
               isAdmin: isAdmin,
-              userProfile: userProfile));
+              userProfile: userProfile,
+              isSignupOnline: false));
 
       print('error $e');
     }
