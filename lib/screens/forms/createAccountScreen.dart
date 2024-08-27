@@ -75,7 +75,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     _confirmPasswordController.clear();
   }
 
-  bool userValidation() {
+  Future<bool> userValidation() async {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
     if (_nameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -85,7 +85,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     }
 
-    if (userProvider.containsUser(_schoolIdController.text)) {
+    if (await userProvider.containsUser(_schoolIdController.text)) {
       toast.userAlreadyExist(context);
       return false;
     }
@@ -111,8 +111,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return true;
   }
 
-  void createUser() {
-    if (userValidation()) {
+  void createUser() async {
+    if (await userValidation()) {
       clearAllFields();
     }
   }

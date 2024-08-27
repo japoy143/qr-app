@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
+    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     super.initState();
   }
 
@@ -81,11 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
         final firstEventEnded =
             onlyEventEnded.isNotEmpty ? onlyEventEnded.elementAt(0) : null;
 
-        final userDetails = userProvider.getUser(widget.userKey);
-        final userName = userDetails!.userName;
-        final userSchoolId = userDetails.schoolId;
-        final isAdmin = userDetails.isAdmin;
-        final userProfile = userDetails.userProfile;
+        final user = userProvider.userData;
+        final userName = user.userName;
+        final userSchoolId = user.schoolId;
+        final isAdmin = user.isAdmin;
+        final userProfile = user.userProfile;
         return Scaffold(
           body: SafeArea(
             child: Padding(

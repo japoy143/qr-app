@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +12,8 @@ import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
 import 'package:qr_app/utils/toast.dart';
 import 'package:qr_app/utils/userscreenUtils/eventSummary.dart';
+import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserScreen extends StatefulWidget {
   final String userKey;
@@ -42,11 +43,26 @@ class _UserScreenState extends State<UserScreen> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
+    if (image == null) {
+      return;
+    }
     setState(() {
       selectedimage = image;
     });
 
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
+
+    try {
+      final imageBytes = await image.readAsBytes();
+      final imagePath = '/user/profile';
+      await Supabase.instance.client.storage
+          .from('userprofile')
+          .uploadBinary(imagePath, imageBytes);
+
+      print('uploaded');
+    } catch (e) {
+      print(e);
+    }
 
     userProvider.insertData(
         id.toString(),
@@ -58,7 +74,7 @@ class _UserScreenState extends State<UserScreen> {
             userYear: userYear,
             userPassword: userPassword,
             isAdmin: isAdmin,
-            userProfile: image == null ? userProfile : image.path));
+            userProfile: image.path));
 
     showToast();
   }
@@ -67,6 +83,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   void initState() {
+    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     super.initState();
   }
 
@@ -81,21 +98,21 @@ class _UserScreenState extends State<UserScreen> {
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
-    //userDetails
-    final userDetails = userProvider.getUser(widget.userKey);
-    final userName = userDetails!.userName;
-    final userSchoolId = userDetails.schoolId;
-    final userCourse = userDetails.userCourse;
-    final userYear = userDetails.userYear;
-    final isAdmin = userDetails.isAdmin;
-    final userPassword = userDetails.userPassword;
-    final userProfile = userDetails.userProfile;
+    //user
+
+    final user = userProvider.userData;
+    final userSchoolId = user.schoolId;
+    final userCourse = user.userCourse;
+    final userYear = user.userYear;
+    final isAdmin = user.isAdmin;
+    final userPassword = user.userPassword;
+    final userProfile = user.userProfile;
 
     //for qr data
     String qrData = [
       userSchoolId.toString(),
       "|",
-      userName,
+      user,
       "|",
       userCourse,
       "|",
@@ -119,48 +136,57 @@ class _UserScreenState extends State<UserScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                           child: GestureDetector(
-                            onTap: () => getImage(
-                                userSchoolId,
-                                userName,
-                                userCourse,
-                                userYear,
-                                userPassword,
-                                isAdmin,
-                                userProfile),
-                            child: SizedBox(
-                              width: 60,
-                              height: 60,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  userProfile == ""
-                                      ? Icon(
-                                          Icons.account_circle_outlined,
-                                          size:
-                                              (screenHeight - statusbarHeight) *
-                                                  0.07,
-                                        )
-                                      : CircleAvatar(
-                                          radius:
-                                              (screenHeight - statusbarHeight) *
-                                                  0.035,
-                                          backgroundImage:
-                                              FileImage(File(userProfile)),
-                                          backgroundColor: Colors.transparent,
+                              onTap: () => getImage(
+                                  userSchoolId,
+                                  user.userName,
+                                  userCourse,
+                                  userYear,
+                                  userPassword,
+                                  isAdmin,
+                                  userProfile),
+                              child: Consumer<UsersProvider>(
+                                builder: (context, provider, child) {
+                                  UsersType? getUser = provider
+                                      .getdataForlocalImage(widget.userKey);
+
+                                  final userImage = getUser?.userProfile;
+
+                                  return SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        userImage == null
+                                            ? Icon(
+                                                Icons.account_circle_outlined,
+                                                size: (screenHeight -
+                                                        statusbarHeight) *
+                                                    0.07,
+                                              )
+                                            : CircleAvatar(
+                                                radius: (screenHeight -
+                                                        statusbarHeight) *
+                                                    0.035,
+                                                backgroundImage:
+                                                    FileImage(File(userImage)),
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                              ),
+                                        const Positioned(
+                                          left: 36,
+                                          bottom: 14,
+                                          child: Icon(
+                                            Icons.add_a_photo,
+                                            color: Colors.blueGrey,
+                                            size: 17,
+                                          ),
                                         ),
-                                  const Positioned(
-                                    left: 36,
-                                    bottom: 14,
-                                    child: Icon(
-                                      Icons.add_a_photo,
-                                      color: Colors.blueGrey,
-                                      size: 17,
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                                  );
+                                },
+                              )),
                         ),
                         const SizedBox(
                           width: 10.0,
@@ -172,7 +198,7 @@ class _UserScreenState extends State<UserScreen> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: Text(
-                                userName,
+                                user.userName,
                                 style: const TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16.0,
@@ -227,7 +253,7 @@ class _UserScreenState extends State<UserScreen> {
                 ),
               ),
               Text(
-                userName,
+                user.userName,
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
               ),
               Text(

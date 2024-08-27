@@ -29,14 +29,15 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   void initState() {
+    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
-    final userDetails = userProvider.getUser(widget.userKey);
-    final isAdmin = userDetails!.isAdmin;
+    final userDetails = userProvider.userData;
+    final isAdmin = userDetails.isAdmin;
 
     List pages = isAdmin
         ? [

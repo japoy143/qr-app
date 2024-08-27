@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
@@ -53,32 +54,69 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   final toast = CustomToast();
 
   //login user
-  void userValidate() {
+  void userValidate() async {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
-    final name = userProvider.containsUser(_schoolIdController.text.trim());
+    final user = await userProvider.getUser(_schoolIdController.text.trim());
 
-    if (!name) {
+    if (user == null) {
+      Navigator.of(context).pop();
       toast.userNotExist(context);
       return;
     }
 
-    final user = userProvider.getUser(_schoolIdController.text.trim());
-
-    if (user!.userPassword != _passwordController.text) {
+    if (user.userPassword != _passwordController.text) {
+      Navigator.of(context).pop();
       toast.passwordIncorrect(context);
       return;
     }
 
     if (user.schoolId != int.parse(_schoolIdController.text)) {
+      Navigator.of(context).pop();
       toast.userIdNotCorrect(context);
       return;
     }
-
+    Navigator.of(context).pop();
     toast.loginSuccessfully(context, user.userName);
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => MenuScreen(
               userKey: _schoolIdController.text.trim(),
             )));
+  }
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(10.0),
+
+          // Adjust padding to make it more compact
+          content: SizedBox(
+            width: 150, // Set a fixed width for the dialog
+            child: Row(
+              children: [
+                CircularProgressIndicator(color: Colors.blue),
+                SizedBox(
+                    width: 16), // Reduce spacing between indicator and text
+                Text(
+                  "Loading...",
+                  style: TextStyle(fontSize: 16), // Adjust font size if needed
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -160,7 +198,14 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 14.0, 40.0, 10),
             child: GestureDetector(
-                onTap: userValidate,
+                onTap: () {
+                  try {
+                    showProgressDialog(context);
+                    userValidate();
+                  } catch (e) {
+                    toast.errorCreationUser(context);
+                  }
+                },
                 child: ButtonResponsive(
                     buttonColor: widget.textColor,
                     height: widget.height,

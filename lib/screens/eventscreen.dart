@@ -64,6 +64,8 @@ class _EventScreenState extends State<EventScreen> {
     Provider.of<EventProvider>(context, listen: false).getEvents();
     Provider.of<NotificationProvider>(context, listen: false)
         .getNotifications();
+    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+
     super.initState();
   }
 
@@ -271,11 +273,11 @@ class _EventScreenState extends State<EventScreen> {
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
     //user details
-    final userDetails = userProvider.getUser(widget.userKey);
-    final userName = userDetails!.userName;
-    final userSchoolId = userDetails.schoolId;
-    final isAdmin = userDetails.isAdmin;
-    final userProfile = userDetails.userProfile;
+    final user = userProvider.userData;
+    final userName = user.userName;
+    final userSchoolId = user.schoolId;
+    final isAdmin = user.isAdmin;
+    final userProfile = user.userProfile;
 
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
