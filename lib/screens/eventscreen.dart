@@ -10,7 +10,6 @@ import 'package:qr_app/models/types.dart';
 import 'package:qr_app/screens/notificationscreen.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
-import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/theme/notification_active.dart';
@@ -254,6 +253,33 @@ class _EventScreenState extends State<EventScreen> {
     clearFields();
   }
 
+  // return profile condition
+  Widget showProfile(String imagePath, String response, double screenHeight,
+      double statusbarHeight) {
+    // online and http link is not  empty
+    if (response != 'off' && response != '') {
+      return CircleAvatar(
+        radius: (screenHeight - statusbarHeight) * 0.035,
+        backgroundImage:
+            NetworkImage(response), // Use NetworkImage for URL-based images
+        backgroundColor: Colors.transparent,
+      );
+    }
+
+    //if offline and has image
+    if (response == 'off' && imagePath != '') {
+      CircleAvatar(
+        radius: (screenHeight - statusbarHeight) * 0.035,
+        backgroundImage: FileImage(File(imagePath)),
+        backgroundColor: Colors.transparent,
+      );
+    }
+    return Icon(
+      Icons.account_circle_outlined,
+      size: (screenHeight - statusbarHeight) * 0.07,
+    );
+  }
+
   final appBar = AppBar();
 
   @override
@@ -275,6 +301,8 @@ class _EventScreenState extends State<EventScreen> {
     final userSchoolId = user.schoolId;
     final isAdmin = user.isAdmin;
     final userProfile = user.userProfile;
+    //online profile url
+    final userImageUrl = userProvider.userImage;
 
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
@@ -301,19 +329,10 @@ class _EventScreenState extends State<EventScreen> {
                         children: [
                           Row(
                             children: [
-                              userProfile == ""
-                                  ? Icon(
-                                      Icons.account_circle_outlined,
-                                      size: (screenHeight - statusbarHeight) *
-                                          0.07,
-                                    )
-                                  : CircleAvatar(
-                                      radius: (screenHeight - statusbarHeight) *
-                                          0.035,
-                                      backgroundImage:
-                                          FileImage(File(userProfile)),
-                                      backgroundColor: Colors.transparent,
-                                    ),
+                              userImageUrl != null
+                                  ? showProfile(userProfile, userImageUrl,
+                                      screenHeight, statusbarHeight)
+                                  : const SizedBox.shrink(),
                               const SizedBox(
                                 width: 10.0,
                               ),
@@ -422,7 +441,7 @@ class _EventScreenState extends State<EventScreen> {
                                         )
                                       ]),
                                   child: Container(
-                                    padding: EdgeInsets.all(6.0),
+                                    padding: const EdgeInsets.all(6.0),
                                     decoration: BoxDecoration(
                                         color: purple,
                                         borderRadius:
@@ -456,7 +475,7 @@ class _EventScreenState extends State<EventScreen> {
                       purple,
                       totalHeight,
                     ),
-                    child: Icon(Icons.add),
+                    child: const Icon(Icons.add),
                   )
                 : null);
       },

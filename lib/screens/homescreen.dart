@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
@@ -23,6 +22,33 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+}
+
+// return profile condition
+Widget showProfile(String imagePath, String response, double screenHeight,
+    double statusbarHeight) {
+  // online and http link is not  empty
+  if (response != 'off' && response != '') {
+    return CircleAvatar(
+      radius: (screenHeight - statusbarHeight) * 0.035,
+      backgroundImage:
+          NetworkImage(response), // Use NetworkImage for URL-based images
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  //if offline and has image
+  if (response == 'off' && imagePath != '') {
+    CircleAvatar(
+      radius: (screenHeight - statusbarHeight) * 0.035,
+      backgroundImage: FileImage(File(imagePath)),
+      backgroundColor: Colors.transparent,
+    );
+  }
+  return Icon(
+    Icons.account_circle_outlined,
+    size: (screenHeight - statusbarHeight) * 0.07,
+  );
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -180,6 +206,9 @@ class _HomeScreenState extends State<HomeScreen> {
         final userSchoolId = user.schoolId;
         final isAdmin = user.isAdmin;
         final userProfile = user.userProfile;
+        //online profile url
+        final userImageUrl = userProvider.userImage;
+
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -194,19 +223,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           children: [
-                            userProfile == ""
-                                ? Icon(
-                                    Icons.account_circle_outlined,
-                                    size:
-                                        (screenHeight - statusbarHeight) * 0.07,
-                                  )
-                                : CircleAvatar(
-                                    radius: (screenHeight - statusbarHeight) *
-                                        0.035,
-                                    backgroundImage:
-                                        FileImage(File(userProfile)),
-                                    backgroundColor: Colors.transparent,
-                                  ),
+                            userImageUrl != null
+                                ? showProfile(userProfile, userImageUrl,
+                                    screenHeight, statusbarHeight)
+                                : const SizedBox.shrink(),
                             const SizedBox(
                               width: 10.0,
                             ),

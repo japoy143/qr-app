@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 
 class NotificationScreen extends StatefulWidget {
   final double screenHeight;

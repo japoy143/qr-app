@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +46,7 @@ class _UserScreenState extends State<UserScreen> {
       bool isAdmin,
       String userProfile,
       bool isSignUpOnline) async {
+    //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
@@ -91,6 +91,33 @@ class _UserScreenState extends State<UserScreen> {
         ));
 
     showToast();
+  }
+
+  //return profile
+  Widget showProfile(String imagePath, String response, double screenHeight,
+      double statusbarHeight) {
+    // online and http link is not  empty
+    if (response != 'off' && response != '') {
+      return CircleAvatar(
+        radius: (screenHeight - statusbarHeight) * 0.035,
+        backgroundImage:
+            NetworkImage(response), // Use NetworkImage for URL-based images
+        backgroundColor: Colors.transparent,
+      );
+    }
+
+    //if offline and has image
+    if (response == 'off' && imagePath != '') {
+      CircleAvatar(
+        radius: (screenHeight - statusbarHeight) * 0.035,
+        backgroundImage: FileImage(File(imagePath)),
+        backgroundColor: Colors.transparent,
+      );
+    }
+    return Icon(
+      Icons.account_circle_outlined,
+      size: (screenHeight - statusbarHeight) * 0.07,
+    );
   }
 
   final appBar = AppBar();
@@ -170,22 +197,13 @@ class _UserScreenState extends State<UserScreen> {
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        userImage == null || userImage.isEmpty
-                                            ? Icon(
-                                                Icons.account_circle_outlined,
-                                                size: (screenHeight -
-                                                        statusbarHeight) *
-                                                    0.07,
-                                              )
-                                            : CircleAvatar(
-                                                radius: (screenHeight -
-                                                        statusbarHeight) *
-                                                    0.035,
-                                                backgroundImage: NetworkImage(
-                                                    userImage), // Use NetworkImage for URL-based images
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                              ),
+                                        userImage != null
+                                            ? showProfile(
+                                                userProfile,
+                                                userImage,
+                                                screenHeight,
+                                                statusbarHeight)
+                                            : const SizedBox.shrink(),
                                         const Positioned(
                                           left: 36,
                                           bottom: 14,

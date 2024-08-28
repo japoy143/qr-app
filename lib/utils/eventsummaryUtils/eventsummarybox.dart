@@ -7,8 +7,9 @@ import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 class EventSummayBox extends StatefulWidget {
   final double screeHeight;
   final EventType items;
+  final bool isAdmin;
 
-  EventSummayBox({super.key, required this.items, required this.screeHeight});
+  EventSummayBox({super.key, required this.items, required this.screeHeight, required this.isAdmin});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -125,12 +126,12 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                 ],
               ),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                onTap: widget.isAdmin ? () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CoursesSummaryScreen(
                           eventName: item.eventName,
                           screenHeight: widget.screeHeight,
                           eventId: item.id,
-                        ))),
+                        ))) : null,
                 child: Text('See more',
                     style: TextStyle(
                       color: colorTheme.secondaryColor,

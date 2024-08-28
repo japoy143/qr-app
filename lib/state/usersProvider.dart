@@ -22,6 +22,7 @@ class UsersProvider extends ChangeNotifier {
   //user image url
   String? userImage;
 
+  //admin roles
   List<int> adminIds = [
     100001,
     200002,
@@ -33,6 +34,10 @@ class UsersProvider extends ChangeNotifier {
     800008,
     900009,
   ];
+
+  //
+  //GET
+  //
 
   //offline
   getUsers() async {
@@ -101,6 +106,41 @@ class UsersProvider extends ChangeNotifier {
     return user;
   }
 
+  //get user image url return response
+  void getUserImage(String id) async {
+    try {
+      final imagePath = '$id/image';
+
+      // check if there is imagepath in the list using id
+      final urlResponse =
+          await Supabase.instance.client.storage.from('profiles').list();
+
+      List<String?> imagePathList =
+          urlResponse.map((item) => item.name).toList();
+
+      if (!imagePathList.contains(id)) {
+        userImage = '';
+        print('no image in database');
+        return;
+      }
+
+      final userImageUrl = await Supabase.instance.client.storage
+          .from('profiles')
+          .getPublicUrl(imagePath);
+
+      userImage = userImageUrl.toString();
+      notifyListeners();
+    } catch (e) {
+      userImage = 'off';
+      notifyListeners();
+      return;
+    }
+  }
+
+  //
+  //INSERT
+  //
+
   //create new user
   createNewUser(String userName, int schoolId, String userCourse,
       String userYear, String userPassword, String userProfile) async {
@@ -154,33 +194,6 @@ class UsersProvider extends ChangeNotifier {
 
       print('error $e');
     }
-  }
-
-  void getUserImage(String id) async {
-    final imagePath = '$id/image';
-
-    // Log the image path for debugging
-    print('Attempting to retrieve image URL for $imagePath');
-
-    // check if there is imagepath in the list using id
-    final urlResponse =
-        await Supabase.instance.client.storage.from('profiles').list();
-
-    List<String?> imagePathList = urlResponse.map((item) => item.name).toList();
-
-    if (!imagePathList.contains(id)) {
-      userImage = '';
-      print('no image in database');
-      return;
-    }
-
-    final userImageUrl = await Supabase.instance.client.storage
-        .from('profiles')
-        .getPublicUrl(imagePath);
-
-    userImage = userImageUrl.toString();
-
-    notifyListeners();
   }
 
   //insert

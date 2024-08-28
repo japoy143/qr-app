@@ -52,8 +52,10 @@ class _MenuScreenState extends State<MenuScreen> {
             EventScreen(
               userKey: widget.userKey,
             ),
-            const EventSummaryScreen(),
-            PenaltyScreen(),
+            EventSummaryScreen(
+              userKey: widget.userKey,
+            ),
+            const PenaltyScreen(),
             UserScreen(
               userKey: widget.userKey,
             )
@@ -70,6 +72,9 @@ class _MenuScreenState extends State<MenuScreen> {
             EventScreen(
               userKey: widget.userKey,
             ),
+            EventSummaryScreen(
+              userKey: widget.userKey,
+            ),
             UserScreen(
               userKey: widget.userKey,
             )
@@ -78,9 +83,8 @@ class _MenuScreenState extends State<MenuScreen> {
     List<BottomNavigationBarItem> bottomNavItems = [
       const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
       const BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
-      if (isAdmin)
-        const BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_outlined), label: 'Event Summary'),
+      const BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_month_outlined), label: 'Event Summary'),
       if (isAdmin)
         const BottomNavigationBarItem(
             icon: Icon(Icons.analytics_outlined), label: 'Penalty Screen'),

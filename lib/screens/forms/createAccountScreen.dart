@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
 import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
