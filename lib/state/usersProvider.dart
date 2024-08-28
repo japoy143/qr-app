@@ -19,6 +19,9 @@ class UsersProvider extends ChangeNotifier {
       userProfile: '',
       isSignupOnline: false);
 
+  //user image url
+  String? userImage;
+
   List<int> adminIds = [
     100001,
     200002,
@@ -40,12 +43,6 @@ class UsersProvider extends ChangeNotifier {
   //get user online and offline
   Future<UsersType?> getUser(String userKey) async {
     // check if data  is already save in phone storage or already cache
-    if (userBox.containsKey(userKey)) {
-      UsersType? user = userBox.get(userKey);
-      userData = user!;
-      print('if check work');
-      return user;
-    }
 
     try {
       var user = await Supabase.instance.client
@@ -88,9 +85,8 @@ class UsersProvider extends ChangeNotifier {
           .single();
 
       bool userExist = user["school_id"] == int.parse(id);
-      print(user["school_id"] == int.parse(id));
 
-      return user.length == 1;
+      return userExist;
     } catch (e) {
       // encase offline
       var user = userBox.containsKey(id);
@@ -158,6 +154,33 @@ class UsersProvider extends ChangeNotifier {
 
       print('error $e');
     }
+  }
+
+  void getUserImage(String id) async {
+    final imagePath = '$id/image';
+
+    // Log the image path for debugging
+    print('Attempting to retrieve image URL for $imagePath');
+
+    // check if there is imagepath in the list using id
+    final urlResponse =
+        await Supabase.instance.client.storage.from('profiles').list();
+
+    List<String?> imagePathList = urlResponse.map((item) => item.name).toList();
+
+    if (!imagePathList.contains(id)) {
+      userImage = '';
+      print('no image in database');
+      return;
+    }
+
+    final userImageUrl = await Supabase.instance.client.storage
+        .from('profiles')
+        .getPublicUrl(imagePath);
+
+    userImage = userImageUrl.toString();
+
+    notifyListeners();
   }
 
   //insert

@@ -77,6 +77,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     }
     Navigator.of(context).pop();
     toast.loginSuccessfully(context, user.userName);
+    userProvider.getUserImage(_schoolIdController.text.trim());
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => MenuScreen(
               userKey: _schoolIdController.text.trim(),

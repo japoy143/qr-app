@@ -34,13 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final appBar = AppBar();
 
-  void isSignUpOnlineDialog(BuildContext context) {
+  void isSignUpOnlineDialog(BuildContext context, Color color) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(4.0),
               topRight: Radius.circular(4.0),
@@ -48,21 +48,60 @@ class _HomeScreenState extends State<HomeScreen> {
               bottomRight: Radius.circular(4.0),
             ),
           ),
-          contentPadding: EdgeInsets.all(10.0),
-
-          // Adjust padding to make it more compact
+          contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           content: SizedBox(
             width: 150, // Set a fixed width for the dialog
             child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Please SignUp Your Account Online'),
-                Text('So That Your Attendance Will Be Save in Database'),
+                Icon(
+                  Icons.warning,
+                  color: color,
+                  size: 40,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'Sign Up Online',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'Please Sign Up Your Account Online So That Your Attendance Will Be Saved in the Database',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+                const SizedBox(
+                    height:
+                        20), // Add some spacing between the text and the button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Text('Ok')),
+                    Expanded(
+                      child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical:
+                                      8), // Add padding to the button for better touch area
+                              decoration: BoxDecoration(
+                                color: color,
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Ok',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18.0),
+                                ),
+                              ))),
+                    ),
                   ],
                 )
               ],
@@ -76,18 +115,23 @@ class _HomeScreenState extends State<HomeScreen> {
   checkIfUserSignUpOnline() {
     final provider = Provider.of<UsersProvider>(context, listen: false);
     UsersType user = provider.userData;
+    Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
     if (user.isSignupOnline) {
       return;
     }
-    isSignUpOnlineDialog(context);
+
+    isSignUpOnlineDialog(context, purple);
   }
 
   @override
   void initState() {
-    Provider.of<EventProvider>(context, listen: false).getEvents();
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
-    checkIfUserSignUpOnline();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<EventProvider>(context, listen: false).getEvents();
+      Provider.of<UsersProvider>(context, listen: false)
+          .getUser(widget.userKey);
+      checkIfUserSignUpOnline();
+    });
   }
 
   @override

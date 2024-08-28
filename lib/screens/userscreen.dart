@@ -60,11 +60,16 @@ class _UserScreenState extends State<UserScreen> {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
 
     try {
+      final ImageExtension = image.path.split('.').last.toLowerCase();
       final imageBytes = await image.readAsBytes();
-      final imagePath = '/user/profile';
-      await Supabase.instance.client.storage
-          .from('userprofile')
-          .uploadBinary(imagePath, imageBytes);
+      final imagePath = '$id/image';
+      await Supabase.instance.client.storage.from('profiles').uploadBinary(
+          imagePath, imageBytes,
+          fileOptions:
+              FileOptions(upsert: true, contentType: 'image/$ImageExtension'));
+
+      //update state
+      userProvider.getUserImage(id.toString());
 
       print('uploaded');
     } catch (e) {
@@ -157,10 +162,7 @@ class _UserScreenState extends State<UserScreen> {
                                   isSignUpOnline),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
-                                  UsersType? getUser = provider
-                                      .getdataForlocalImage(widget.userKey);
-
-                                  final userImage = getUser?.userProfile;
+                                  final userImage = provider.userImage;
 
                                   return SizedBox(
                                     width: 60,
@@ -168,7 +170,7 @@ class _UserScreenState extends State<UserScreen> {
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        userImage == ""
+                                        userImage == null || userImage.isEmpty
                                             ? Icon(
                                                 Icons.account_circle_outlined,
                                                 size: (screenHeight -
@@ -179,8 +181,8 @@ class _UserScreenState extends State<UserScreen> {
                                                 radius: (screenHeight -
                                                         statusbarHeight) *
                                                     0.035,
-                                                backgroundImage:
-                                                    FileImage(File(userImage!)),
+                                                backgroundImage: NetworkImage(
+                                                    userImage), // Use NetworkImage for URL-based images
                                                 backgroundColor:
                                                     Colors.transparent,
                                               ),
