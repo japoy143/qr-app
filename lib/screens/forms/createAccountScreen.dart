@@ -80,21 +80,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         _schoolIdController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       toast.errorCreationUser(context);
+      Navigator.of(context).pop();
       return false;
     }
 
     if (await userProvider.containsUser(_schoolIdController.text)) {
       toast.userAlreadyExist(context);
+      Navigator.of(context).pop();
       return false;
     }
 
     if (_passwordController.text.length < 8) {
       toast.passwordLengthError(context);
+      Navigator.of(context).pop();
       return false;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
       toast.passwordNotSame(context);
+      Navigator.of(context).pop();
       return false;
     }
     userProvider.createNewUser(
@@ -105,6 +109,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         _passwordController.text,
         '');
 
+    Navigator.of(context).pop();
     toast.successfullyCreatedUser(context);
     return true;
   }
@@ -113,6 +118,43 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     if (await userValidation()) {
       clearAllFields();
     }
+  }
+
+  //progress bar
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(10.0),
+
+          // Adjust padding to make it more compact
+          content: SizedBox(
+            width: 150, // Set a fixed width for the dialog
+            child: Row(
+              children: [
+                CircularProgressIndicator(color: Colors.blue),
+                SizedBox(
+                    width: 16), // Reduce spacing between indicator and text
+                Text(
+                  "Signing Up...",
+                  style: TextStyle(fontSize: 16), // Adjust font size if needed
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   double responsiveDropDownSizing(
@@ -294,7 +336,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         Padding(
             padding: const EdgeInsets.fromLTRB(40.0, 4.0, 40.0, 0),
             child: GestureDetector(
-                onTap: createUser,
+                onTap: () {
+                  try {
+                    showProgressDialog(context);
+                    createUser();
+                  } catch (e) {
+                    toast.errorCreationUser(context);
+                  }
+                },
                 child: ButtonResponsive(
                     buttonColor: widget.textColor,
                     height: widget.height,

@@ -22,6 +22,9 @@ class UsersProvider extends ChangeNotifier {
   //user image url
   String? userImage;
 
+  // user scanned image
+  String? userScannedImage = '';
+
   //admin roles
   List<int> adminIds = [
     100001,
@@ -132,6 +135,37 @@ class UsersProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       userImage = 'off';
+      notifyListeners();
+      return;
+    }
+  }
+
+  //scanned user image
+  void getScannedUserImage(String id) async {
+    try {
+      final imagePath = '$id/image';
+
+      // check if there is imagepath in the list using id
+      final urlResponse =
+          await Supabase.instance.client.storage.from('profiles').list();
+
+      List<String?> imagePathList =
+          urlResponse.map((item) => item.name).toList();
+
+      if (!imagePathList.contains(id)) {
+        userScannedImage = '';
+        print('no image in database');
+        return;
+      }
+
+      final userImageUrl = await Supabase.instance.client.storage
+          .from('profiles')
+          .getPublicUrl(imagePath);
+
+      userScannedImage = userImageUrl.toString();
+      notifyListeners();
+    } catch (e) {
+      userScannedImage = 'off';
       notifyListeners();
       return;
     }

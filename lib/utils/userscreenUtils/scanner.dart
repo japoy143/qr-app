@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -7,6 +9,7 @@ import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/eventsid.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/toast.dart';
 
 // ignore: must_be_immutable
@@ -70,6 +73,9 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userYear = details[3];
     });
 
+    // set user image
+    getUserUrlImage(userSchoolId);
+
     //check if student already attended
     final isAttended = eventAttendanceProvider.containsStudent(userSchoolId);
 
@@ -107,6 +113,33 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     }
   }
 
+  // get user profile in server
+  getUserUrlImage(String id) {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+
+    //get scanned user using id
+    userProvider.getScannedUserImage(id);
+  }
+
+  // return profile condition
+  Widget showProfile(String response) {
+    // online and http link is not  empty
+    if (response != 'off' && response != '') {
+      return CircleAvatar(
+        radius: 140,
+        backgroundImage:
+            NetworkImage(response), // Use NetworkImage for URL-based images
+        backgroundColor: Colors.transparent,
+      );
+    }
+
+    //default
+    return const Icon(
+      Icons.account_circle_rounded,
+      size: 200.0,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,44 +147,49 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Scan Attendance'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 80.0, 0, 0),
-              child: Icon(
-                Icons.account_circle_rounded,
-                size: 200.0,
-              ),
-              // child: CircleAvatar(
-              //   radius: 100,
-              //   backgroundColor: Colors.red,
-              // ),
+    return Consumer<UsersProvider>(
+      builder: (context, provider, child) {
+        //initialize scanned user image
+        final scannedImageUrl = provider.userScannedImage;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Scan Attendance'),
+            centerTitle: true,
+          ),
+          body: Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 80.0, 0, 0),
+                  child: scannedImageUrl != null
+                      ? showProfile(scannedImageUrl)
+                      : const SizedBox.shrink(),
+                ),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '$userCourse-$userYear',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  userSchoolId,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
+                )
+              ],
             ),
-            Text(
-              userName,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '$userCourse-$userYear',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            ),
-            Text(
-              userSchoolId,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: startscan,
-        child: const Icon(Icons.qr_code_scanner),
-      ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: startscan,
+            child: const Icon(Icons.qr_code_scanner),
+          ),
+        );
+      },
     );
   }
 }

@@ -106,7 +106,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                 SizedBox(
                     width: 16), // Reduce spacing between indicator and text
                 Text(
-                  "Loading...",
+                  "Logging In...",
                   style: TextStyle(fontSize: 16), // Adjust font size if needed
                 ),
               ],

@@ -156,6 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<EventProvider>(context, listen: false).getEvents();
       Provider.of<UsersProvider>(context, listen: false)
           .getUser(widget.userKey);
+      Provider.of<UsersProvider>(context, listen: false)
+          .getUserImage(widget.userKey);
       checkIfUserSignUpOnline();
     });
   }

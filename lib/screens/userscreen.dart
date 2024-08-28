@@ -142,6 +142,7 @@ class _UserScreenState extends State<UserScreen> {
     //user
 
     final user = userProvider.userData;
+    final userName = user.userName;
     final userSchoolId = user.schoolId;
     final userCourse = user.userCourse;
     final userYear = user.userYear;
@@ -154,7 +155,7 @@ class _UserScreenState extends State<UserScreen> {
     String qrData = [
       userSchoolId.toString(),
       "|",
-      user,
+      userName,
       "|",
       userCourse,
       "|",
