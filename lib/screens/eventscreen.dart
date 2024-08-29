@@ -332,7 +332,11 @@ class _EventScreenState extends State<EventScreen> {
                               userImageUrl != null
                                   ? showProfile(userProfile, userImageUrl,
                                       screenHeight, statusbarHeight)
-                                  : const SizedBox.shrink(),
+                                  : Icon(
+                                      Icons.account_circle_outlined,
+                                      size: (screenHeight - statusbarHeight) *
+                                          0.07,
+                                    ),
                               const SizedBox(
                                 width: 10.0,
                               ),

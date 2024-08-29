@@ -88,14 +88,16 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                             child: GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          CoursesSummaryScreen(
-                                            eventName: item.eventName,
-                                            screenHeight: screenHeight,
-                                            eventId: item.id,
-                                          ))),
+                              onTap: isAdmin
+                                  ? () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CoursesSummaryScreen(
+                                                eventName: item.eventName,
+                                                screenHeight: screenHeight,
+                                                eventId: item.id,
+                                              )))
+                                  : null,
                               child: Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(

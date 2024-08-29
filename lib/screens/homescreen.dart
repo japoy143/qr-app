@@ -158,6 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .getUser(widget.userKey);
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
+      widget.setIndex(1);
+      widget.setIndex(0);
+
       checkIfUserSignUpOnline();
     });
   }
@@ -208,8 +211,6 @@ class _HomeScreenState extends State<HomeScreen> {
         final userSchoolId = user.schoolId;
         final isAdmin = user.isAdmin;
         final userProfile = user.userProfile;
-        //online profile url
-        final userImageUrl = userProvider.userImage;
 
         return Scaffold(
           body: SafeArea(
@@ -225,10 +226,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           children: [
-                            userImageUrl != null
-                                ? showProfile(userProfile, userImageUrl,
-                                    screenHeight, statusbarHeight)
-                                : const SizedBox.shrink(),
+                            Consumer<UsersProvider>(
+                                builder: (context, provider, child) {
+                              final userImageUrl = provider.userImage;
+
+                              return userImageUrl != null
+                                  ? showProfile(userProfile, userImageUrl,
+                                      screenHeight, statusbarHeight)
+                                  : Icon(
+                                      Icons.account_circle_outlined,
+                                      size: (screenHeight - statusbarHeight) *
+                                          0.07,
+                                    );
+                            }),
                             const SizedBox(
                               width: 10.0,
                             ),

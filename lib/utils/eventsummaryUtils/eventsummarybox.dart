@@ -9,7 +9,11 @@ class EventSummayBox extends StatefulWidget {
   final EventType items;
   final bool isAdmin;
 
-  EventSummayBox({super.key, required this.items, required this.screeHeight, required this.isAdmin});
+  EventSummayBox(
+      {super.key,
+      required this.items,
+      required this.screeHeight,
+      required this.isAdmin});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -125,21 +129,23 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                   ),
                 ],
               ),
-              GestureDetector(
-                onTap: widget.isAdmin ? () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CoursesSummaryScreen(
-                          eventName: item.eventName,
-                          screenHeight: widget.screeHeight,
-                          eventId: item.id,
-                        ))) : null,
-                child: Text('See more',
-                    style: TextStyle(
-                      color: colorTheme.secondaryColor,
-                      fontFamily: "Poppins",
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                    )),
-              )
+              widget.isAdmin
+                  ? GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => CoursesSummaryScreen(
+                                eventName: item.eventName,
+                                screenHeight: widget.screeHeight,
+                                eventId: item.id,
+                              ))),
+                      child: Text('See more',
+                          style: TextStyle(
+                            color: colorTheme.secondaryColor,
+                            fontFamily: "Poppins",
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    )
+                  : SizedBox.shrink(), //TODO: put here if user attended
             ],
           ),
         ),

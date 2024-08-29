@@ -72,6 +72,11 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       toast.userIdNotCorrect(context);
       return;
     }
+
+    // get user image url
+    userProvider.getUserImage(_schoolIdController.text.trim());
+
+    // off the progress bar
     Navigator.of(context).pop();
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
@@ -99,7 +104,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
           // Adjust padding to make it more compact
           content: SizedBox(
-            width: 150, // Set a fixed width for the dialog
+            width: 150,
             child: Row(
               children: [
                 CircularProgressIndicator(color: Colors.blue),

@@ -30,6 +30,8 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUserImage(widget.userKey);
     super.initState();
   }
 

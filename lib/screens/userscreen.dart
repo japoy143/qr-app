@@ -204,7 +204,12 @@ class _UserScreenState extends State<UserScreen> {
                                                 userImage,
                                                 screenHeight,
                                                 statusbarHeight)
-                                            : const SizedBox.shrink(),
+                                            : Icon(
+                                                Icons.account_circle_outlined,
+                                                size: (screenHeight -
+                                                        statusbarHeight) *
+                                                    0.07,
+                                              ),
                                         const Positioned(
                                           left: 36,
                                           bottom: 14,
