@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/screens/auth/AuthProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
 import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
@@ -78,12 +79,12 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
     // off the progress bar
     Navigator.of(context).pop();
+    //set status login to true
+    await userProvider.login(
+        user, int.parse((_schoolIdController.text.trim())));
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => MenuScreen(
-              userKey: _schoolIdController.text.trim(),
-            )));
+    userProvider.getUser(_schoolIdController.text.trim());
   }
 
   void showProgressDialog(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/screens/auth/AuthProvider.dart';
 import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
@@ -31,7 +32,7 @@ void main() async {
   final _allInit = AllInitialization();
 
   // all hive database initialization for hive boxes user, event ...
-  _allInit.AllDatabaseInit();
+  await _allInit.AllDatabaseInit();
 
   //notification
   tz.initializeTimeZones();
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
             seedColor: Color(color.hexColor(color.primaryColor))),
         useMaterial3: true,
       ),
-      home: const LandingScreen(),
+      home: const AuthProvider(),
     );
   }
 }

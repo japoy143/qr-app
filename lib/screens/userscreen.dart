@@ -5,10 +5,9 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/theme/notification_active.dart';
-import 'package:qr_app/theme/notification_none.dart';
 import 'package:qr_app/utils/toast.dart';
 import 'package:qr_app/utils/userscreenUtils/eventSummary.dart';
 import 'package:supabase/supabase.dart';
@@ -45,7 +44,8 @@ class _UserScreenState extends State<UserScreen> {
       String userPassword,
       bool isAdmin,
       String userProfile,
-      bool isSignUpOnline) async {
+      bool isSignUpOnline,
+      bool isLogin) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -79,16 +79,16 @@ class _UserScreenState extends State<UserScreen> {
     userProvider.insertData(
         id.toString(),
         UsersType(
-          schoolId: id,
-          key: userName,
-          userName: userName,
-          userCourse: userCourse,
-          userYear: userYear,
-          userPassword: userPassword,
-          isAdmin: isAdmin,
-          userProfile: image.path,
-          isSignupOnline: isSignUpOnline,
-        ));
+            schoolId: id,
+            key: userName,
+            userName: userName,
+            userCourse: userCourse,
+            userYear: userYear,
+            userPassword: userPassword,
+            isAdmin: isAdmin,
+            userProfile: image.path,
+            isSignupOnline: isSignUpOnline,
+            isLogin: isLogin));
 
     showToast();
   }
@@ -150,6 +150,7 @@ class _UserScreenState extends State<UserScreen> {
     final userPassword = user.userPassword;
     final userProfile = user.userProfile;
     final isSignUpOnline = user.isSignupOnline;
+    final isUserLogin = user.isLogin;
 
     //for qr data
     String qrData = [
@@ -187,7 +188,8 @@ class _UserScreenState extends State<UserScreen> {
                                   userPassword,
                                   isAdmin,
                                   userProfile,
-                                  isSignUpOnline),
+                                  isSignUpOnline,
+                                  isUserLogin),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;
@@ -248,17 +250,21 @@ class _UserScreenState extends State<UserScreen> {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                      child: Container(
-                        child: notification != 0
-                            ? const NotificationActive(height: 26, width: 26)
-                            : const NotificationNone(
-                                height: 26,
-                                width: 26,
-                              ),
-                      ),
-                    )
+                    GestureDetector(
+                        onTap: () async {
+                          final userProvider = Provider.of<UsersProvider>(
+                              context,
+                              listen: false);
+
+                          await userProvider.logout(userSchoolId);
+                        },
+                        child: const Text(
+                          'Logout',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                              fontSize: 16),
+                        ))
                   ],
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/eventscreen.dart';
 import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/eventsummaryscreen.dart';
@@ -9,14 +10,14 @@ import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
 class MenuScreen extends StatefulWidget {
-  final String userKey;
-  const MenuScreen({super.key, required this.userKey});
+  const MenuScreen({super.key});
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  late final UsersType user;
   final color = ColorThemeProvider();
   List<Widget> bottomNavIcon = const [
     Icon(Icons.home),
@@ -29,9 +30,11 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   void initState() {
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    user = Provider.of<UsersProvider>(context, listen: false).userData;
     Provider.of<UsersProvider>(context, listen: false)
-        .getUserImage(widget.userKey);
+        .getUser(user.schoolId.toString());
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUserImage(user.schoolId.toString());
     super.initState();
   }
 
@@ -44,7 +47,7 @@ class _MenuScreenState extends State<MenuScreen> {
     List pages = isAdmin
         ? [
             HomeScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
               setIndex: (index) {
                 setState(() {
                   currentIndex = index;
@@ -52,19 +55,19 @@ class _MenuScreenState extends State<MenuScreen> {
               },
             ),
             EventScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             ),
             EventSummaryScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             ),
             const PenaltyScreen(),
             UserScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             )
           ]
         : [
             HomeScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
               setIndex: (index) {
                 setState(() {
                   currentIndex = index;
@@ -72,13 +75,13 @@ class _MenuScreenState extends State<MenuScreen> {
               },
             ),
             EventScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             ),
             EventSummaryScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             ),
             UserScreen(
-              userKey: widget.userKey,
+              userKey: user.schoolId.toString(),
             )
           ];
 

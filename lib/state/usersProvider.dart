@@ -17,7 +17,8 @@ class UsersProvider extends ChangeNotifier {
       userPassword: '',
       isAdmin: false,
       userProfile: '',
-      isSignupOnline: false);
+      isSignupOnline: false,
+      isLogin: false);
 
   //user image url
   String? userImage;
@@ -69,6 +70,7 @@ class UsersProvider extends ChangeNotifier {
         isAdmin: user['is_admin'],
         userProfile: '',
         isSignupOnline: true,
+        isLogin: user['is_login'],
       );
       notifyListeners();
       return userData;
@@ -127,6 +129,7 @@ class UsersProvider extends ChangeNotifier {
         return;
       }
 
+      // user image
       final userImageUrl = await Supabase.instance.client.storage
           .from('profiles')
           .getPublicUrl(imagePath);
@@ -192,6 +195,7 @@ class UsersProvider extends ChangeNotifier {
         'user_password': userPassword,
         'is_admin': isAdmin,
         'user_profile': userProfile,
+        'is_login': false,
       });
 
       userBox.put(
@@ -205,7 +209,8 @@ class UsersProvider extends ChangeNotifier {
               userPassword: userPassword,
               isAdmin: isAdmin,
               userProfile: userProfile,
-              isSignupOnline: true));
+              isSignupOnline: true,
+              isLogin: false));
 
       print('data inserted successfully');
     } catch (e) {
@@ -224,7 +229,8 @@ class UsersProvider extends ChangeNotifier {
               userPassword: userPassword,
               isAdmin: isAdmin,
               userProfile: userProfile,
-              isSignupOnline: false));
+              isSignupOnline: false,
+              isLogin: false));
 
       print('error $e');
     }
@@ -235,6 +241,87 @@ class UsersProvider extends ChangeNotifier {
     await userBox.put(id, user);
     getUsers();
     notifyListeners();
+  }
+
+  //update status to login
+  login(UsersType userData, int id) async {
+    final user = userData;
+
+    try {
+      await Supabase.instance.client
+          .from('users')
+          .update({'is_login': true}).eq('school_id', id);
+
+      //set changes
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        userData = UsersType(
+            schoolId: user.schoolId,
+            key: user.key,
+            userName: user.userName,
+            userCourse: user.userCourse,
+            userYear: user.userYear,
+            userPassword: user.userPassword,
+            isAdmin: user.isAdmin,
+            userProfile: user.userProfile,
+            isSignupOnline: user.isSignupOnline,
+            isLogin: true);
+
+        notifyListeners();
+      });
+    } catch (e) {
+      //offline
+      userData = UsersType(
+          schoolId: user.schoolId,
+          key: user.key,
+          userName: user.userName,
+          userCourse: user.userCourse,
+          userYear: user.userYear,
+          userPassword: user.userPassword,
+          isAdmin: user.isAdmin,
+          userProfile: user.userProfile,
+          isSignupOnline: user.isSignupOnline,
+          isLogin: true);
+
+      notifyListeners();
+    }
+  }
+
+  //logout callback and dispose all session data
+  logout(int id) async {
+    try {
+      //logout in server
+      await Supabase.instance.client
+          .from('users')
+          .update({'is_login': false}).eq('school_id', id);
+
+      userData = UsersType(
+          schoolId: 0,
+          key: '',
+          userName: '',
+          userCourse: '',
+          userYear: '',
+          userPassword: '',
+          isAdmin: false,
+          userProfile: '',
+          isSignupOnline: false,
+          isLogin: false);
+
+      notifyListeners();
+    } catch (e) {
+      userData = UsersType(
+          schoolId: 0,
+          key: '',
+          userName: '',
+          userCourse: '',
+          userYear: '',
+          userPassword: '',
+          isAdmin: false,
+          userProfile: '',
+          isSignupOnline: false,
+          isLogin: false);
+
+      notifyListeners();
+    }
   }
 
   // updateEventEndedData(int id) async {
