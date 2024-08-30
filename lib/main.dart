@@ -14,8 +14,10 @@ import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
 import 'package:qr_app/utils/localNotifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:toastification/toastification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,15 +64,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = ColorThemeProvider();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Color(color.hexColor(color.primaryColor))),
-        useMaterial3: true,
+    return ToastificationWrapper(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(color.hexColor(color.primaryColor))),
+          useMaterial3: true,
+        ),
+        home: const AuthProvider(),
       ),
-      home: const AuthProvider(),
     );
   }
 }

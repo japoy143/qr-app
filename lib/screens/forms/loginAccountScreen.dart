@@ -52,7 +52,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   final toast = CustomToast();
 
   //login user
-  void userValidate() async {
+  void userValidate(BuildContext context) async {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
     final user = await userProvider.getUser(_schoolIdController.text.trim());
 
@@ -82,6 +82,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     //set status login to true
     await userProvider.login(
         user, int.parse((_schoolIdController.text.trim())));
+
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
     userProvider.getUser(_schoolIdController.text.trim());
@@ -205,7 +206,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
                 onTap: () {
                   try {
                     showProgressDialog(context);
-                    userValidate();
+                    userValidate(context);
                   } catch (e) {
                     toast.errorCreationUser(context);
                   }

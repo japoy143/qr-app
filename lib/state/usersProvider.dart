@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersProvider extends ChangeNotifier {
   // create box
   var userBox = Hive.box<UsersType>('usersBox');
   List<UsersType> userList = [];
+
+  // shared pref
 
   UsersType userData = UsersType(
       schoolId: 0,
@@ -49,6 +52,14 @@ class UsersProvider extends ChangeNotifier {
     userList = data;
   }
 
+  getPrefUserData(int id) {
+    UsersType? user = userBox.get(id);
+    if (user != null) {
+      userData = user;
+      notifyListeners();
+    }
+  }
+
   //get user online and offline
   Future<UsersType?> getUser(String userKey) async {
     // check if data  is already save in phone storage or already cache
@@ -72,12 +83,15 @@ class UsersProvider extends ChangeNotifier {
         isSignupOnline: true,
         isLogin: user['is_login'],
       );
+
       notifyListeners();
       return userData;
     } catch (e) {
       //still works even offline
       UsersType? user = userBox.get(userKey);
-      userData = user!;
+      if (user != null) {
+        userData = user;
+      }
       notifyListeners();
       print('catch');
       return user;
@@ -245,12 +259,16 @@ class UsersProvider extends ChangeNotifier {
 
   //update status to login
   login(UsersType userData, int id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = userData;
 
     try {
       await Supabase.instance.client
           .from('users')
           .update({'is_login': true}).eq('school_id', id);
+
+      //persist
+      await prefs.setInt('school_id', id);
 
       //set changes
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -288,11 +306,14 @@ class UsersProvider extends ChangeNotifier {
 
   //logout callback and dispose all session data
   logout(int id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       //logout in server
       await Supabase.instance.client
           .from('users')
           .update({'is_login': false}).eq('school_id', id);
+
+      await prefs.setInt('school_id', 0);
 
       userData = UsersType(
           schoolId: 0,

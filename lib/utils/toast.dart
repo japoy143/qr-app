@@ -3,7 +3,7 @@ import 'package:toastification/toastification.dart';
 import 'package:vibration/vibration.dart';
 
 class CustomToast {
-  void loginSuccessfully(context, String user) {
+  void loginSuccessfully(BuildContext context, String user) {
     toastification.show(
       context: context,
       type: ToastificationType.success,
