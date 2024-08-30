@@ -39,13 +39,11 @@ class _AuthProviderState extends State<AuthProvider> {
       builder: (context, provider, child) {
         if (userKey != null) {
           provider.getUser(userKey.toString());
-          print(userKey);
+          provider.getUserImage(userKey.toString());
         }
 
         final user = provider.userData;
         final status = user.isLogin;
-
-        print(status);
 
         if (status) {
           return const MenuScreen();
