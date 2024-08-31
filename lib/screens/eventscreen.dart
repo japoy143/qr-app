@@ -58,6 +58,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
+    Provider.of<EventProvider>(context, listen: false).callBackListener();
     Provider.of<NotificationProvider>(context, listen: false)
         .getNotifications();
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
@@ -428,43 +429,67 @@ class _EventScreenState extends State<EventScreen> {
                               final item = sortedEventNotEnded.elementAt(index);
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
-                                child: Slidable(
-                                  endActionPane: ActionPane(
-                                      motion: const StretchMotion(),
-                                      children: [
-                                        SlidableAction(
-                                          backgroundColor: Colors.redAccent,
-                                          onPressed: (context) {
-                                            setState(() {
-                                              provider.deleteEvent(item.id);
-                                            });
-                                          },
-                                          icon: Icons.delete,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                        )
-                                      ]),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6.0),
-                                    decoration: BoxDecoration(
-                                        color: purple,
-                                        borderRadius:
-                                            BorderRadius.circular(8.0)),
-                                    child: EventBox(
-                                      officerName: userName,
-                                      updateEvent: () => showDialogUpdate(
-                                          (screenHeight - statusbarHeight) *
-                                              0.68,
-                                          screenWidth * 0.85,
-                                          purple,
-                                          item,
-                                          totalHeight),
-                                      items: item,
-                                      userkey: widget.userKey,
-                                      isAdmin: isAdmin,
-                                    ),
-                                  ),
-                                ),
+                                child: isAdmin
+                                    ? Slidable(
+                                        endActionPane: ActionPane(
+                                            motion: const StretchMotion(),
+                                            children: [
+                                              SlidableAction(
+                                                backgroundColor:
+                                                    Colors.redAccent,
+                                                onPressed: (context) {
+                                                  setState(() {
+                                                    provider
+                                                        .deleteEvent(item.id);
+                                                  });
+                                                },
+                                                icon: Icons.delete,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              )
+                                            ]),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6.0),
+                                          decoration: BoxDecoration(
+                                              color: purple,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0)),
+                                          child: EventBox(
+                                            officerName: userName,
+                                            updateEvent: () => showDialogUpdate(
+                                                (screenHeight -
+                                                        statusbarHeight) *
+                                                    0.68,
+                                                screenWidth * 0.85,
+                                                purple,
+                                                item,
+                                                totalHeight),
+                                            items: item,
+                                            userkey: widget.userKey,
+                                            isAdmin: isAdmin,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.all(6.0),
+                                        decoration: BoxDecoration(
+                                            color: purple,
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
+                                        child: EventBox(
+                                          officerName: userName,
+                                          updateEvent: () => showDialogUpdate(
+                                              (screenHeight - statusbarHeight) *
+                                                  0.68,
+                                              screenWidth * 0.85,
+                                              purple,
+                                              item,
+                                              totalHeight),
+                                          items: item,
+                                          userkey: widget.userKey,
+                                          isAdmin: isAdmin,
+                                        ),
+                                      ),
                               );
                             })),
                   ],

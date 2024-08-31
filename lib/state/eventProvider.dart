@@ -8,6 +8,41 @@ class EventProvider extends ChangeNotifier {
   var eventBox = Hive.box<EventType>('eventBox');
   List<EventType> eventList = [];
 
+//
+//LISTENER
+//
+
+  callBackListener() {
+    try {
+      Supabase.instance.client
+          .from('event')
+          .stream(primaryKey: ['id']).listen((List<Map<String, dynamic>> data) {
+        var events = data.map((event) {
+          return EventType(
+              id: event['event_id'],
+              eventName: event['event_name'],
+              eventDescription: event['event_description'],
+              eventDate: DateTime.parse(event['event_date']),
+              startTime: DateTime.parse(event['start_time']),
+              endTime: DateTime.parse(event['end_time']),
+              eventEnded: event['event_ended'],
+              eventPlace: event['event_place'],
+              eventStatus: '',
+              key: event['key']);
+        }).toList();
+
+        eventList = events;
+        print('callback');
+        notifyListeners();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+//
+//GET
+//
   getEvents() async {
     try {
       var events = await Supabase.instance.client.from('event').select("*");
@@ -42,6 +77,10 @@ class EventProvider extends ChangeNotifier {
     return event;
   }
 
+//
+//INSERT
+//
+
   //insert events
   insertData(EventType event) async {
     try {
@@ -68,6 +107,10 @@ class EventProvider extends ChangeNotifier {
       print(e);
     }
   }
+
+//
+//UPDATE
+//
 
   updateEventEndedData(int id) async {
     try {
@@ -139,6 +182,10 @@ class EventProvider extends ChangeNotifier {
       });
     }
   }
+
+  //
+  //DELETE
+  //
 
   deleteEvent(int id) async {
     try {
