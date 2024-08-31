@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -107,6 +105,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               studentName: userName,
               studentCourse: userCourse,
               studentYear: userYear));
+
+      //TODO: update user attendance
       toast.AttendanceSuccessfullySave(context);
     } catch (e) {
       toast.errorStudentNotSave(context);

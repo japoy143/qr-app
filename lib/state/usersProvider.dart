@@ -327,6 +327,8 @@ class UsersProvider extends ChangeNotifier {
           isSignupOnline: false,
           isLogin: false);
 
+      userImage = '';
+      print("successfully Logout");
       notifyListeners();
     } catch (e) {
       userData = UsersType(
@@ -340,7 +342,7 @@ class UsersProvider extends ChangeNotifier {
           userProfile: '',
           isSignupOnline: false,
           isLogin: false);
-
+      print(e);
       notifyListeners();
     }
   }

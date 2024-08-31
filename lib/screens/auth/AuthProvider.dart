@@ -37,7 +37,7 @@ class _AuthProviderState extends State<AuthProvider> {
   Widget build(BuildContext context) {
     return Consumer<UsersProvider>(
       builder: (context, provider, child) {
-        if (userKey != null) {
+        if (userKey != null && userKey != 0) {
           provider.getUser(userKey.toString());
           provider.getUserImage(userKey.toString());
         }

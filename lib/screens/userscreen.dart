@@ -120,6 +120,42 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(10.0),
+
+          // Adjust padding to make it more compact
+          content: SizedBox(
+            width: 150,
+            child: Row(
+              children: [
+                CircularProgressIndicator(color: Colors.blue),
+                SizedBox(
+                    width: 16), // Reduce spacing between indicator and text
+                Text(
+                  "Logging Out...",
+                  style: TextStyle(fontSize: 16), // Adjust font size if needed
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   final appBar = AppBar();
 
   @override
@@ -255,8 +291,11 @@ class _UserScreenState extends State<UserScreen> {
                           final userProvider = Provider.of<UsersProvider>(
                               context,
                               listen: false);
-
-                          await userProvider.logout(userSchoolId);
+                          showProgressDialog(context);
+                          await Future.delayed(Duration(seconds: 2), () {
+                            userProvider.logout(userSchoolId);
+                          });
+                          Navigator.of(context).pop();
                         },
                         child: const Text(
                           'Logout',

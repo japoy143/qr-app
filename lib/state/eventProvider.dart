@@ -71,6 +71,39 @@ class EventProvider extends ChangeNotifier {
     }
   }
 
+  filteredEventEnded() async {
+    try {
+      var events = await Supabase.instance.client.from('event').select("*");
+
+      List<EventType> allEvents = events.map((event) {
+        return EventType(
+            id: event['event_id'],
+            eventName: event['event_name'],
+            eventDescription: event['event_description'],
+            eventDate: DateTime.parse(event['event_date']),
+            startTime: DateTime.parse(event['start_time']),
+            endTime: DateTime.parse(event['end_time']),
+            eventEnded: event['event_ended'],
+            eventPlace: event['event_place'],
+            eventStatus: '',
+            key: event['key']);
+      }).toList();
+
+      List<EventType> filteredEvent =
+          allEvents.where((event) => event.eventEnded == true).toList();
+
+      eventList = filteredEvent;
+      notifyListeners();
+      print('successfully get');
+    } catch (e) {
+      var data = eventBox.values.toList();
+      List<EventType> filteredEvent =
+          data.where((event) => event.eventEnded == true).toList();
+      eventList = filteredEvent;
+      notifyListeners();
+    }
+  }
+
   //get event specific event
   bool containsEvent(int id) {
     var event = eventBox.containsKey(id);
@@ -114,20 +147,27 @@ class EventProvider extends ChangeNotifier {
 
   updateEventEndedData(int id) async {
     try {
+      //get status to check if already updated
+      var event = await Supabase.instance.client
+          .from('event')
+          .select("*")
+          .eq('event_id', id)
+          .single();
+
+      bool isEventAlreadyUpdated = event['event_ended'];
+
+      if (isEventAlreadyUpdated) {
+        filteredEventEnded();
+        notifyListeners();
+        print('event already updated');
+        return;
+      }
+
       await Supabase.instance.client
           .from('event')
           .update({'event_ended': true}).eq('event_id', id);
-
-      var eventObject = eventBox.get(id);
-
-      if (eventObject != null) {
-        // Update the eventEnded property
-        eventObject.eventEnded = true;
-        eventBox.put(id, eventObject);
-      }
-
-      // Refresh events and notify listeners
-      getEvents();
+      filteredEventEnded();
+      print('event updated');
       notifyListeners();
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

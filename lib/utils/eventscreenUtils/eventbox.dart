@@ -9,6 +9,8 @@ import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:qr_app/utils/userscreenUtils/scanner.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
 
 class EventBox extends StatefulWidget {
   final EventType items;
@@ -42,6 +44,8 @@ class _EventBoxState extends State<EventBox> {
   @override
   void initState() {
     item = widget.items;
+    // Initialize timezone data
+    tzdata.initializeTimeZones();
     super.initState();
     _eventStatus = showEventStatus(item.startTime, item.endTime);
     _startTimer();
@@ -62,10 +66,11 @@ class _EventBoxState extends State<EventBox> {
   }
 
   String showEventStatus(DateTime date, DateTime event_end) {
+    final tz.Location manila = tz.getLocation('Asia/Manila');
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
     final notificationProvider =
         Provider.of<NotificationProvider>(context, listen: false);
-    DateTime now = DateTime.now();
+    var now = tz.TZDateTime.now(manila);
 
     if (now.isAtSameMomentAs(event_end) || now.isAfter(event_end)) {
       if (isEventNotificationShown) {

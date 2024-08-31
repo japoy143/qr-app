@@ -158,8 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
           .getUser(widget.userKey);
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
-      widget.setIndex(1);
-      widget.setIndex(0);
 
       checkIfUserSignUpOnline();
     });
