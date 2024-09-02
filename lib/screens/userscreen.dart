@@ -5,7 +5,6 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/toast.dart';
@@ -45,7 +44,8 @@ class _UserScreenState extends State<UserScreen> {
       bool isAdmin,
       String userProfile,
       bool isSignUpOnline,
-      bool isLogin) async {
+      bool isLogin,
+      String eventAttended) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -88,7 +88,8 @@ class _UserScreenState extends State<UserScreen> {
             isAdmin: isAdmin,
             userProfile: image.path,
             isSignupOnline: isSignUpOnline,
-            isLogin: isLogin));
+            isLogin: isLogin,
+            eventAttended: eventAttended));
 
     showToast();
   }
@@ -187,6 +188,7 @@ class _UserScreenState extends State<UserScreen> {
     final userProfile = user.userProfile;
     final isSignUpOnline = user.isSignupOnline;
     final isUserLogin = user.isLogin;
+    final userAttendedEvent = user.eventAttended;
 
     //for qr data
     String qrData = [
@@ -225,7 +227,8 @@ class _UserScreenState extends State<UserScreen> {
                                   isAdmin,
                                   userProfile,
                                   isSignUpOnline,
-                                  isUserLogin),
+                                  isUserLogin,
+                                  userAttendedEvent),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;

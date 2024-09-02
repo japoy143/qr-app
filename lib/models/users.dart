@@ -24,6 +24,8 @@ class UsersType {
   bool isSignupOnline;
   @HiveField(9)
   bool isLogin;
+  @HiveField(10)
+  String eventAttended;
 
   UsersType(
       {required this.schoolId,
@@ -35,5 +37,6 @@ class UsersType {
       required this.isAdmin,
       required this.userProfile,
       required this.isSignupOnline,
-      required this.isLogin});
+      required this.isLogin,
+      required this.eventAttended});
 }

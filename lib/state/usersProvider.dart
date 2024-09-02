@@ -21,7 +21,8 @@ class UsersProvider extends ChangeNotifier {
       isAdmin: false,
       userProfile: '',
       isSignupOnline: false,
-      isLogin: false);
+      isLogin: false,
+      eventAttended: '');
 
   //user image url
   String? userImage;
@@ -72,17 +73,17 @@ class UsersProvider extends ChangeNotifier {
           .single();
 
       userData = UsersType(
-        schoolId: user['school_id'],
-        key: user['key'],
-        userName: user['username'],
-        userCourse: user['user_course'],
-        userYear: user['user_year'],
-        userPassword: user['user_password'],
-        isAdmin: user['is_admin'],
-        userProfile: '',
-        isSignupOnline: true,
-        isLogin: user['is_login'],
-      );
+          schoolId: user['school_id'],
+          key: user['key'],
+          userName: user['username'],
+          userCourse: user['user_course'],
+          userYear: user['user_year'],
+          userPassword: user['user_password'],
+          isAdmin: user['is_admin'],
+          userProfile: '',
+          isSignupOnline: true,
+          isLogin: user['is_login'],
+          eventAttended: user['event_attended']);
 
       notifyListeners();
       return userData;
@@ -210,6 +211,7 @@ class UsersProvider extends ChangeNotifier {
         'is_admin': isAdmin,
         'user_profile': userProfile,
         'is_login': false,
+        'event_attended': ''
       });
 
       userBox.put(
@@ -224,7 +226,8 @@ class UsersProvider extends ChangeNotifier {
               isAdmin: isAdmin,
               userProfile: userProfile,
               isSignupOnline: true,
-              isLogin: false));
+              isLogin: false,
+              eventAttended: ''));
 
       print('data inserted successfully');
     } catch (e) {
@@ -244,7 +247,8 @@ class UsersProvider extends ChangeNotifier {
               isAdmin: isAdmin,
               userProfile: userProfile,
               isSignupOnline: false,
-              isLogin: false));
+              isLogin: false,
+              eventAttended: ''));
 
       print('error $e');
     }
@@ -261,14 +265,17 @@ class UsersProvider extends ChangeNotifier {
   login(UsersType userData, int id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final user = userData;
+    final schoolId = prefs.getInt('school_id');
+
+    if (schoolId != null && schoolId != id) {
+      //persist
+      await prefs.setInt('school_id', id);
+    }
 
     try {
       await Supabase.instance.client
           .from('users')
           .update({'is_login': true}).eq('school_id', id);
-
-      //persist
-      await prefs.setInt('school_id', id);
 
       //set changes
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -282,7 +289,8 @@ class UsersProvider extends ChangeNotifier {
             isAdmin: user.isAdmin,
             userProfile: user.userProfile,
             isSignupOnline: user.isSignupOnline,
-            isLogin: true);
+            isLogin: true,
+            eventAttended: user.eventAttended);
 
         notifyListeners();
       });
@@ -298,7 +306,8 @@ class UsersProvider extends ChangeNotifier {
           isAdmin: user.isAdmin,
           userProfile: user.userProfile,
           isSignupOnline: user.isSignupOnline,
-          isLogin: true);
+          isLogin: true,
+          eventAttended: user.eventAttended);
 
       notifyListeners();
     }
@@ -325,7 +334,8 @@ class UsersProvider extends ChangeNotifier {
           isAdmin: false,
           userProfile: '',
           isSignupOnline: false,
-          isLogin: false);
+          isLogin: false,
+          eventAttended: '');
 
       userImage = '';
       print("successfully Logout");
@@ -341,7 +351,8 @@ class UsersProvider extends ChangeNotifier {
           isAdmin: false,
           userProfile: '',
           isSignupOnline: false,
-          isLogin: false);
+          isLogin: false,
+          eventAttended: '');
       print(e);
       notifyListeners();
     }

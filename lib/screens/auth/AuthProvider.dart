@@ -38,6 +38,7 @@ class _AuthProviderState extends State<AuthProvider> {
     return Consumer<UsersProvider>(
       builder: (context, provider, child) {
         if (userKey != null && userKey != 0) {
+          //TODO:set only once
           provider.getUser(userKey.toString());
           provider.getUserImage(userKey.toString());
         }

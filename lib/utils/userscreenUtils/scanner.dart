@@ -57,7 +57,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   //user details formatter and save the scanned data
-  formatUserDetails(String data) {
+  formatUserDetails(String data) async {
     final eventAttendanceProvider =
         Provider.of<EventAttendanceProvider>(context, listen: false);
     final eventIdProvider =
@@ -75,10 +75,12 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     getUserUrlImage(userSchoolId);
 
     //check if student already attended
-    final isAttended = eventAttendanceProvider.containsStudent(userSchoolId);
+    final isAttended = await eventAttendanceProvider.containsStudent(
+        widget.EventId, int.parse(userSchoolId));
 
     //check if ids is already exist
-    final isIdAlreadyExist = eventIdProvider.containsEventId(widget.EventId);
+    final isIdAlreadyExist =
+        await eventIdProvider.containsEventId(widget.EventId);
 
     //check if student already scanned
     if (isAttended) {
@@ -89,7 +91,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     //check if id is not in the stack then put it in the stack
     //if already in the stack then continue. make sure only on id in the stack
     //then remove the id if all the data is sent to the online database
-    if (isIdAlreadyExist) {
+    if (!isIdAlreadyExist) {
       eventIdProvider.insertData(
           widget.EventId, EventsId(eventID: widget.EventId));
     }

@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/screens/auth/AuthProvider.dart';
-import 'package:qr_app/screens/landingscreen.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
@@ -14,7 +13,6 @@ import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:qr_app/utils/allInitialization.dart';
 import 'package:qr_app/utils/localNotifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:toastification/toastification.dart';
@@ -67,7 +65,7 @@ class MyApp extends StatelessWidget {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'CITECODE',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
               seedColor: Color(color.hexColor(color.primaryColor))),

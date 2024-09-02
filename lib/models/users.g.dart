@@ -27,13 +27,14 @@ class UsersTypeAdapter extends TypeAdapter<UsersType> {
       userProfile: fields[7] as String,
       isSignupOnline: fields[8] as bool,
       isLogin: fields[9] as bool,
+      eventAttended: fields[10] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, UsersType obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.schoolId)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class UsersTypeAdapter extends TypeAdapter<UsersType> {
       ..writeByte(8)
       ..write(obj.isSignupOnline)
       ..writeByte(9)
-      ..write(obj.isLogin);
+      ..write(obj.isLogin)
+      ..writeByte(10)
+      ..write(obj.eventAttended);
   }
 
   @override
