@@ -62,6 +62,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
         Provider.of<EventAttendanceProvider>(context, listen: false);
     final eventIdProvider =
         Provider.of<EventIdProvider>(context, listen: false);
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     //student details
     final details = data.split("|");
     setState(() {
@@ -109,6 +110,14 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               studentYear: userYear));
 
       //TODO: update user attendance
+      final isUserAttended = await userProvider.updateUserNewAttendedEvent(
+          widget.EventId.toString(), int.parse(userSchoolId));
+
+      if (!isUserAttended) {
+        toast.errorStudentNotSave(context);
+        return;
+      }
+
       toast.AttendanceSuccessfullySave(context);
     } catch (e) {
       toast.errorStudentNotSave(context);

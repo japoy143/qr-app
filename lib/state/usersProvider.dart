@@ -85,6 +85,8 @@ class UsersProvider extends ChangeNotifier {
           isLogin: user['is_login'],
           eventAttended: user['event_attended']);
 
+      print('data $user');
+
       notifyListeners();
       return userData;
     } catch (e) {
@@ -94,7 +96,7 @@ class UsersProvider extends ChangeNotifier {
         userData = user;
       }
       notifyListeners();
-      print('catch');
+      print('catch $e');
       return user;
     }
   }
@@ -110,9 +112,11 @@ class UsersProvider extends ChangeNotifier {
           .single();
 
       bool userExist = user["school_id"] == int.parse(id);
+      print('User exist $userExist');
 
       return userExist;
     } catch (e) {
+      print('error $e');
       // encase offline
       var user = userBox.containsKey(id);
       return user;
@@ -358,22 +362,47 @@ class UsersProvider extends ChangeNotifier {
     }
   }
 
-  // updateEventEndedData(int id) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Retrieve the event object
-  //     var eventObject = userBox.get(id);
+  //update user new attended event
+  // return status
+  Future<bool> updateUserNewAttendedEvent(String newEvent, int id) async {
+    try {
+      var userData = await Supabase.instance.client
+          .from('users')
+          .select("*")
+          .eq('school_id', id)
+          .single();
 
-  //     if (eventObject != null) {
-  //       // Update the eventEnded property
-  //       eventObject.eventEnded = true;
-  //       userBox.put(id, eventObject);
-  //     }
+      var userSchoolId = userData['school_id'];
 
-  //     // Refresh events and notify listeners
-  //     getEvents();
-  //     notifyListeners();
-  //   });
-  // }
+      if (userSchoolId == null) {
+        return false;
+      }
+
+      var pastEventAttended = userData['event_attended'];
+      var formmatedEvent = '$pastEventAttended$newEvent|';
+
+      await Supabase.instance.client
+          .from('users')
+          .update({'event_attended': formmatedEvent}).eq('school_id', id);
+
+      print('successfully updated event attended');
+      return true;
+    } catch (e) {
+      print('error update event attended $e');
+      var user = userBox.get(id);
+
+      if (user != null) {
+        var pastEvent = user.eventAttended;
+        var formattedEvent = '$pastEvent|$newEvent';
+        user.eventAttended = formattedEvent;
+        userBox.put(id, user);
+
+        return true;
+      }
+
+      return false;
+    }
+  }
 
   updateEvent(int id, UsersType UsersType) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
