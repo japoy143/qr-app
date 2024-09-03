@@ -11,6 +11,9 @@ class NotificationProvider extends ChangeNotifier {
 
   int notificationListener = 0;
 
+  //notification cache
+  var notification_cache = Hive.box('notification_cache');
+
   //err code 5**
 
   //500
@@ -32,7 +35,25 @@ class NotificationProvider extends ChangeNotifier {
             notificationId: notif['notification_id']);
       }).toList();
 
-      notificationList = allMessages;
+      if (allMessages.isEmpty) {
+        return;
+      }
+
+      allMessages.map((message) async {
+        var isInNotificationBox =
+            notificationBox.containsKey(message.notificationKey);
+
+        var isInNotificationCache =
+            notification_cache.containsKey(message.notificationKey);
+
+        if (!isInNotificationBox && !isInNotificationCache) {
+          await notificationBox.put(message.notificationKey, message);
+        }
+      });
+
+      List<NotificationType> messageList = notificationBox.values.toList();
+
+      notificationList = messageList;
       notifyListeners();
       print('successfully get code 500 notifications');
     } catch (e) {
@@ -94,14 +115,14 @@ class NotificationProvider extends ChangeNotifier {
       });
 
       //caching
-      await notificationBox.put(id, message);
+      await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
       print('successfully inserted code 502 notifications');
     } catch (e) {
       print("error code 502 notifications $e");
       //offline
-      await notificationBox.put(id, message);
+      await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
     }
@@ -149,79 +170,46 @@ class NotificationProvider extends ChangeNotifier {
       });
 
       //caching
-      await notificationBox.put(key, message);
+      await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
       print('successfully inserted code 503 notifications');
     } catch (e) {
       print("error code 503 notifications $e");
       //offline
-      await notificationBox.put(key, message);
+      await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
     }
   }
 
   //504
-  updateMessageRead(int id) async {
-    try {
-      //online
-      // update message read
-      await Supabase.instance.client
-          .from('notifications')
-          .update({'read': true}).eq('notification_id', id);
+  updateMessageRead(String id) async {
+    //caching
+    // Retrieve the event object
+    var messages = notificationBox.get(id);
 
-      //caching
-      // Retrieve the event object
-      var messages = notificationBox.get(id);
-
-      if (messages != null) {
-        // Update the eventEnded property
-        messages.read = true;
-        notificationBox.put(id, messages);
-      }
-
-      // Refresh events and notify listeners
-      getNotifications();
-      notifyListeners();
-      print('successfully inserted code 504 notifications');
-    } catch (e) {
-      print("error code 504 notifications $e");
-      //offline
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Retrieve the event object
-        var messages = notificationBox.get(id);
-
-        if (messages != null) {
-          // Update the eventEnded property
-          messages.read = true;
-          notificationBox.put(id, messages);
-        }
-
-        // Refresh events and notify listeners
-        getNotifications();
-        notifyListeners();
-      });
+    if (messages != null) {
+      // Update the eventEnded property
+      messages.read = true;
+      notificationBox.put(id, messages);
     }
+
+    // Refresh events and notify listeners
+    getNotifications();
+    notifyListeners();
+    print('successfully inserted code 504 notifications');
   }
 
   //505
-  deleteNotification(int id) async {
+  deleteNotification(String id) async {
     try {
-      await Supabase.instance.client
-          .from('notifications')
-          .delete()
-          .eq('notification_id', id);
-
       notificationBox.delete(id);
+      notification_cache.put(id, id);
       getNotifications();
       notifyListeners();
-      print('successfully delete 505 notifications');
     } catch (e) {
-      print('error delete 505 notifications $e');
-      notificationBox.delete(id);
-      getNotifications();
-      notifyListeners();
+      print(e);
     }
   }
 
@@ -254,20 +242,20 @@ class NotificationProvider extends ChangeNotifier {
 
         var notification_length_data = notification_length['length'];
         var length = notif.length;
+        getNotifications();
 
-        if (notification_length_data == length) {
+        if (notification_length_data != length) {
+          await Supabase.instance.client
+              .from('notification_length')
+              .update({'length': length}).eq('id', 101);
+          getNotifications();
+          Future.delayed(Duration(seconds: 3), () {
+            print('notifications updated');
+            LocalNotifications.showNotification('New Notifications', '');
+          });
           print('equal');
           return;
         }
-
-        await Supabase.instance.client
-            .from('notification_length')
-            .update({'length': length}).eq('id', 101);
-
-        Future.delayed(Duration(seconds: 3), () {
-          print('notifications updated');
-          LocalNotifications.showNotification('New Notifications', '');
-        });
       });
     } catch (e) {
       print(e);
