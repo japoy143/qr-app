@@ -154,10 +154,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventProvider>(context, listen: false).getEvents();
+
       Provider.of<UsersProvider>(context, listen: false)
           .getUser(widget.userKey);
+
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
+
+      Provider.of<NotificationProvider>(context, listen: false)
+          .callBackListener();
 
       checkIfUserSignUpOnline();
     });

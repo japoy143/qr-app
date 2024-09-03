@@ -58,9 +58,12 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
+
     Provider.of<EventProvider>(context, listen: false).callBackListener();
+
     Provider.of<NotificationProvider>(context, listen: false)
         .getNotifications();
+
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
 
     super.initState();
@@ -164,6 +167,9 @@ class _EventScreenState extends State<EventScreen> {
         formatter.dateFormmater(currentDate, currentTime).toString();
     String formattedDate = dateFormatterForNotif(eventTime);
 
+    int notificationId = int.parse(_eventIdController.text);
+    String notificationKey = "$notificationId-new";
+
     //add notification
     notificationProvider.insertData(
         int.parse(_eventIdController.text),
@@ -175,7 +181,9 @@ class _EventScreenState extends State<EventScreen> {
                 '$eventDescription will be held in $eventPlace  at  $formattedDate ',
             time: DateTime.now().toString(),
             read: false,
-            isOpen: false));
+            isOpen: false,
+            notificationKey: notificationKey,
+            notificationId: notificationId));
 
     formatter.dateFormmater(currentTime, eventTimeEnd);
 

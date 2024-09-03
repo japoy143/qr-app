@@ -18,6 +18,10 @@ class NotificationType {
   bool read;
   @HiveField(6)
   bool isOpen;
+  @HiveField(7)
+  String notificationKey;
+  @HiveField(8)
+  int notificationId;
 
   NotificationType(
       {required this.id,
@@ -26,5 +30,7 @@ class NotificationType {
       required this.body,
       required this.time,
       required this.read,
-      required this.isOpen});
+      required this.isOpen,
+      required this.notificationKey,
+      required this.notificationId});
 }

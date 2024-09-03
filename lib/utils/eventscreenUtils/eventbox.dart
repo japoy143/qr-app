@@ -95,7 +95,9 @@ class _EventBoxState extends State<EventBox> {
                   ' $eventName is already ended. attendance is already close ',
               time: item.endTime.toString(),
               read: false,
-              isOpen: false));
+              isOpen: false,
+              notificationKey: '$id-ended',
+              notificationId: item.id));
 
       return 'Event Ended';
     }

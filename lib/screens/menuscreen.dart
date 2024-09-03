@@ -6,6 +6,7 @@ import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/eventsummaryscreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
+import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
@@ -35,6 +36,7 @@ class _MenuScreenState extends State<MenuScreen> {
         .getUser(user.schoolId.toString());
     Provider.of<UsersProvider>(context, listen: false)
         .getUserImage(user.schoolId.toString());
+
     super.initState();
   }
 

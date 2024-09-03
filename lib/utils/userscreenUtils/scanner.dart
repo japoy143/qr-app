@@ -8,6 +8,7 @@ import 'package:qr_app/models/eventsid.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
+import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/toast.dart';
 
 // ignore: must_be_immutable
@@ -30,13 +31,16 @@ class QrCodeScanner extends StatefulWidget {
 }
 
 class _QrCodeScannerState extends State<QrCodeScanner> {
-  String userSchoolId = 'Student Id';
-  String userName = 'Student Name';
-  String userCourse = 'Course';
-  String userYear = 'Year';
+  String userSchoolId = '';
+  String userName = '';
+  String userCourse = '';
+  String userYear = '';
 
   //toast
   final toast = CustomToast();
+
+  //color theme
+  final colortheme = ColorThemeProvider();
 
   startscan() async {
     var result;
@@ -158,6 +162,9 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   @override
   Widget build(BuildContext context) {
+    Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
+    String eventName = widget.EventName;
+
     return Consumer<UsersProvider>(
       builder: (context, provider, child) {
         //initialize scanned user image
@@ -168,31 +175,84 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
             title: const Text('Scan Attendance'),
             centerTitle: true,
           ),
-          body: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 80.0, 0, 0),
-                  child: scannedImageUrl != null
-                      ? showProfile(scannedImageUrl)
-                      : const SizedBox.shrink(),
-                ),
-                Text(
-                  userName,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '$userCourse-$userYear',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  userSchoolId,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                )
-              ],
+          body: Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+            child: Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: scannedImageUrl != null
+                        ? showProfile(scannedImageUrl)
+                        : const SizedBox.shrink(),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: purple,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black
+                                .withOpacity(0.2), // Shadow color with opacity
+                            spreadRadius: 2,
+                            blurRadius: 6,
+                            offset: Offset(0, 3), // Offset of the shadow
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 20, 14, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Eventname: $eventName',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 30.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Name: $userName',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    'Course & Year: $userCourse-$userYear',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              'School Id: $userSchoolId',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Expanded(flex: 1, child: SizedBox()),
+                ],
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton(

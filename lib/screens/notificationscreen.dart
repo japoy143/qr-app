@@ -23,6 +23,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     Provider.of<NotificationProvider>(context, listen: false)
         .getNotifications();
+
     super.initState();
   }
 
@@ -101,7 +102,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       onPressed: (context) {
                                         setState(() {
                                           notificationProvider
-                                              .deleteNNotification(item.id);
+                                              .deleteNotification(item.id);
                                         });
                                       },
                                       icon: Icons.delete,
