@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:logger/logger.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EventProvider extends ChangeNotifier {
+  //logger
+  var logger = Logger();
   // create box
   var eventBox = Hive.box<EventType>('eventBox');
   List<EventType> eventList = [];
@@ -35,11 +38,11 @@ class EventProvider extends ChangeNotifier {
         }).toList();
 
         eventList = events;
-        print('callback 201');
+        logger.t('callback 201');
         notifyListeners();
       });
     } catch (e) {
-      print('error 201 event $e');
+      logger.e('error 201 event $e');
     }
   }
 
@@ -67,9 +70,9 @@ class EventProvider extends ChangeNotifier {
 
       eventList = allEvents;
       notifyListeners();
-      print('successfully get event 202');
+      logger.t('successfully get event 202');
     } catch (e) {
-      print('error 202 getting event $e');
+      logger.e('error 202 getting event $e');
       var data = eventBox.values.toList();
       eventList = data;
       notifyListeners();
@@ -100,9 +103,9 @@ class EventProvider extends ChangeNotifier {
 
       eventList = filteredEvent;
       notifyListeners();
-      print('successfully get event 203');
+      logger.t('successfully get event 203');
     } catch (e) {
-      print('error 203 getting event $e');
+      logger.e('error 203 getting event $e');
       var data = eventBox.values.toList();
       List<EventType> filteredEvent =
           data.where((event) => event.eventEnded == true).toList();
@@ -141,13 +144,12 @@ class EventProvider extends ChangeNotifier {
       await eventBox.put(event.id, event);
       getEvents();
       notifyListeners();
-      print('successfully inserted event 204');
+      logger.t('successfully inserted event 204');
     } catch (e) {
-      print('error 204 insertion event $e');
+      logger.e('error 204 insertion event $e');
       await eventBox.put(event.id, event);
       getEvents();
       notifyListeners();
-      print(e);
     }
   }
 
@@ -170,7 +172,7 @@ class EventProvider extends ChangeNotifier {
       if (isEventAlreadyUpdated) {
         filteredEventEnded();
         notifyListeners();
-        print('event already updated');
+        logger.t('event already updated');
         return;
       }
 
@@ -178,10 +180,10 @@ class EventProvider extends ChangeNotifier {
           .from('event')
           .update({'event_ended': true}).eq('event_id', id);
       filteredEventEnded();
-      print('successfully updated event 205');
+      logger.t('successfully updated event 205');
       notifyListeners();
     } catch (e) {
-      print('error 205 update event $e');
+      logger.e('error 205 update event $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Retrieve the event object
         var eventObject = eventBox.get(id);
@@ -214,7 +216,7 @@ class EventProvider extends ChangeNotifier {
         'event_ended': eventType.eventEnded
       }).eq('event_id', id);
 
-      print('successfully updated event 206');
+      logger.t('successfully updated event 206');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Save the updated object back to the box
         eventBox.put(id, eventType);
@@ -224,7 +226,7 @@ class EventProvider extends ChangeNotifier {
         notifyListeners();
       });
     } catch (e) {
-      print('error 206 update event $e');
+      logger.e('error 206 update event $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Save the updated object back to the box
         eventBox.put(id, eventType);
@@ -248,9 +250,9 @@ class EventProvider extends ChangeNotifier {
       eventBox.delete(id);
       getEvents();
       notifyListeners();
-      print('successfully delete event 207');
+      logger.t('successfully delete event 207');
     } catch (e) {
-      print('error 207 delete event $e');
+      logger.e('error 207 delete event $e');
       eventBox.delete(id);
       getEvents();
       notifyListeners();

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/eventsid.dart';
 
 class EventIdProvider extends ChangeNotifier {
+  //logger
+  var logger = Logger();
   // create box
   var eventIdBox = Hive.box<EventsId>('eventsIdBox');
   List<EventsId> eventIdList = [];
@@ -36,10 +39,10 @@ class EventIdProvider extends ChangeNotifier {
       }
 
       bool isEventId = eventID['event_id'] == id;
-      print('get 402 , $isEventId');
+      logger.t('get 402 , $isEventId');
       return isEventId;
     } catch (e) {
-      print('402 error events id $e');
+      logger.e('402 error events id $e');
       var event = eventIdBox.containsKey(id);
       return event;
     }
@@ -56,12 +59,13 @@ class EventIdProvider extends ChangeNotifier {
 
       eventLength = eventIds.length;
 
-      print('sucessfully 403 $length');
+      logger.t('sucessfully 403 $length');
     } catch (e) {
-      print('error 403 $e');
+      logger.e('error 403 $e');
     }
   }
 
+  //404
   //insert events
   insertData(int id, EventsId event) async {
     try {
@@ -71,8 +75,9 @@ class EventIdProvider extends ChangeNotifier {
       eventIdBox.put(id, event);
       getEvents();
       notifyListeners();
+      logger.t('successfully inserted id');
     } catch (e) {
-      print('error $e');
+      logger.e('error $e');
       await eventIdBox.put(id, event);
       getEvents();
       notifyListeners();

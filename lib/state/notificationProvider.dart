@@ -3,8 +3,11 @@ import 'package:hive/hive.dart';
 import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/utils/localNotifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:logger/logger.dart';
 
 class NotificationProvider extends ChangeNotifier {
+  //logger
+  var logger = Logger();
   // create box
   var notificationBox = Hive.box<NotificationType>('notificationBox');
   List<NotificationType> notificationList = [];
@@ -55,9 +58,9 @@ class NotificationProvider extends ChangeNotifier {
 
       notificationList = messageList;
       notifyListeners();
-      print('successfully get code 501 notifications');
+      logger.t('successfully get code 501 notifications');
     } catch (e) {
-      print('error code 501 notifications $e');
+      logger.e('error code 501 notifications $e');
       var data = notificationBox.values.toList();
       notificationList = data;
       notifyListeners();
@@ -98,7 +101,7 @@ class NotificationProvider extends ChangeNotifier {
       print(filteredMessage);
 
       if (filteredMessage.isNotEmpty) {
-        print('not exist 503');
+        logger.t('not exist 503');
         return;
       }
 
@@ -118,9 +121,9 @@ class NotificationProvider extends ChangeNotifier {
       await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
-      print('successfully inserted code 503 notifications');
+      logger.t('successfully inserted code 503 notifications');
     } catch (e) {
-      print("error code 503 notifications $e");
+      logger.e("error code 503 notifications $e");
       //offline
       await notificationBox.put(message.notificationKey, message);
       getNotifications();
@@ -153,7 +156,7 @@ class NotificationProvider extends ChangeNotifier {
           .toList();
 
       if (filteredMessage.isNotEmpty) {
-        print('not exist 504');
+        logger.t('not exist 504');
         return;
       }
 
@@ -173,9 +176,9 @@ class NotificationProvider extends ChangeNotifier {
       await notificationBox.put(message.notificationKey, message);
       getNotifications();
       notifyListeners();
-      print('successfully inserted code 504 notifications');
+      logger.t('successfully inserted code 504 notifications');
     } catch (e) {
-      print("error code 504 notifications $e");
+      logger.e("error code 504 notifications $e");
       //offline
       await notificationBox.put(message.notificationKey, message);
       getNotifications();
@@ -198,7 +201,7 @@ class NotificationProvider extends ChangeNotifier {
     // Refresh events and notify listeners
     getNotifications();
     notifyListeners();
-    print('successfully inserted code 505 notifications');
+    logger.t('successfully inserted code 505 notifications');
   }
 
   //506
@@ -208,9 +211,9 @@ class NotificationProvider extends ChangeNotifier {
       notification_cache.put(id, id);
       getNotifications();
       notifyListeners();
-      print('successfully deleted 506');
+      logger.t('successfully deleted 506');
     } catch (e) {
-      print('error 506 delete notification $e');
+      logger.e('error 506 delete notification $e');
     }
   }
 
@@ -233,7 +236,7 @@ class NotificationProvider extends ChangeNotifier {
         }).toList();
 
         notificationList = notif;
-        print('callback');
+        logger.t('callback');
         notifyListeners();
 
         var notification_length = await Supabase.instance.client
@@ -251,16 +254,16 @@ class NotificationProvider extends ChangeNotifier {
               .from('notification_length')
               .update({'length': length}).eq('id', 101);
           getNotifications();
-          Future.delayed(Duration(seconds: 3), () {
-            print('notifications updated');
+          Future.delayed(const Duration(seconds: 3), () {
+            logger.t('notifications updated');
             LocalNotifications.showNotification('New Notifications', '');
           });
-          print('equal');
+          logger.t('equal');
           return;
         }
       });
     } catch (e) {
-      print('error 507 notification callback $e');
+      logger.e('error 507 notification callback $e');
     }
   }
 }

@@ -3,14 +3,16 @@ import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:logger/logger.dart';
 
 class UsersProvider extends ChangeNotifier {
+  //logger
+  var logger = Logger();
   // create box
   var userBox = Hive.box<UsersType>('usersBox');
   List<UsersType> userList = [];
 
   // shared pref
-
   UsersType userData = UsersType(
       schoolId: 0,
       key: '',
@@ -90,8 +92,8 @@ class UsersProvider extends ChangeNotifier {
           isLogin: user['is_login'],
           eventAttended: user['event_attended']);
 
-      print('data $user');
-      print('successfully get user 103');
+      logger.t('data $user');
+      logger.t('successfully get user 103');
       notifyListeners();
       return userData;
     } catch (e) {
@@ -101,7 +103,7 @@ class UsersProvider extends ChangeNotifier {
         userData = user;
       }
       notifyListeners();
-      print('error 103 get user $e');
+      logger.e('error 103 get user $e');
       return user;
     }
   }
@@ -118,11 +120,11 @@ class UsersProvider extends ChangeNotifier {
           .single();
 
       bool userExist = user["school_id"] == int.parse(id);
-      print('User exist 104 $userExist');
+      logger.t('User exist 104 $userExist');
 
       return userExist;
     } catch (e) {
-      print('error 104 getting user $e');
+      logger.e('error 104 getting user $e');
       // encase offline
       var user = userBox.containsKey(id);
       return user;
@@ -152,7 +154,7 @@ class UsersProvider extends ChangeNotifier {
 
       if (!imagePathList.contains(id)) {
         userImage = '';
-        print('no image in database');
+        logger.t('no image in database 106');
         return;
       }
 
@@ -163,9 +165,9 @@ class UsersProvider extends ChangeNotifier {
 
       userImage = userImageUrl.toString();
       notifyListeners();
-      print('successfully getting user image 106');
+      logger.t('successfully getting user image 106');
     } catch (e) {
-      print('error 106 getting user image');
+      logger.e('error 106 getting user image');
       userImage = 'off';
       notifyListeners();
       return;
@@ -187,7 +189,7 @@ class UsersProvider extends ChangeNotifier {
 
       if (!imagePathList.contains(id)) {
         userScannedImage = '';
-        print('no image in database');
+        logger.t('no image in database');
         return;
       }
 
@@ -197,9 +199,9 @@ class UsersProvider extends ChangeNotifier {
 
       userScannedImage = userImageUrl.toString();
       notifyListeners();
-      print('successfully getting scanned image 107');
+      logger.t('successfully getting scanned image 107');
     } catch (e) {
-      print('error 107 getting scanned image');
+      logger.e('error 107 getting scanned image');
       userScannedImage = 'off';
       notifyListeners();
       return;
@@ -247,9 +249,9 @@ class UsersProvider extends ChangeNotifier {
               isLogin: false,
               eventAttended: ''));
 
-      print('data inserted successfully 108');
+      logger.t('data inserted successfully 108');
     } catch (e) {
-      print('error 108 insertion user $e');
+      logger.e('error 108 insertion user $e');
       if (adminIds.contains(schoolId)) {
         isAdmin = true;
       }
@@ -311,10 +313,10 @@ class UsersProvider extends ChangeNotifier {
             eventAttended: user.eventAttended);
 
         notifyListeners();
-        print('successfully login user 109');
+        logger.t('successfully login user 109');
       });
     } catch (e) {
-      print('error 109 login user $e');
+      logger.e('error 109 login user $e');
       //offline
       userData = UsersType(
           schoolId: user.schoolId,
@@ -359,10 +361,10 @@ class UsersProvider extends ChangeNotifier {
           eventAttended: '');
 
       userImage = '';
-      print("successfully Logout user 110");
+      logger.t("successfully Logout user 110");
       notifyListeners();
     } catch (e) {
-      print('error 110 logout user $e');
+      logger.e('error 110 logout user $e');
       userData = UsersType(
           schoolId: 0,
           key: '',
@@ -404,10 +406,10 @@ class UsersProvider extends ChangeNotifier {
           .from('users')
           .update({'event_attended': formmatedEvent}).eq('school_id', id);
 
-      print('successfully updated event attended 111');
+      logger.t('successfully updated event attended 111');
       return true;
     } catch (e) {
-      print('error 111 update  event attended $e');
+      logger.e('error 111 update  event attended $e');
       var user = userBox.get(id);
 
       if (user != null) {

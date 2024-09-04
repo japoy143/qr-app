@@ -60,6 +60,7 @@ dependencies:
   workmanager:
   provider:
   permission_handler:
+  logger:
   #pdf
   pdf:
   open_filex:
