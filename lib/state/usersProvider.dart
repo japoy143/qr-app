@@ -43,16 +43,20 @@ class UsersProvider extends ChangeNotifier {
     900009,
   ];
 
+  //error code 1**
+
   //
   //GET
   //
 
+  //101
   //offline
   getUsers() async {
     var data = userBox.values.toList();
     userList = data;
   }
 
+  //102
   getPrefUserData(int id) {
     UsersType? user = userBox.get(id);
     if (user != null) {
@@ -61,6 +65,7 @@ class UsersProvider extends ChangeNotifier {
     }
   }
 
+  //103
   //get user online and offline
   Future<UsersType?> getUser(String userKey) async {
     // check if data  is already save in phone storage or already cache
@@ -86,7 +91,7 @@ class UsersProvider extends ChangeNotifier {
           eventAttended: user['event_attended']);
 
       print('data $user');
-
+      print('successfully get user 103');
       notifyListeners();
       return userData;
     } catch (e) {
@@ -96,11 +101,12 @@ class UsersProvider extends ChangeNotifier {
         userData = user;
       }
       notifyListeners();
-      print('catch $e');
+      print('error 103 get user $e');
       return user;
     }
   }
 
+  //104
   //get event specific user
   Future<bool> containsUser(String id) async {
     //api
@@ -112,17 +118,18 @@ class UsersProvider extends ChangeNotifier {
           .single();
 
       bool userExist = user["school_id"] == int.parse(id);
-      print('User exist $userExist');
+      print('User exist 104 $userExist');
 
       return userExist;
     } catch (e) {
-      print('error $e');
+      print('error 104 getting user $e');
       // encase offline
       var user = userBox.containsKey(id);
       return user;
     }
   }
 
+  //105
   //get data for local image
   UsersType? getdataForlocalImage(String id) {
     var user = userBox.get(id);
@@ -130,6 +137,7 @@ class UsersProvider extends ChangeNotifier {
     return user;
   }
 
+  //106
   //get user image url return response
   void getUserImage(String id) async {
     try {
@@ -155,13 +163,16 @@ class UsersProvider extends ChangeNotifier {
 
       userImage = userImageUrl.toString();
       notifyListeners();
+      print('successfully getting user image 106');
     } catch (e) {
+      print('error 106 getting user image');
       userImage = 'off';
       notifyListeners();
       return;
     }
   }
 
+  //107
   //scanned user image
   void getScannedUserImage(String id) async {
     try {
@@ -186,7 +197,9 @@ class UsersProvider extends ChangeNotifier {
 
       userScannedImage = userImageUrl.toString();
       notifyListeners();
+      print('successfully getting scanned image 107');
     } catch (e) {
+      print('error 107 getting scanned image');
       userScannedImage = 'off';
       notifyListeners();
       return;
@@ -197,6 +210,7 @@ class UsersProvider extends ChangeNotifier {
   //INSERT
   //
 
+  //108
   //create new user
   createNewUser(String userName, int schoolId, String userCourse,
       String userYear, String userPassword, String userProfile) async {
@@ -233,8 +247,9 @@ class UsersProvider extends ChangeNotifier {
               isLogin: false,
               eventAttended: ''));
 
-      print('data inserted successfully');
+      print('data inserted successfully 108');
     } catch (e) {
+      print('error 108 insertion user $e');
       if (adminIds.contains(schoolId)) {
         isAdmin = true;
       }
@@ -253,8 +268,6 @@ class UsersProvider extends ChangeNotifier {
               isSignupOnline: false,
               isLogin: false,
               eventAttended: ''));
-
-      print('error $e');
     }
   }
 
@@ -265,6 +278,7 @@ class UsersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //109
   //update status to login
   login(UsersType userData, int id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -297,8 +311,10 @@ class UsersProvider extends ChangeNotifier {
             eventAttended: user.eventAttended);
 
         notifyListeners();
+        print('successfully login user 109');
       });
     } catch (e) {
+      print('error 109 login user $e');
       //offline
       userData = UsersType(
           schoolId: user.schoolId,
@@ -317,6 +333,7 @@ class UsersProvider extends ChangeNotifier {
     }
   }
 
+  //110
   //logout callback and dispose all session data
   logout(int id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -342,9 +359,10 @@ class UsersProvider extends ChangeNotifier {
           eventAttended: '');
 
       userImage = '';
-      print("successfully Logout");
+      print("successfully Logout user 110");
       notifyListeners();
     } catch (e) {
+      print('error 110 logout user $e');
       userData = UsersType(
           schoolId: 0,
           key: '',
@@ -357,11 +375,12 @@ class UsersProvider extends ChangeNotifier {
           isSignupOnline: false,
           isLogin: false,
           eventAttended: '');
-      print(e);
+
       notifyListeners();
     }
   }
 
+  //111
   //update user new attended event
   // return status
   Future<bool> updateUserNewAttendedEvent(String newEvent, int id) async {
@@ -385,10 +404,10 @@ class UsersProvider extends ChangeNotifier {
           .from('users')
           .update({'event_attended': formmatedEvent}).eq('school_id', id);
 
-      print('successfully updated event attended');
+      print('successfully updated event attended 111');
       return true;
     } catch (e) {
-      print('error update event attended $e');
+      print('error 111 update  event attended $e');
       var user = userBox.get(id);
 
       if (user != null) {

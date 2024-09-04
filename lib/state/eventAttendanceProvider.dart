@@ -8,11 +8,15 @@ class EventAttendanceProvider extends ChangeNotifier {
   var eventAttendanceBox = Hive.box<EventAttendance>('eventAttendanceBox');
   List<EventAttendance> eventAttendanceList = [];
 
+  //error code 3**
+
+  //301
   getEventAttendance() async {
     var data = eventAttendanceBox.values.toList();
     eventAttendanceList = data;
   }
 
+  //302
   //get event specific event
   Future<bool> containsStudent(int eventId, int id) async {
     try {
@@ -40,14 +44,16 @@ class EventAttendanceProvider extends ChangeNotifier {
         return false;
       }
 
+      print('successfully find user 302');
       return true;
     } catch (e) {
-      print('error event Attendance $e');
+      print('error 302 event Attendance $e');
       var event = eventAttendanceBox.containsKey(id);
       return event;
     }
   }
 
+  //303
   //insert event attendance
   insertData(String userSchoolId, EventAttendance event) async {
     try {
@@ -63,42 +69,14 @@ class EventAttendanceProvider extends ChangeNotifier {
       await eventAttendanceBox.put(userSchoolId, event);
       getEventAttendance();
       notifyListeners();
-      print('successfully added event Attendance');
+      print('successfully 303 added event Attendance');
     } catch (e) {
-      print('error $e');
+      print('error 303 event Attendance  $e');
       await eventAttendanceBox.put(userSchoolId, event);
       getEventAttendance();
       notifyListeners();
     }
   }
-
-  // updateEventEndedData(int id) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Retrieve the event object
-  //     var eventObject = eventAttendanceBox.get(id);
-
-  //     if (eventObject != null) {
-  //       // Update the eventEnded property
-  //       eventObject.eventEnded = true;
-  //       eventAttendanceBox.put(id, eventObject);
-  //     }
-
-  //     // Refresh events and notify listeners
-  //     getEventAttendance();
-  //     notifyListeners();
-  //   });
-  // }
-
-  // updateEvent(int id, EventType eventType) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Save the updated object back to the box
-  //     eventAttendanceBox.put(id, eventType);
-
-  //     // Refresh events and notify listeners
-  //     getEventAttendance();
-  //     notifyListeners();
-  //   });
-  // }
 
   deleteEvent(int id) async {
     eventAttendanceBox.delete(id);

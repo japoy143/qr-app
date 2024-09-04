@@ -5,6 +5,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/toast.dart';
@@ -157,11 +158,30 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+  //user attended
+  int getUserTotalAttended(String eventAttended) {
+    List attend = eventAttended.split('|');
+
+    int totalEventAttended = attend.length - 1;
+
+    return totalEventAttended;
+  }
+
+  int getUserEventMissed(String eventAttended, int totalEvent) {
+    List attend = eventAttended.split('|');
+
+    int totalEventAttended = attend.length - 1;
+    int eventMissed = totalEvent - totalEventAttended;
+
+    return eventMissed;
+  }
+
   final appBar = AppBar();
 
   @override
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
     super.initState();
   }
 
@@ -176,29 +196,18 @@ class _UserScreenState extends State<UserScreen> {
 
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
-    //user
-
+    //user data
     final user = userProvider.userData;
-    final userName = user.userName;
-    final userSchoolId = user.schoolId;
-    final userCourse = user.userCourse;
-    final userYear = user.userYear;
-    final isAdmin = user.isAdmin;
-    final userPassword = user.userPassword;
-    final userProfile = user.userProfile;
-    final isSignUpOnline = user.isSignupOnline;
-    final isUserLogin = user.isLogin;
-    final userAttendedEvent = user.eventAttended;
 
     //for qr data
     String qrData = [
-      userSchoolId.toString(),
+      user.schoolId.toString(),
       "|",
-      userName,
+      user.userName,
       "|",
-      userCourse,
+      user.userCourse,
       "|",
-      userYear
+      user.userYear
     ].join("");
 
     return Scaffold(
@@ -219,16 +228,16 @@ class _UserScreenState extends State<UserScreen> {
                           padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                           child: GestureDetector(
                               onTap: () => getImage(
-                                  userSchoolId,
+                                  user.schoolId,
                                   user.userName,
-                                  userCourse,
-                                  userYear,
-                                  userPassword,
-                                  isAdmin,
-                                  userProfile,
-                                  isSignUpOnline,
-                                  isUserLogin,
-                                  userAttendedEvent),
+                                  user.userCourse,
+                                  user.userYear,
+                                  user.userPassword,
+                                  user.isAdmin,
+                                  user.userProfile,
+                                  user.isSignupOnline,
+                                  user.isLogin,
+                                  user.eventAttended),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;
@@ -241,7 +250,7 @@ class _UserScreenState extends State<UserScreen> {
                                       children: [
                                         userImage != null
                                             ? showProfile(
-                                                userProfile,
+                                                user.userProfile,
                                                 userImage,
                                                 screenHeight,
                                                 statusbarHeight)
@@ -284,7 +293,7 @@ class _UserScreenState extends State<UserScreen> {
                               ),
                             ),
                             Text(
-                                '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                                '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
                           ],
                         ),
                       ],
@@ -296,7 +305,7 @@ class _UserScreenState extends State<UserScreen> {
                               listen: false);
                           showProgressDialog(context);
                           await Future.delayed(Duration(seconds: 2), () {
-                            userProvider.logout(userSchoolId);
+                            userProvider.logout(user.schoolId);
                           });
                           Navigator.of(context).pop();
                         },
@@ -342,7 +351,7 @@ class _UserScreenState extends State<UserScreen> {
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
               ),
               Text(
-                '$userCourse-$userYear',
+                '${user.userCourse}-${user.userYear}',
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
               ),
               const Padding(
@@ -356,7 +365,7 @@ class _UserScreenState extends State<UserScreen> {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4),
-                        child: Text('Event Summary'),
+                        child: Text('Attendance'),
                       ),
                       Expanded(child: Divider()),
                     ],
@@ -365,14 +374,28 @@ class _UserScreenState extends State<UserScreen> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    EventSummary(counter: '10', eventName: 'TotalEvents'),
-                    EventSummary(counter: '8', eventName: 'Events Attended'),
-                    EventSummary(counter: '2', eventName: 'Events Missed'),
-                  ],
+                child: Consumer<EventIdProvider>(
+                  builder: (context, provider, child) {
+                    final totalEvent = provider.eventLength;
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        EventSummary(
+                            counter: '$totalEvent', eventName: 'TotalEvents'),
+                        EventSummary(
+                            counter: getUserTotalAttended(user.eventAttended)
+                                .toString(),
+                            eventName: 'Events Attended'),
+                        EventSummary(
+                            counter: getUserEventMissed(
+                                    user.eventAttended, totalEvent)
+                                .toString(),
+                            eventName: 'Events Missed'),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],

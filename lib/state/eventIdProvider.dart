@@ -9,11 +9,18 @@ class EventIdProvider extends ChangeNotifier {
   var eventIdBox = Hive.box<EventsId>('eventsIdBox');
   List<EventsId> eventIdList = [];
 
+  // event  length
+  int eventLength = 0;
+
+  //error code 4**
+
+  //  401
   getEvents() async {
     var data = eventIdBox.values.toList();
     eventIdList = data;
   }
 
+  // 402
   //get event specific event
   Future<bool> containsEventId(int id) async {
     try {
@@ -29,12 +36,29 @@ class EventIdProvider extends ChangeNotifier {
       }
 
       bool isEventId = eventID['event_id'] == id;
-      print('get , $isEventId');
+      print('get 402 , $isEventId');
       return isEventId;
     } catch (e) {
-      print('error events id $e');
+      print('402 error events id $e');
       var event = eventIdBox.containsKey(id);
       return event;
+    }
+  }
+
+  //403
+  //get the length
+  getEventIdLength() async {
+    try {
+      var eventIds =
+          await Supabase.instance.client.from('event_id').select('*');
+
+      var length = eventIds.length;
+
+      eventLength = eventIds.length;
+
+      print('sucessfully 403 $length');
+    } catch (e) {
+      print('error 403 $e');
     }
   }
 
@@ -54,34 +78,6 @@ class EventIdProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // updateEventEndedData(int id) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Retrieve the event object
-  //     var eventObject = eventIdBox.get(id);
-
-  //     if (eventObject != null) {
-  //       // Update the eventEnded property
-  //       eventObject.eventEnded = true;
-  //       eventIdBox.put(id, eventObject);
-  //     }
-
-  //     // Refresh events and notify listeners
-  //     getEvents();
-  //     notifyListeners();
-  //   });
-  // }
-
-  // updateEvent(int id, EventType eventType) async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Save the updated object back to the box
-  //     eventIdBox.put(id, eventType);
-
-  //     // Refresh events and notify listeners
-  //     getEvents();
-  //     notifyListeners();
-  //   });
-  // }
 
   deleteEvent(int id) async {
     eventIdBox.delete(id);

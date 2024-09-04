@@ -16,7 +16,7 @@ class NotificationProvider extends ChangeNotifier {
 
   //err code 5**
 
-  //500
+  //501
   getNotifications() async {
     try {
       var messages =
@@ -55,23 +55,23 @@ class NotificationProvider extends ChangeNotifier {
 
       notificationList = messageList;
       notifyListeners();
-      print('successfully get code 500 notifications');
+      print('successfully get code 501 notifications');
     } catch (e) {
-      print('error code 500 notifications $e');
+      print('error code 501 notifications $e');
       var data = notificationBox.values.toList();
       notificationList = data;
       notifyListeners();
     }
   }
 
-  //501
+  //502
   //get event specific event
   bool containsEvent(int id) {
     var event = notificationBox.containsKey(id);
     return event;
   }
 
-  //502
+  //503
   //insert events
   insertData(int id, NotificationType message) async {
     try {
@@ -96,61 +96,6 @@ class NotificationProvider extends ChangeNotifier {
           .toList();
 
       print(filteredMessage);
-
-      if (filteredMessage.isNotEmpty) {
-        print('not exist 502');
-        return;
-      }
-
-      //online
-      await Supabase.instance.client.from('notifications').insert({
-        'title': message.title,
-        'notification_id': message.id,
-        'notification_key': message.notificationKey,
-        'subtitle': message.subtitle,
-        'body': message.body,
-        'time': message.time,
-        'read': message.read,
-        'is_open': message.isOpen
-      });
-
-      //caching
-      await notificationBox.put(message.notificationKey, message);
-      getNotifications();
-      notifyListeners();
-      print('successfully inserted code 502 notifications');
-    } catch (e) {
-      print("error code 502 notifications $e");
-      //offline
-      await notificationBox.put(message.notificationKey, message);
-      getNotifications();
-      notifyListeners();
-    }
-  }
-
-  //503
-  // event Ennded
-  insertEventEndedData(String key, NotificationType message) async {
-    try {
-      var notif =
-          await Supabase.instance.client.from('notifications').select("*");
-
-      List<NotificationType> allNotification = notif.map((message) {
-        return NotificationType(
-            id: message['notification_id'],
-            title: message['title'],
-            subtitle: message['subtitle'],
-            body: message['body'],
-            time: message['time'],
-            read: message['read'],
-            isOpen: message['is_open'],
-            notificationKey: message['notification_key'],
-            notificationId: message['notification_id']);
-      }).toList();
-
-      List filteredMessage = allNotification
-          .where((data) => data.notificationKey == message.notificationKey)
-          .toList();
 
       if (filteredMessage.isNotEmpty) {
         print('not exist 503');
@@ -184,6 +129,61 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   //504
+  // event Ennded
+  insertEventEndedData(String key, NotificationType message) async {
+    try {
+      var notif =
+          await Supabase.instance.client.from('notifications').select("*");
+
+      List<NotificationType> allNotification = notif.map((message) {
+        return NotificationType(
+            id: message['notification_id'],
+            title: message['title'],
+            subtitle: message['subtitle'],
+            body: message['body'],
+            time: message['time'],
+            read: message['read'],
+            isOpen: message['is_open'],
+            notificationKey: message['notification_key'],
+            notificationId: message['notification_id']);
+      }).toList();
+
+      List filteredMessage = allNotification
+          .where((data) => data.notificationKey == message.notificationKey)
+          .toList();
+
+      if (filteredMessage.isNotEmpty) {
+        print('not exist 504');
+        return;
+      }
+
+      //online
+      await Supabase.instance.client.from('notifications').insert({
+        'title': message.title,
+        'notification_id': message.id,
+        'notification_key': message.notificationKey,
+        'subtitle': message.subtitle,
+        'body': message.body,
+        'time': message.time,
+        'read': message.read,
+        'is_open': message.isOpen
+      });
+
+      //caching
+      await notificationBox.put(message.notificationKey, message);
+      getNotifications();
+      notifyListeners();
+      print('successfully inserted code 504 notifications');
+    } catch (e) {
+      print("error code 504 notifications $e");
+      //offline
+      await notificationBox.put(message.notificationKey, message);
+      getNotifications();
+      notifyListeners();
+    }
+  }
+
+  //505
   updateMessageRead(String id) async {
     //caching
     // Retrieve the event object
@@ -198,21 +198,23 @@ class NotificationProvider extends ChangeNotifier {
     // Refresh events and notify listeners
     getNotifications();
     notifyListeners();
-    print('successfully inserted code 504 notifications');
+    print('successfully inserted code 505 notifications');
   }
 
-  //505
+  //506
   deleteNotification(String id) async {
     try {
       notificationBox.delete(id);
       notification_cache.put(id, id);
       getNotifications();
       notifyListeners();
+      print('successfully deleted 506');
     } catch (e) {
-      print(e);
+      print('error 506 delete notification $e');
     }
   }
 
+  //507
   callBackListener() {
     try {
       Supabase.instance.client.from('notifications').stream(
@@ -258,7 +260,7 @@ class NotificationProvider extends ChangeNotifier {
         }
       });
     } catch (e) {
-      print(e);
+      print('error 507 notification callback $e');
     }
   }
 }

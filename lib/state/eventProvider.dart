@@ -8,10 +8,13 @@ class EventProvider extends ChangeNotifier {
   var eventBox = Hive.box<EventType>('eventBox');
   List<EventType> eventList = [];
 
+  //error code 2**
+
 //
 //LISTENER
 //
 
+  //201
   callBackListener() {
     try {
       Supabase.instance.client
@@ -32,17 +35,18 @@ class EventProvider extends ChangeNotifier {
         }).toList();
 
         eventList = events;
-        print('callback');
+        print('callback 201');
         notifyListeners();
       });
     } catch (e) {
-      print(e);
+      print('error 201 event $e');
     }
   }
 
 //
 //GET
 //
+  //202
   getEvents() async {
     try {
       var events = await Supabase.instance.client.from('event').select("*");
@@ -63,14 +67,16 @@ class EventProvider extends ChangeNotifier {
 
       eventList = allEvents;
       notifyListeners();
-      print('successfully get');
+      print('successfully get event 202');
     } catch (e) {
+      print('error 202 getting event $e');
       var data = eventBox.values.toList();
       eventList = data;
       notifyListeners();
     }
   }
 
+  //203
   filteredEventEnded() async {
     try {
       var events = await Supabase.instance.client.from('event').select("*");
@@ -94,8 +100,9 @@ class EventProvider extends ChangeNotifier {
 
       eventList = filteredEvent;
       notifyListeners();
-      print('successfully get');
+      print('successfully get event 203');
     } catch (e) {
+      print('error 203 getting event $e');
       var data = eventBox.values.toList();
       List<EventType> filteredEvent =
           data.where((event) => event.eventEnded == true).toList();
@@ -114,6 +121,7 @@ class EventProvider extends ChangeNotifier {
 //INSERT
 //
 
+  //204
   //insert events
   insertData(EventType event) async {
     try {
@@ -133,7 +141,9 @@ class EventProvider extends ChangeNotifier {
       await eventBox.put(event.id, event);
       getEvents();
       notifyListeners();
+      print('successfully inserted event 204');
     } catch (e) {
+      print('error 204 insertion event $e');
       await eventBox.put(event.id, event);
       getEvents();
       notifyListeners();
@@ -145,6 +155,7 @@ class EventProvider extends ChangeNotifier {
 //UPDATE
 //
 
+  //205
   updateEventEndedData(int id) async {
     try {
       //get status to check if already updated
@@ -167,9 +178,10 @@ class EventProvider extends ChangeNotifier {
           .from('event')
           .update({'event_ended': true}).eq('event_id', id);
       filteredEventEnded();
-      print('event updated');
+      print('successfully updated event 205');
       notifyListeners();
     } catch (e) {
+      print('error 205 update event $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Retrieve the event object
         var eventObject = eventBox.get(id);
@@ -187,6 +199,7 @@ class EventProvider extends ChangeNotifier {
     }
   }
 
+  //206
   updateEvent(int id, EventType eventType) async {
     try {
       await Supabase.instance.client.from('event').update({
@@ -201,7 +214,7 @@ class EventProvider extends ChangeNotifier {
         'event_ended': eventType.eventEnded
       }).eq('event_id', id);
 
-      print('successfully updated');
+      print('successfully updated event 206');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Save the updated object back to the box
         eventBox.put(id, eventType);
@@ -211,7 +224,7 @@ class EventProvider extends ChangeNotifier {
         notifyListeners();
       });
     } catch (e) {
-      print('error update $e');
+      print('error 206 update event $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Save the updated object back to the box
         eventBox.put(id, eventType);
@@ -227,6 +240,7 @@ class EventProvider extends ChangeNotifier {
   //DELETE
   //
 
+  //207
   deleteEvent(int id) async {
     try {
       await Supabase.instance.client.from('event').delete().eq('event_id', id);
@@ -234,7 +248,9 @@ class EventProvider extends ChangeNotifier {
       eventBox.delete(id);
       getEvents();
       notifyListeners();
+      print('successfully delete event 207');
     } catch (e) {
+      print('error 207 delete event $e');
       eventBox.delete(id);
       getEvents();
       notifyListeners();
