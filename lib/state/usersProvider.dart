@@ -1,9 +1,11 @@
+import 'package:encrypt_decrypt_plus/cipher/cipher.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UsersProvider extends ChangeNotifier {
   //logger
@@ -45,6 +47,8 @@ class UsersProvider extends ChangeNotifier {
     900009,
   ];
 
+  final String? secret_key = dotenv.env['secret_key'];
+
   //error code 1**
 
   //
@@ -54,8 +58,33 @@ class UsersProvider extends ChangeNotifier {
   //101
   //offline
   getUsers() async {
-    var data = userBox.values.toList();
-    userList = data;
+    try {
+      var users = await Supabase.instance.client.from('users').select('*');
+
+      List<UsersType> usersListData = users.map((user) {
+        return UsersType(
+            schoolId: user['school_id'],
+            key: user['key'],
+            userName: user['username'],
+            userCourse: user['user_course'],
+            userYear: user['user_year'],
+            userPassword: user['user_password'],
+            isAdmin: user['is_admin'],
+            userProfile: '',
+            isSignupOnline: true,
+            isLogin: user['is_login'],
+            eventAttended: user['event_attended']);
+      }).toList();
+
+      userList = usersListData;
+      notifyListeners();
+      logger.t('fetch data successfully');
+    } catch (e) {
+      logger.e('error 101 fetching data $e');
+      var data = userBox.values.toList();
+      userList = data;
+      notifyListeners();
+    }
   }
 
   //102
@@ -113,16 +142,31 @@ class UsersProvider extends ChangeNotifier {
   Future<bool> containsUser(String id) async {
     //api
     try {
-      var user = await Supabase.instance.client
-          .from('users')
-          .select("*")
-          .eq('school_id', id)
-          .single();
+      var user = await Supabase.instance.client.from('users').select("*");
 
-      bool userExist = user["school_id"] == int.parse(id);
-      logger.t('User exist 104 $userExist');
+      List<UsersType> users = user.map((eachUser) {
+        return UsersType(
+            schoolId: eachUser['school_id'],
+            key: eachUser['key'],
+            userName: eachUser['username'],
+            userCourse: eachUser['user_course'],
+            userYear: eachUser['user_year'],
+            userPassword: eachUser['user_password'],
+            isAdmin: eachUser['is_admin'],
+            userProfile: '',
+            isSignupOnline: true,
+            isLogin: eachUser['is_login'],
+            eventAttended: eachUser['event_attended']);
+      }).toList();
 
-      return userExist;
+      List filteredStudent =
+          users.where((student) => student.schoolId == int.parse(id)).toList();
+
+      bool isUserExist = filteredStudent.length == 1 ? true : false;
+
+      logger.t('User exist 104 $isUserExist');
+
+      return isUserExist;
     } catch (e) {
       logger.e('error 104 getting user $e');
       // encase offline
@@ -216,6 +260,9 @@ class UsersProvider extends ChangeNotifier {
   //create new user
   createNewUser(String userName, int schoolId, String userCourse,
       String userYear, String userPassword, String userProfile) async {
+    Cipher cipher = Cipher(secretKey: secret_key);
+    //encryption
+    final encryptedPassword = cipher.xorEncode(userPassword);
     bool isAdmin = false;
     try {
       if (adminIds.contains(schoolId)) {
@@ -227,7 +274,7 @@ class UsersProvider extends ChangeNotifier {
         'username': userName,
         'user_course': userCourse,
         'user_year': userYear,
-        'user_password': userPassword,
+        'user_password': encryptedPassword,
         'is_admin': isAdmin,
         'user_profile': userProfile,
         'is_login': false,

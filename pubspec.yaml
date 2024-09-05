@@ -61,6 +61,7 @@ dependencies:
   provider:
   permission_handler:
   logger:
+  encrypt_decrypt_plus:
   #pdf
   pdf:
   open_filex:

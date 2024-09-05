@@ -1,14 +1,13 @@
+import 'package:encrypt_decrypt_plus/cipher/cipher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/screens/auth/AuthProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/utils/formUtils/TextParagraphResponsive.dart';
 import 'package:qr_app/utils/formUtils/buttonResponsive.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/formUtils/passwordTextField.dart';
-import 'package:qr_app/screens/menuscreen.dart';
-
 import 'package:qr_app/utils/formUtils/textHeadingResponsive.dart';
 import 'package:qr_app/utils/formUtils/textSubtitleResposive.dart';
 import 'package:qr_app/utils/toast.dart';
@@ -34,6 +33,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   final _nameController = TextEditingController();
   final _schoolIdController = TextEditingController();
   final _passwordController = TextEditingController();
+  final String? secret_key = dotenv.env['secret_key'];
 
   bool isVisible = true;
 
@@ -55,6 +55,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   void userValidate(BuildContext context) async {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
     final user = await userProvider.getUser(_schoolIdController.text.trim());
+    Cipher cipher = Cipher(secretKey: secret_key);
 
     if (user == null) {
       Navigator.of(context).pop();
@@ -62,7 +63,8 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       return;
     }
 
-    if (user.userPassword != _passwordController.text) {
+    final decryptedPassword = cipher.xorDecode(user.userPassword);
+    if (decryptedPassword != _passwordController.text) {
       Navigator.of(context).pop();
       toast.passwordIncorrect(context);
       return;
