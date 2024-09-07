@@ -6,7 +6,6 @@ import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/eventsummaryscreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
-import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
@@ -94,7 +93,7 @@ class _MenuScreenState extends State<MenuScreen> {
           icon: Icon(Icons.calendar_month_outlined), label: 'Event Summary'),
       if (isAdmin)
         const BottomNavigationBarItem(
-            icon: Icon(Icons.analytics_outlined), label: 'Penalty Screen'),
+            icon: Icon(Icons.analytics_outlined), label: 'Penalty'),
       const BottomNavigationBarItem(
           icon: Icon(Icons.person_outline), label: 'User'),
     ];

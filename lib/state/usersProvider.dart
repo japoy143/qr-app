@@ -12,6 +12,8 @@ class UsersProvider extends ChangeNotifier {
   var logger = Logger();
   // create box
   var userBox = Hive.box<UsersType>('usersBox');
+  var sessionBox = Hive.box('sessionBox');
+
   List<UsersType> userList = [];
 
   // shared pref
@@ -26,7 +28,8 @@ class UsersProvider extends ChangeNotifier {
       userProfile: '',
       isSignupOnline: false,
       isLogin: false,
-      eventAttended: '');
+      eventAttended: '',
+      isPenaltyShown: false);
 
   //user image url
   String? userImage;
@@ -73,7 +76,8 @@ class UsersProvider extends ChangeNotifier {
             userProfile: '',
             isSignupOnline: true,
             isLogin: user['is_login'],
-            eventAttended: user['event_attended']);
+            eventAttended: user['event_attended'],
+            isPenaltyShown: false);
       }).toList();
 
       userList = usersListData;
@@ -119,20 +123,33 @@ class UsersProvider extends ChangeNotifier {
           userProfile: '',
           isSignupOnline: true,
           isLogin: user['is_login'],
-          eventAttended: user['event_attended']);
+          eventAttended: user['event_attended'],
+          isPenaltyShown: false);
 
       logger.t('data $user');
       logger.t('successfully get user 103');
       notifyListeners();
       return userData;
     } catch (e) {
+      logger.e('error 103 get user $e');
       //still works even offline
       UsersType? user = userBox.get(userKey);
       if (user != null) {
-        userData = user;
+        userData = UsersType(
+            schoolId: user.schoolId,
+            key: user.key,
+            userName: user.userName,
+            userCourse: user.userCourse,
+            userYear: user.userYear,
+            userPassword: user.userPassword,
+            isAdmin: user.isAdmin,
+            userProfile: '',
+            isSignupOnline: true,
+            isLogin: user.isLogin,
+            eventAttended: user.eventAttended,
+            isPenaltyShown: false);
       }
       notifyListeners();
-      logger.e('error 103 get user $e');
       return user;
     }
   }
@@ -156,7 +173,8 @@ class UsersProvider extends ChangeNotifier {
             userProfile: '',
             isSignupOnline: true,
             isLogin: eachUser['is_login'],
-            eventAttended: eachUser['event_attended']);
+            eventAttended: eachUser['event_attended'],
+            isPenaltyShown: false);
       }).toList();
 
       List filteredStudent =
@@ -289,12 +307,13 @@ class UsersProvider extends ChangeNotifier {
               userName: userName,
               userCourse: userCourse,
               userYear: userYear,
-              userPassword: userPassword,
+              userPassword: encryptedPassword,
               isAdmin: isAdmin,
               userProfile: userProfile,
               isSignupOnline: true,
               isLogin: false,
-              eventAttended: ''));
+              eventAttended: '',
+              isPenaltyShown: false));
 
       logger.t('data inserted successfully 108');
     } catch (e) {
@@ -311,12 +330,13 @@ class UsersProvider extends ChangeNotifier {
               userName: userName,
               userCourse: userCourse,
               userYear: userYear,
-              userPassword: userPassword,
+              userPassword: encryptedPassword,
               isAdmin: isAdmin,
               userProfile: userProfile,
               isSignupOnline: false,
               isLogin: false,
-              eventAttended: ''));
+              eventAttended: '',
+              isPenaltyShown: false));
     }
   }
 
@@ -357,7 +377,8 @@ class UsersProvider extends ChangeNotifier {
             userProfile: user.userProfile,
             isSignupOnline: user.isSignupOnline,
             isLogin: true,
-            eventAttended: user.eventAttended);
+            eventAttended: user.eventAttended,
+            isPenaltyShown: false);
 
         notifyListeners();
         logger.t('successfully login user 109');
@@ -365,20 +386,23 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('error 109 login user $e');
       //offline
-      userData = UsersType(
-          schoolId: user.schoolId,
-          key: user.key,
-          userName: user.userName,
-          userCourse: user.userCourse,
-          userYear: user.userYear,
-          userPassword: user.userPassword,
-          isAdmin: user.isAdmin,
-          userProfile: user.userProfile,
-          isSignupOnline: user.isSignupOnline,
-          isLogin: true,
-          eventAttended: user.eventAttended);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        userData = UsersType(
+            schoolId: user.schoolId,
+            key: user.key,
+            userName: user.userName,
+            userCourse: user.userCourse,
+            userYear: user.userYear,
+            userPassword: user.userPassword,
+            isAdmin: user.isAdmin,
+            userProfile: user.userProfile,
+            isSignupOnline: user.isSignupOnline,
+            isLogin: true,
+            eventAttended: user.eventAttended,
+            isPenaltyShown: false);
 
-      notifyListeners();
+        notifyListeners();
+      });
     }
   }
 
@@ -405,7 +429,8 @@ class UsersProvider extends ChangeNotifier {
           userProfile: '',
           isSignupOnline: false,
           isLogin: false,
-          eventAttended: '');
+          eventAttended: '',
+          isPenaltyShown: false);
 
       userImage = '';
       logger.t("successfully Logout user 110");
@@ -423,7 +448,8 @@ class UsersProvider extends ChangeNotifier {
           userProfile: '',
           isSignupOnline: false,
           isLogin: false,
-          eventAttended: '');
+          eventAttended: '',
+          isPenaltyShown: false);
 
       notifyListeners();
     }

@@ -32,6 +32,10 @@ class AllInitialization {
     Hive.registerAdapter<NotificationType>(NotificationTypeAdapter());
     await Hive.openBox<NotificationType>('notificationBox');
 
+    //notification id container
     await Hive.openBox('notification_cache');
+
+    //session id container
+    await Hive.openBox('sessionBox');
   }
 }

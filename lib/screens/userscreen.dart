@@ -90,7 +90,8 @@ class _UserScreenState extends State<UserScreen> {
             userProfile: image.path,
             isSignupOnline: isSignUpOnline,
             isLogin: isLogin,
-            eventAttended: eventAttended));
+            eventAttended: eventAttended,
+            isPenaltyShown: false));
 
     showToast();
   }
