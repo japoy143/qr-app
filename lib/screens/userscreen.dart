@@ -39,6 +39,8 @@ class _UserScreenState extends State<UserScreen> {
   getImage(
       int id,
       String userName,
+      String lastName,
+      String middleInitial,
       String userCourse,
       String userYear,
       String userPassword,
@@ -83,6 +85,8 @@ class _UserScreenState extends State<UserScreen> {
             schoolId: id,
             key: userName,
             userName: userName,
+            lastName: lastName,
+            middleInitial: middleInitial,
             userCourse: userCourse,
             userYear: userYear,
             userPassword: userPassword,
@@ -232,6 +236,8 @@ class _UserScreenState extends State<UserScreen> {
                               onTap: () => getImage(
                                   user.schoolId,
                                   user.userName,
+                                  user.lastName,
+                                  user.middleInitial,
                                   user.userCourse,
                                   user.userYear,
                                   user.userPassword,
@@ -287,7 +293,7 @@ class _UserScreenState extends State<UserScreen> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: Text(
-                                user.userName,
+                                "${user.userName} ${user.lastName}",
                                 style: const TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16.0,

@@ -220,10 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
             onlyEventEnded.isNotEmpty ? onlyEventEnded.elementAt(0) : null;
 
         final user = userProvider.userData;
-        final userName = user.userName;
-        final userSchoolId = user.schoolId;
-        final isAdmin = user.isAdmin;
-        final userProfile = user.userProfile;
 
         return Scaffold(
           body: SafeArea(
@@ -244,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               final userImageUrl = provider.userImage;
 
                               return userImageUrl != null
-                                  ? showProfile(userProfile, userImageUrl,
+                                  ? showProfile(user.userProfile, userImageUrl,
                                       screenHeight, statusbarHeight)
                                   : Icon(
                                       Icons.account_circle_outlined,
@@ -263,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                   child: Text(
-                                    userName,
+                                    "${user.userName} ${user.lastName}",
                                     style: const TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 16.0,
@@ -271,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 Text(
-                                    '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                                    '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
                               ],
                             ),
                           ],
@@ -357,9 +353,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Center(
                                         child: event1 != null
                                             ? EventBoxHomescreen(
-                                                isAdmin: isAdmin,
+                                                isAdmin: user.isAdmin,
                                                 items: event1,
-                                                officerName: userName,
+                                                officerName: user.userName,
                                                 userKey: widget.userKey,
                                               )
                                             : Center(
@@ -515,9 +511,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                                 child: firstEventEnded != null
                                     ? EventEndedBoxHomescreen(
-                                        isAdmin: isAdmin,
+                                        isAdmin: user.isAdmin,
                                         items: firstEventEnded,
-                                        officerName: userName,
+                                        officerName: user.userName,
                                         userKey: widget.userKey,
                                       )
                                     : Center(

@@ -159,12 +159,14 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FormHeadersResponsive(
-                  color: Colors.black, height: widget.height, text: 'Name'),
+                  color: Colors.black,
+                  height: widget.height,
+                  text: 'First name'),
               CustomTextField(
                   height: widget.height,
                   isReadOnly: false,
                   keyBoardType: TextInputType.text,
-                  hintext: 'enter name',
+                  hintext: 'enter first name',
                   controller: _nameController),
             ],
           ),

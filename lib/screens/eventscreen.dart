@@ -315,10 +315,11 @@ class _EventScreenState extends State<EventScreen> {
 
     //user details
     final user = userProvider.userData;
-    final userName = user.userName;
-    final userSchoolId = user.schoolId;
-    final isAdmin = user.isAdmin;
-    final userProfile = user.userProfile;
+    // final userName = user.userName;
+    // final userSchoolId = user.schoolId;
+    // final isAdmin = user.isAdmin;
+    // final userProfile = user.userProfile;
+
     //online profile url
     final userImageUrl = userProvider.userImage;
 
@@ -348,7 +349,7 @@ class _EventScreenState extends State<EventScreen> {
                           Row(
                             children: [
                               userImageUrl != null
-                                  ? showProfile(userProfile, userImageUrl,
+                                  ? showProfile(user.userProfile, userImageUrl,
                                       screenHeight, statusbarHeight)
                                   : Icon(
                                       Icons.account_circle_outlined,
@@ -366,7 +367,7 @@ class _EventScreenState extends State<EventScreen> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Text(
-                                      userName,
+                                      "${user.userName} ${user.lastName}",
                                       style: const TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 16.0,
@@ -374,7 +375,7 @@ class _EventScreenState extends State<EventScreen> {
                                     ),
                                   ),
                                   Text(
-                                      '${isAdmin ? adminPosition.positions[userSchoolId] : "Student"}'),
+                                      '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
                                 ],
                               ),
                             ],
@@ -446,7 +447,7 @@ class _EventScreenState extends State<EventScreen> {
                               final item = sortedEventNotEnded.elementAt(index);
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 6, 0, 10),
-                                child: isAdmin
+                                child: user.isAdmin
                                     ? Slidable(
                                         endActionPane: ActionPane(
                                             motion: const StretchMotion(),
@@ -472,7 +473,7 @@ class _EventScreenState extends State<EventScreen> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0)),
                                           child: EventBox(
-                                            officerName: userName,
+                                            officerName: user.userName,
                                             updateEvent: () => showDialogUpdate(
                                                 (screenHeight -
                                                         statusbarHeight) *
@@ -483,7 +484,7 @@ class _EventScreenState extends State<EventScreen> {
                                                 totalHeight),
                                             items: item,
                                             userkey: widget.userKey,
-                                            isAdmin: isAdmin,
+                                            isAdmin: user.isAdmin,
                                           ),
                                         ),
                                       )
@@ -494,7 +495,7 @@ class _EventScreenState extends State<EventScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0)),
                                         child: EventBox(
-                                          officerName: userName,
+                                          officerName: user.userName,
                                           updateEvent: () => showDialogUpdate(
                                               (screenHeight - statusbarHeight) *
                                                   0.68,
@@ -504,7 +505,7 @@ class _EventScreenState extends State<EventScreen> {
                                               totalHeight),
                                           items: item,
                                           userkey: widget.userKey,
-                                          isAdmin: isAdmin,
+                                          isAdmin: user.isAdmin,
                                         ),
                                       ),
                               );
@@ -513,7 +514,7 @@ class _EventScreenState extends State<EventScreen> {
                 ),
               ),
             ),
-            floatingActionButton: isAdmin
+            floatingActionButton: user.isAdmin
                 ? FloatingActionButton(
                     onPressed: () => showAddEvent(
                       (screenHeight - statusbarHeight) * 0.68,

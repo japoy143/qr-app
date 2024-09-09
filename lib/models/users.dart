@@ -28,6 +28,10 @@ class UsersType {
   String eventAttended;
   @HiveField(11)
   bool isPenaltyShown;
+  @HiveField(12)
+  String lastName;
+  @HiveField(13)
+  String middleInitial;
 
   UsersType(
       {required this.schoolId,
@@ -41,5 +45,7 @@ class UsersType {
       required this.isSignupOnline,
       required this.isLogin,
       required this.eventAttended,
-      required this.isPenaltyShown});
+      required this.isPenaltyShown,
+      required this.lastName,
+      required this.middleInitial});
 }

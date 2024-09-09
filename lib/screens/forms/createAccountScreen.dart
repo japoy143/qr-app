@@ -32,6 +32,8 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _nameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _middleInitialController = TextEditingController();
   final _schoolIdController = TextEditingController();
   final _courseController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -67,6 +69,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   void clearAllFields() {
     _nameController.clear();
+    _lastNameController.clear();
+    _middleInitialController.clear();
     _schoolIdController.clear();
     _courseController.clear();
     _passwordController.clear();
@@ -103,6 +107,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
     userProvider.createNewUser(
         _nameController.text,
+        _lastNameController.text,
+        _middleInitialController.text,
         int.parse(_schoolIdController.text),
         selectedCourse.toString(),
         selectedYear.toString(),
@@ -203,21 +209,71 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             height: widget.height,
             text: 'Please enter your details'),
         Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FormHeadersResponsive(
-                  color: Colors.black, height: widget.height, text: 'Name'),
-              CustomTextField(
-                  height: widget.height,
-                  isReadOnly: false,
-                  hintext: 'enter name',
-                  keyBoardType: TextInputType.text,
-                  controller: _nameController),
-            ],
-          ),
-        ),
+            padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormHeadersResponsive(
+                          color: Colors.black,
+                          height: widget.height,
+                          text: 'Name'),
+                      CustomTextField(
+                          height: widget.height,
+                          isReadOnly: false,
+                          hintext: 'enter name',
+                          keyBoardType: TextInputType.text,
+                          controller: _nameController),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormHeadersResponsive(
+                          color: Colors.black,
+                          height: widget.height,
+                          text: 'Lastname'),
+                      CustomTextField(
+                          height: widget.height,
+                          isReadOnly: false,
+                          hintext: 'enter lastname',
+                          keyBoardType: TextInputType.text,
+                          controller: _lastNameController),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormHeadersResponsive(
+                          color: Colors.black,
+                          height: widget.height,
+                          text: 'M.I'),
+                      CustomTextField(
+                          height: widget.height,
+                          isReadOnly: false,
+                          hintext: 'enter middle initial',
+                          keyBoardType: TextInputType.text,
+                          controller: _middleInitialController),
+                    ],
+                  ),
+                )
+              ],
+            )),
         Padding(
           padding: const EdgeInsets.fromLTRB(40.0, 4, 40.0, 10),
           child: Row(
