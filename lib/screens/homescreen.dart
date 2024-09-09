@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
@@ -149,6 +150,16 @@ class _HomeScreenState extends State<HomeScreen> {
     isSignUpOnlineDialog(context, purple);
   }
 
+  // check if there is internet then use callback
+  checkIfThereIsInternet() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      Provider.of<NotificationProvider>(context, listen: false)
+          .callBackListener();
+      print('online');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -156,13 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<EventProvider>(context, listen: false).getEvents();
 
       Provider.of<UsersProvider>(context, listen: false)
-          .getUser(widget.userKey);
+          .getUser(int.parse(widget.userKey));
 
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
 
-      Provider.of<NotificationProvider>(context, listen: false)
-          .callBackListener();
+      checkIfThereIsInternet();
 
       checkIfUserSignUpOnline();
     });

@@ -102,14 +102,14 @@ class UsersProvider extends ChangeNotifier {
 
   //103
   //get user online and offline
-  Future<UsersType?> getUser(String userKey) async {
+  Future<UsersType?> getUser(int id) async {
     // check if data  is already save in phone storage or already cache
 
     try {
       var user = await Supabase.instance.client
           .from('users')
           .select("*")
-          .eq('school_id', int.parse(userKey))
+          .eq('school_id', id)
           .single();
 
       userData = UsersType(
@@ -133,7 +133,7 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('error 103 get user $e');
       //still works even offline
-      UsersType? user = userBox.get(userKey);
+      UsersType? user = userBox.get(id);
       if (user != null) {
         userData = UsersType(
             schoolId: user.schoolId,
@@ -156,7 +156,7 @@ class UsersProvider extends ChangeNotifier {
 
   //104
   //get event specific user
-  Future<bool> containsUser(String id) async {
+  Future<bool> containsUser(int id) async {
     //api
     try {
       var user = await Supabase.instance.client.from('users').select("*");
@@ -178,7 +178,7 @@ class UsersProvider extends ChangeNotifier {
       }).toList();
 
       List filteredStudent =
-          users.where((student) => student.schoolId == int.parse(id)).toList();
+          users.where((student) => student.schoolId == id).toList();
 
       bool isUserExist = filteredStudent.length == 1 ? true : false;
 
@@ -195,7 +195,7 @@ class UsersProvider extends ChangeNotifier {
 
   //105
   //get data for local image
-  UsersType? getdataForlocalImage(String id) {
+  UsersType? getdataForlocalImage(int id) {
     var user = userBox.get(id);
 
     return user;
@@ -300,7 +300,7 @@ class UsersProvider extends ChangeNotifier {
       });
 
       userBox.put(
-          schoolId.toString(),
+          schoolId,
           UsersType(
               schoolId: schoolId,
               key: userName,
@@ -323,7 +323,7 @@ class UsersProvider extends ChangeNotifier {
       }
 
       userBox.put(
-          schoolId.toString(),
+          schoolId,
           UsersType(
               schoolId: schoolId,
               key: userName,
@@ -387,19 +387,26 @@ class UsersProvider extends ChangeNotifier {
       logger.e('error 109 login user $e');
       //offline
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        userData = UsersType(
-            schoolId: user.schoolId,
-            key: user.key,
-            userName: user.userName,
-            userCourse: user.userCourse,
-            userYear: user.userYear,
-            userPassword: user.userPassword,
-            isAdmin: user.isAdmin,
-            userProfile: user.userProfile,
-            isSignupOnline: user.isSignupOnline,
-            isLogin: true,
-            eventAttended: user.eventAttended,
-            isPenaltyShown: false);
+        var data = userBox.get(id);
+
+        if (data != null) {
+          data.isLogin = true;
+          userBox.put(id, data);
+
+          userData = UsersType(
+              schoolId: data.schoolId,
+              key: data.key,
+              userName: data.userName,
+              userCourse: data.userCourse,
+              userYear: data.userYear,
+              userPassword: data.userPassword,
+              isAdmin: data.isAdmin,
+              userProfile: data.userProfile,
+              isSignupOnline: data.isSignupOnline,
+              isLogin: true,
+              eventAttended: data.eventAttended,
+              isPenaltyShown: false);
+        }
 
         notifyListeners();
       });
@@ -437,6 +444,13 @@ class UsersProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       logger.e('error 110 logout user $e');
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isLogin = false;
+        userBox.put(id, data);
+      }
+
       userData = UsersType(
           schoolId: 0,
           key: '',

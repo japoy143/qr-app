@@ -181,7 +181,8 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   void initState() {
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUser(int.parse(widget.userKey));
     Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
     super.initState();
   }

@@ -84,7 +84,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     }
 
-    if (await userProvider.containsUser(_schoolIdController.text)) {
+    if (await userProvider.containsUser(int.parse(_schoolIdController.text))) {
       toast.userAlreadyExist(context);
       Navigator.of(context).pop();
       return false;

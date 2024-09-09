@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -55,16 +56,24 @@ class _EventScreenState extends State<EventScreen> {
   String currentTime = '';
   String eventTimeEnd = '';
 
+  // check if there is internet then use callback
+  checkIfThereIsInternet() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      Provider.of<EventProvider>(context, listen: false).callBackListener();
+      print('online');
+    }
+  }
+
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
 
-    Provider.of<EventProvider>(context, listen: false).callBackListener();
-
     Provider.of<NotificationProvider>(context, listen: false)
         .getNotifications();
 
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUser(int.parse(widget.userKey));
 
     super.initState();
   }

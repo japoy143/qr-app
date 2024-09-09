@@ -70,6 +70,7 @@ dependencies:
   #supabase
   supabase_flutter: ^2.6.0
   flutter_dotenv:
+  connectivity_plus:
 
 dev_dependencies:
   flutter_test:

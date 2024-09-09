@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/state/eventProvider.dart';
-import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
@@ -26,7 +25,8 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
 
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUser(int.parse(widget.userKey));
     super.initState();
   }
 
