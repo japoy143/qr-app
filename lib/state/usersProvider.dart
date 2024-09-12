@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:encrypt_decrypt_plus/cipher/cipher.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -106,14 +108,14 @@ class UsersProvider extends ChangeNotifier {
 
   //103
   //get user online and offline
-  Future<UsersType?> getUser(int id) async {
+  Future<UsersType?> getUser(String id) async {
     // check if data  is already save in phone storage or already cache
 
     try {
       var user = await Supabase.instance.client
           .from('users')
           .select("*")
-          .eq('school_id', id)
+          .eq('school_id', int.parse(id))
           .single();
 
       userData = UsersType(
@@ -139,7 +141,7 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('error 103 get user $e');
       //still works even offline
-      UsersType? user = userBox.get(id);
+      UsersType? user = userBox.get(int.parse(id));
       if (user != null) {
         userData = UsersType(
             schoolId: user.schoolId,
@@ -527,19 +529,7 @@ class UsersProvider extends ChangeNotifier {
       logger.t('successfully updated event attended 111');
       return true;
     } catch (e) {
-      logger.e('error 111 update  event attended $e');
-      var user = userBox.get(id);
-
-      if (user != null) {
-        var pastEvent = user.eventAttended;
-        var formattedEvent = '$pastEvent|$newEvent';
-        user.eventAttended = formattedEvent;
-        userBox.put(id, user);
-
-        return true;
-      }
-
-      return false;
+      return true;
     }
   }
 

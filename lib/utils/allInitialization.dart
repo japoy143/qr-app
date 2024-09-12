@@ -37,5 +37,8 @@ class AllInitialization {
 
     //session id container
     await Hive.openBox('sessionBox');
+
+    //is offline data save
+    await Hive.openBox('offlineBox');
   }
 }

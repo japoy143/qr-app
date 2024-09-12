@@ -10,6 +10,7 @@ class EventIdProvider extends ChangeNotifier {
   var logger = Logger();
   // create box
   var eventIdBox = Hive.box<EventsId>('eventsIdBox');
+  var offlineBox = Hive.box('offlineBox');
   List<EventsId> eventIdList = [];
 
   // event  length
@@ -43,6 +44,7 @@ class EventIdProvider extends ChangeNotifier {
       return isEventId;
     } catch (e) {
       logger.e('402 error events id $e');
+
       var event = eventIdBox.containsKey(id);
       return event;
     }
@@ -78,7 +80,10 @@ class EventIdProvider extends ChangeNotifier {
       logger.t('successfully inserted id');
     } catch (e) {
       logger.e('error $e');
-      await eventIdBox.put(id, event);
+      EventsId eventIdsData =
+          EventsId(eventID: event.eventID, isDataSaveOffline: true);
+
+      eventIdBox.put(id, eventIdsData);
       getEvents();
       notifyListeners();
     }
@@ -88,5 +93,25 @@ class EventIdProvider extends ChangeNotifier {
     eventIdBox.delete(id);
     getEvents();
     notifyListeners();
+  }
+
+  getOfflineSaveEventId() async {
+    var allEventIds = eventIdBox.values.toList();
+
+    List<EventsId> filteredOfflineSaveData =
+        allEventIds.where((ids) => ids.isDataSaveOffline == true).toList();
+
+    var data = filteredOfflineSaveData.map((ids) {
+      return {'id': ids.eventID, 'event_id': ids.eventID};
+    }).toList();
+
+    try {
+      await Supabase.instance.client.from('event_id_extras').insert(data);
+      print('offline data saved');
+    } catch (e) {
+      logger.e('error offline data $e');
+    }
+
+    offlineBox.put('offline', false);
   }
 }

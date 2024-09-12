@@ -31,7 +31,8 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
     user = Provider.of<UsersProvider>(context, listen: false).userData;
-    Provider.of<UsersProvider>(context, listen: false).getUser(user.schoolId);
+    Provider.of<UsersProvider>(context, listen: false)
+        .getUser(user.schoolId.toString());
     Provider.of<UsersProvider>(context, listen: false)
         .getUserImage(user.schoolId.toString());
 

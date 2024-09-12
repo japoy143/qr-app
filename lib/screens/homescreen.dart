@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/notificationscreen.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
@@ -160,6 +163,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //check if the is internet then save offline data
+  saveAllOflineData() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final offlineBox = await Hive.box('offlineBox');
+
+    var isDataSave = await offlineBox.get('offline');
+
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      if (isDataSave == null && isDataSave) {
+        Provider.of<EventAttendanceProvider>(context, listen: false)
+            .getOfflineSaveEventAttendance();
+
+        Provider.of<EventIdProvider>(context, listen: false)
+            .getOfflineSaveEventId();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -167,12 +188,14 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<EventProvider>(context, listen: false).getEvents();
 
       Provider.of<UsersProvider>(context, listen: false)
-          .getUser(int.parse(widget.userKey));
+          .getUser(widget.userKey);
 
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
 
       checkIfThereIsInternet();
+
+      saveAllOflineData();
 
       checkIfUserSignUpOnline();
     });

@@ -54,8 +54,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
   //login user
   void userValidate(BuildContext context) async {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
-    final user =
-        await userProvider.getUser(int.parse(_schoolIdController.text.trim()));
+    final user = await userProvider.getUser(_schoolIdController.text.trim());
     Cipher cipher = Cipher(secretKey: secret_key);
 
     if (user == null) {
@@ -88,11 +87,11 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
-    userProvider.getUser(int.parse(_schoolIdController.text.trim()));
+    userProvider.getUser(_schoolIdController.text.trim());
   }
 
   void showProgressDialog(BuildContext context) {
-    showDialog(
+    showDialog( 
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

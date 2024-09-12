@@ -73,7 +73,7 @@ class _EventScreenState extends State<EventScreen> {
         .getNotifications();
 
     Provider.of<UsersProvider>(context, listen: false)
-        .getUser(int.parse(widget.userKey));
+        .getUser(widget.userKey);
 
     super.initState();
   }

@@ -28,7 +28,8 @@ class EventAttendanceProvider extends ChangeNotifier {
             studentId: attendance['student_id'],
             studentName: attendance['student_name'],
             studentCourse: attendance['student_course'],
-            studentYear: attendance['student_year']);
+            studentYear: attendance['student_year'],
+            isDataSaveOffline: false);
       }).toList();
 
       eventAttendanceList = eventAttendanceData;
@@ -48,6 +49,7 @@ class EventAttendanceProvider extends ChangeNotifier {
       var user =
           await Supabase.instance.client.from('event_attendance').select("*");
 
+      //get all event attendance
       List<EventAttendance> userAttendedList = user.map((attendance) {
         return EventAttendance(
             id: attendance['id'],
@@ -56,9 +58,11 @@ class EventAttendanceProvider extends ChangeNotifier {
             studentId: attendance['student_id'],
             studentName: attendance['student_name'],
             studentCourse: attendance['student_course'],
-            studentYear: attendance['student_year']);
+            studentYear: attendance['student_year'],
+            isDataSaveOffline: false);
       }).toList();
 
+      //get the student with the same event id
       List filteredAttended = userAttendedList
           .where((student) =>
               student.eventId == eventId && student.studentId == id)
@@ -73,11 +77,23 @@ class EventAttendanceProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       logger.e('error 302 event Attendance $e');
-      var event = eventAttendanceBox.containsKey(id);
-      return event;
+
+      List<EventAttendance> allEvents = eventAttendanceBox.values.toList();
+
+      List filteredAttend = allEvents
+          .where(
+              (student) => student.eventId == eventId && student.eventId == id)
+          .toList();
+
+      if (filteredAttend.isEmpty) {
+        return false;
+      }
+
+      return true;
     }
   }
 
+  //TODO:here problem
   //303
   //insert event attendance
   insertData(String userSchoolId, EventAttendance event) async {
@@ -91,13 +107,36 @@ class EventAttendanceProvider extends ChangeNotifier {
         'student_year': event.studentYear,
       });
 
-      await eventAttendanceBox.put(userSchoolId, event);
+      EventAttendance eventData = EventAttendance(
+          id: event.id,
+          eventId: event.eventId,
+          officerName: event.officerName,
+          studentId: event.studentId,
+          studentName: event.studentName,
+          studentCourse: event.studentCourse,
+          studentYear: event.studentYear,
+          isDataSaveOffline: true);
+
+      await eventAttendanceBox.put(userSchoolId, eventData);
       getEventAttendance();
       notifyListeners();
       logger.t('successfully 303 added event Attendance');
     } catch (e) {
       logger.e('error 303 event Attendance  $e');
-      await eventAttendanceBox.put(userSchoolId, event);
+
+      EventAttendance eventData = EventAttendance(
+          id: event.id,
+          eventId: event.eventId,
+          officerName: event.officerName,
+          studentId: event.studentId,
+          studentName: event.studentName,
+          studentCourse: event.studentCourse,
+          studentYear: event.studentYear,
+          isDataSaveOffline: true);
+
+      int badger = int.parse('${event.id}${event.studentId}');
+
+      eventAttendanceBox.add(eventData);
       getEventAttendance();
       notifyListeners();
     }
@@ -109,5 +148,38 @@ class EventAttendanceProvider extends ChangeNotifier {
     getEventAttendance();
     notifyListeners();
     logger.t('successfully deleted eventAttendance');
+  }
+
+  getOfflineSaveEventAttendance() async {
+    var allEventAttendance = eventAttendanceBox.values.toList();
+
+    List<EventAttendance> filteredOffline = allEventAttendance
+        .where((element) => element.isDataSaveOffline == true)
+        .toList();
+
+    logger.e(filteredOffline.length);
+
+    var data = filteredOffline.map((ids) {
+      return {
+        'event_id': ids.eventId,
+        'student_id': ids.studentId,
+        'student_name': ids.studentName,
+        'officer_name': ids.officerName,
+        'student_course': ids.studentCourse,
+        'student_year': ids.studentYear
+      };
+    }).toList();
+
+    data.forEach((element) {
+      logger.e('${element}   event attendance');
+    });
+
+    try {
+      await Supabase.instance.client
+          .from('event_attendance_extras')
+          .insert(data);
+    } catch (e) {
+      logger.e('error $e savig offline data');
+    }
   }
 }

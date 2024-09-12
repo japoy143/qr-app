@@ -24,13 +24,14 @@ class EventAttendanceAdapter extends TypeAdapter<EventAttendance> {
       studentName: fields[4] as String,
       studentCourse: fields[5] as String,
       studentYear: fields[6] as String,
+      isDataSaveOffline: fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, EventAttendance obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class EventAttendanceAdapter extends TypeAdapter<EventAttendance> {
       ..writeByte(5)
       ..write(obj.studentCourse)
       ..writeByte(6)
-      ..write(obj.studentYear);
+      ..write(obj.studentYear)
+      ..writeByte(7)
+      ..write(obj.isDataSaveOffline);
   }
 
   @override

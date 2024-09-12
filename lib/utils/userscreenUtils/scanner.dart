@@ -83,6 +83,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     final isAttended = await eventAttendanceProvider.containsStudent(
         widget.EventId, int.parse(userSchoolId));
 
+    //TODO:here
     //check if ids is already exist
     final isIdAlreadyExist =
         await eventIdProvider.containsEventId(widget.EventId);
@@ -97,8 +98,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     //if already in the stack then continue. make sure only on id in the stack
     //then remove the id if all the data is sent to the online database
     if (!isIdAlreadyExist) {
-      eventIdProvider.insertData(
-          widget.EventId, EventsId(eventID: widget.EventId));
+      eventIdProvider.insertData(widget.EventId,
+          EventsId(eventID: widget.EventId, isDataSaveOffline: false));
     }
 
     try {
@@ -111,9 +112,9 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               studentId: int.parse(userSchoolId),
               studentName: userName,
               studentCourse: userCourse,
-              studentYear: userYear));
+              studentYear: userYear,
+              isDataSaveOffline: false));
 
-      //TODO: update user attendance
       final isUserAttended = await userProvider.updateUserNewAttendedEvent(
           widget.EventId.toString(), int.parse(userSchoolId));
 
@@ -121,7 +122,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
         toast.errorStudentNotSave(context);
         return;
       }
-
+      //TODO: update user attendance
       toast.AttendanceSuccessfullySave(context);
     } catch (e) {
       toast.errorStudentNotSave(context);

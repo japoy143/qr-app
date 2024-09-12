@@ -25,8 +25,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
 
-    Provider.of<UsersProvider>(context, listen: false)
-        .getUser(int.parse(widget.userKey));
+    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     super.initState();
   }
 

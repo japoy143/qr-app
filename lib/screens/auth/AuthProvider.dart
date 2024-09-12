@@ -38,7 +38,7 @@ class _AuthProviderState extends State<AuthProvider> {
     // Moved provider calls here after the userKey is set
     if (userKey != null && userKey != 0) {
       final provider = Provider.of<UsersProvider>(context, listen: false);
-      provider.getUser(userKey!);
+      provider.getUser(userKey!.toString());
       provider.getUserImage(userKey.toString());
     }
   }

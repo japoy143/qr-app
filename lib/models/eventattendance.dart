@@ -18,6 +18,8 @@ class EventAttendance {
   String studentCourse;
   @HiveField(6)
   String studentYear;
+  @HiveField(7)
+  bool isDataSaveOffline;
 
   EventAttendance(
       {required this.id,
@@ -26,5 +28,6 @@ class EventAttendance {
       required this.studentId,
       required this.studentName,
       required this.studentCourse,
-      required this.studentYear});
+      required this.studentYear,
+      required this.isDataSaveOffline});
 }

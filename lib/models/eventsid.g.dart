@@ -18,15 +18,18 @@ class EventsIdAdapter extends TypeAdapter<EventsId> {
     };
     return EventsId(
       eventID: fields[0] as int,
+      isDataSaveOffline: fields[1] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, EventsId obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.eventID);
+      ..write(obj.eventID)
+      ..writeByte(1)
+      ..write(obj.isDataSaveOffline);
   }
 
   @override

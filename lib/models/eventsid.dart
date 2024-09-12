@@ -6,6 +6,8 @@ part 'eventsid.g.dart';
 class EventsId {
   @HiveField(0)
   int eventID;
+  @HiveField(1)
+  bool isDataSaveOffline;
 
-  EventsId({required this.eventID});
+  EventsId({required this.eventID, required this.isDataSaveOffline});
 }
