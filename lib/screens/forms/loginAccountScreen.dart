@@ -87,11 +87,14 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
+    userProvider
+        .updateUserOfflineSaveData(int.parse(_schoolIdController.text.trim()));
+    userProvider.getAllAdminsAndSave();
     userProvider.getUser(_schoolIdController.text.trim());
   }
 
   void showProgressDialog(BuildContext context) {
-    showDialog( 
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

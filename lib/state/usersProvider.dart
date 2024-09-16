@@ -599,14 +599,52 @@ class UsersProvider extends ChangeNotifier {
 
       // update user attendance
       String fetchUserAttendance = unSaveAttendance.join("|");
-
       String formattedAttendance = "${userAttended}${fetchUserAttendance}|";
+
+      String isfetchUserEmpty =
+          fetchUserAttendance.length == 0 ? userAttended : formattedAttendance;
 
       await Supabase.instance.client
           .from('users')
-          .update({'event_attended': formattedAttendance}).eq('school_id', id);
+          .update({'event_attended': isfetchUserEmpty}).eq('school_id', id);
 
       //delete the data online
+      await Supabase.instance.client
+          .from('event_attendance_extras')
+          .delete()
+          .eq('student_id', id);
     }
+  }
+
+  //get all admins and save in have
+  getAllAdminsAndSave() async {
+    var user = await Supabase.instance.client.from('users').select("*");
+
+    List<UsersType> users = user.map((eachUser) {
+      return UsersType(
+          schoolId: eachUser['school_id'],
+          key: eachUser['key'],
+          userName: eachUser['username'],
+          lastName: eachUser['last_name'],
+          middleInitial: eachUser['middle_initial'],
+          userCourse: eachUser['user_course'],
+          userYear: eachUser['user_year'],
+          userPassword: eachUser['user_password'],
+          isAdmin: eachUser['is_admin'],
+          userProfile: '',
+          isSignupOnline: true,
+          isLogin: eachUser['is_login'],
+          eventAttended: eachUser['event_attended'],
+          isPenaltyShown: false);
+    }).toList();
+
+    List<UsersType> allAdmins =
+        users.where((element) => element.isAdmin == true).toList();
+
+    Map<int, UsersType> allAdminsFormatted = {
+      for (var user in allAdmins) user.schoolId: user
+    };
+
+    userBox.putAll(allAdminsFormatted);
   }
 }
