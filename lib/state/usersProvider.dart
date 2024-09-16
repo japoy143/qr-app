@@ -1,8 +1,10 @@
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:encrypt_decrypt_plus/cipher/cipher.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -548,5 +550,63 @@ class UsersProvider extends ChangeNotifier {
     userBox.delete(id);
     getUsers();
     notifyListeners();
+  }
+
+  updateUserOfflineSaveData(int id) async {
+    var users = await Supabase.instance.client
+        .from('event_attendance_extras')
+        .select("*");
+
+    List<EventAttendance> allUsers = users.map((user) {
+      return EventAttendance(
+          id: user['id'],
+          eventId: user['event_id'],
+          officerName: user['officer_name'],
+          studentId: user['student_id'],
+          studentName: user['student_name'],
+          studentCourse: user['student_course'],
+          studentYear: user['student_year'],
+          isDataSaveOffline: false);
+    }).toList();
+
+    List<EventAttendance> userEventAttended =
+        allUsers.where((element) => element.studentId == id).toList();
+
+    if (userEventAttended.isNotEmpty) {
+      var getUserEventAttended = await Supabase.instance.client
+          .from('users')
+          .select("*")
+          .eq("school_id", id)
+          .single();
+
+      String userAttended = getUserEventAttended['event_attended'];
+      List<String> splitedEvent = userAttended.split("|");
+
+      splitedEvent.remove("");
+      List<int> unSaveAttendance = [];
+
+      userEventAttended.forEach((element) {
+        bool isAlreadyInList =
+            unSaveAttendance.any((ids) => ids == element.eventId);
+        if (!isAlreadyInList) {
+          bool notExist =
+              splitedEvent.any((ids) => int.parse(ids) == element.eventId);
+          if (!notExist) {
+            unSaveAttendance.add(element.eventId);
+          }
+        }
+      });
+
+      // update user attendance
+      String fetchUserAttendance = unSaveAttendance.join("|");
+
+      String formattedAttendance = "${userAttended}${fetchUserAttendance}|";
+
+      await Supabase.instance.client
+          .from('users')
+          .update({'event_attended': formattedAttendance}).eq('school_id', id);
+
+      //delete the data online
+    }
   }
 }

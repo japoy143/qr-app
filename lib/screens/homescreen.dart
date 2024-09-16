@@ -193,6 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
 
+      Provider.of<UsersProvider>(context, listen: false)
+          .updateUserOfflineSaveData(int.parse(widget.userKey));
+
       checkIfThereIsInternet();
 
       saveAllOflineData();
