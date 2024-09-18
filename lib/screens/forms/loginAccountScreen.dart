@@ -87,9 +87,14 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
     toast.loginSuccessfully(context, user.userName);
     userProvider.getUserImage(_schoolIdController.text.trim());
-    userProvider
-        .updateUserOfflineSaveData(int.parse(_schoolIdController.text.trim()));
-    userProvider.getAllAdminsAndSave();
+
+    //update user attendance & get all admins account save data
+    try {
+      userProvider.updateUserOfflineSaveData(
+          int.parse(_schoolIdController.text.trim()));
+      userProvider.getAllAdminsAndSave();
+    } catch (e) {}
+
     userProvider.getUser(_schoolIdController.text.trim());
   }
 

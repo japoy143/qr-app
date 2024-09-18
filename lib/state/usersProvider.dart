@@ -553,98 +553,107 @@ class UsersProvider extends ChangeNotifier {
   }
 
   updateUserOfflineSaveData(int id) async {
-    var users = await Supabase.instance.client
-        .from('event_attendance_extras')
-        .select("*");
-
-    List<EventAttendance> allUsers = users.map((user) {
-      return EventAttendance(
-          id: user['id'],
-          eventId: user['event_id'],
-          officerName: user['officer_name'],
-          studentId: user['student_id'],
-          studentName: user['student_name'],
-          studentCourse: user['student_course'],
-          studentYear: user['student_year'],
-          isDataSaveOffline: false);
-    }).toList();
-
-    List<EventAttendance> userEventAttended =
-        allUsers.where((element) => element.studentId == id).toList();
-
-    if (userEventAttended.isNotEmpty) {
-      var getUserEventAttended = await Supabase.instance.client
-          .from('users')
-          .select("*")
-          .eq("school_id", id)
-          .single();
-
-      String userAttended = getUserEventAttended['event_attended'];
-      List<String> splitedEvent = userAttended.split("|");
-
-      splitedEvent.remove("");
-      List<int> unSaveAttendance = [];
-
-      userEventAttended.forEach((element) {
-        bool isAlreadyInList =
-            unSaveAttendance.any((ids) => ids == element.eventId);
-        if (!isAlreadyInList) {
-          bool notExist =
-              splitedEvent.any((ids) => int.parse(ids) == element.eventId);
-          if (!notExist) {
-            unSaveAttendance.add(element.eventId);
-          }
-        }
-      });
-
-      // update user attendance
-      String fetchUserAttendance = unSaveAttendance.join("|");
-      String formattedAttendance = "${userAttended}${fetchUserAttendance}|";
-
-      String isfetchUserEmpty =
-          fetchUserAttendance.length == 0 ? userAttended : formattedAttendance;
-
-      await Supabase.instance.client
-          .from('users')
-          .update({'event_attended': isfetchUserEmpty}).eq('school_id', id);
-
-      //delete the data online
-      await Supabase.instance.client
+    try {
+      var users = await Supabase.instance.client
           .from('event_attendance_extras')
-          .delete()
-          .eq('student_id', id);
+          .select("*");
+
+      List<EventAttendance> allUsers = users.map((user) {
+        return EventAttendance(
+            id: user['id'],
+            eventId: user['event_id'],
+            officerName: user['officer_name'],
+            studentId: user['student_id'],
+            studentName: user['student_name'],
+            studentCourse: user['student_course'],
+            studentYear: user['student_year'],
+            isDataSaveOffline: false);
+      }).toList();
+
+      List<EventAttendance> userEventAttended =
+          allUsers.where((element) => element.studentId == id).toList();
+
+      if (userEventAttended.isNotEmpty) {
+        var getUserEventAttended = await Supabase.instance.client
+            .from('users')
+            .select("*")
+            .eq("school_id", id)
+            .single();
+
+        String userAttended = getUserEventAttended['event_attended'];
+        List<String> splitedEvent = userAttended.split("|");
+
+        splitedEvent.remove("");
+        List<int> unSaveAttendance = [];
+
+        userEventAttended.forEach((element) {
+          bool isAlreadyInList =
+              unSaveAttendance.any((ids) => ids == element.eventId);
+          if (!isAlreadyInList) {
+            bool notExist =
+                splitedEvent.any((ids) => int.parse(ids) == element.eventId);
+            if (!notExist) {
+              unSaveAttendance.add(element.eventId);
+            }
+          }
+        });
+
+        // update user attendance
+        String fetchUserAttendance = unSaveAttendance.join("|");
+        String formattedAttendance = "${userAttended}${fetchUserAttendance}|";
+
+        String isfetchUserEmpty = fetchUserAttendance.length == 0
+            ? userAttended
+            : formattedAttendance;
+
+        await Supabase.instance.client
+            .from('users')
+            .update({'event_attended': isfetchUserEmpty}).eq('school_id', id);
+
+        //delete the data online
+        await Supabase.instance.client
+            .from('event_attendance_extras')
+            .delete()
+            .eq('student_id', id);
+      }
+    } catch (e) {
+      logger.e('no internet');
     }
   }
 
   //get all admins and save in have
   getAllAdminsAndSave() async {
-    var user = await Supabase.instance.client.from('users').select("*");
+    try {
+      var user = await Supabase.instance.client.from('users').select("*");
 
-    List<UsersType> users = user.map((eachUser) {
-      return UsersType(
-          schoolId: eachUser['school_id'],
-          key: eachUser['key'],
-          userName: eachUser['username'],
-          lastName: eachUser['last_name'],
-          middleInitial: eachUser['middle_initial'],
-          userCourse: eachUser['user_course'],
-          userYear: eachUser['user_year'],
-          userPassword: eachUser['user_password'],
-          isAdmin: eachUser['is_admin'],
-          userProfile: '',
-          isSignupOnline: true,
-          isLogin: eachUser['is_login'],
-          eventAttended: eachUser['event_attended'],
-          isPenaltyShown: false);
-    }).toList();
+      List<UsersType> users = user.map((eachUser) {
+        return UsersType(
+            schoolId: eachUser['school_id'],
+            key: eachUser['key'],
+            userName: eachUser['username'],
+            lastName: eachUser['last_name'],
+            middleInitial: eachUser['middle_initial'],
+            userCourse: eachUser['user_course'],
+            userYear: eachUser['user_year'],
+            userPassword: eachUser['user_password'],
+            isAdmin: eachUser['is_admin'],
+            userProfile: '',
+            isSignupOnline: true,
+            isLogin: eachUser['is_login'],
+            eventAttended: eachUser['event_attended'],
+            isPenaltyShown: false);
+      }).toList();
 
-    List<UsersType> allAdmins =
-        users.where((element) => element.isAdmin == true).toList();
+      List<UsersType> allAdmins =
+          users.where((element) => element.isAdmin == true).toList();
 
-    Map<int, UsersType> allAdminsFormatted = {
-      for (var user in allAdmins) user.schoolId: user
-    };
+      Map<int, UsersType> allAdminsFormatted = {
+        for (var user in allAdmins) user.schoolId: user
+      };
 
-    userBox.putAll(allAdminsFormatted);
+      userBox.putAll(allAdminsFormatted);
+    } catch (e) {
+      logger.e('error no internet');
+    }
   }
 }
