@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
@@ -161,10 +162,15 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     super.initState();
   }
 
+  final appBar = AppBar();
   @override
   Widget build(BuildContext context) {
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
     String eventName = widget.EventName;
+    double appBarHeight = appBar.preferredSize.height;
+    double screenWIdth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double statusbarHeight = MediaQuery.of(context).padding.top;
 
     return Consumer<UsersProvider>(
       builder: (context, provider, child) {
@@ -178,82 +184,97 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
           ),
           body: Padding(
             padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
-            child: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: scannedImageUrl != null
-                        ? showProfile(scannedImageUrl)
-                        : const SizedBox.shrink(),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: purple,
-                        borderRadius: BorderRadius.circular(8.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black
-                                .withOpacity(0.2), // Shadow color with opacity
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: Offset(0, 3), // Offset of the shadow
-                          ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                        child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/imgs/qr_code.png',
+                                  scale: 24,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'CITECODE',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 20, 14, 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              'Eventname: $eventName',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 30.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Name: $userName',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    'Course & Year: $userCourse-$userYear',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              'School Id: $userSchoolId',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                      decoration: BoxDecoration(color: purple),
+                    )),
+                    Expanded(
+                        child: Container(
+                      decoration: BoxDecoration(color: Colors.white),
+                    ))
+                  ],
+                ),
+                Center(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 180,
                   ),
-                  const Expanded(flex: 1, child: SizedBox()),
-                ],
-              ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: scannedImageUrl != null
+                              ? showProfile(scannedImageUrl)
+                              : const SizedBox.shrink(),
+                        )),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                          child: Text(
+                            'Name: $userName',
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                          child: Text(
+                            'Course & Year: $userCourse-$userYear',
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                          child: Text(
+                            'School Id: $userSchoolId',
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ))
+                  ],
+                ),
+              ],
             ),
           ),
           floatingActionButton: FloatingActionButton(
