@@ -48,6 +48,7 @@ class _MenuScreenState extends State<MenuScreen> {
     List pages = isAdmin
         ? [
             HomeScreen(
+              isAdmin: isAdmin,
               userKey: user.schoolId.toString(),
               setIndex: (index) {
                 setState(() {
@@ -68,6 +69,7 @@ class _MenuScreenState extends State<MenuScreen> {
           ]
         : [
             HomeScreen(
+              isAdmin: isAdmin,
               userKey: user.schoolId.toString(),
               setIndex: (index) {
                 setState(() {

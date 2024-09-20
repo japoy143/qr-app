@@ -156,7 +156,7 @@ class UsersProvider extends ChangeNotifier {
             userPassword: user.userPassword,
             isAdmin: user.isAdmin,
             userProfile: '',
-            isSignupOnline: true,
+            isSignupOnline: user.isSignupOnline,
             isLogin: user.isLogin,
             eventAttended: user.eventAttended,
             isPenaltyShown: false);

@@ -28,6 +28,19 @@ class CustomToast {
     Vibration.vibrate();
   }
 
+  void usernameIncorrect(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Login Failed"),
+      description: const Text("Incorrect Username"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+    Vibration.vibrate();
+  }
+
   void userNotExist(context) {
     toastification.show(
       context: context,

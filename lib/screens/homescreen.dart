@@ -22,7 +22,12 @@ import 'package:qr_app/utils/homescreenUtils/eventEndedBox.dart';
 class HomeScreen extends StatefulWidget {
   final String userKey;
   final Function(int index) setIndex;
-  const HomeScreen({super.key, required this.userKey, required this.setIndex});
+  final bool isAdmin;
+  const HomeScreen(
+      {super.key,
+      required this.userKey,
+      required this.setIndex,
+      required this.isAdmin});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -193,6 +198,10 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
 
+      Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
+
+      checkIfUserSignUpOnline();
+
       try {
         Provider.of<NotificationProvider>(context, listen: false)
             .callBackListener();
@@ -203,8 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       saveAllOflineData();
-
-      checkIfUserSignUpOnline();
     });
   }
 

@@ -57,12 +57,21 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     final user = await userProvider.getUser(_schoolIdController.text.trim());
     Cipher cipher = Cipher(secretKey: secret_key);
 
+    //check if user found or exist
     if (user == null) {
       Navigator.of(context).pop();
       toast.userNotExist(context);
       return;
     }
 
+    //check if username is thesame
+    if (user.userName != _nameController.text) {
+      Navigator.of(context).pop();
+      toast.usernameIncorrect(context);
+      return;
+    }
+
+    // check if password is thesame with the encrypted password in database
     final decryptedPassword = cipher.xorDecode(user.userPassword);
     if (decryptedPassword != _passwordController.text) {
       Navigator.of(context).pop();
@@ -70,6 +79,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       return;
     }
 
+    //check if id iis thesame
     if (user.schoolId != int.parse(_schoolIdController.text)) {
       Navigator.of(context).pop();
       toast.userIdNotCorrect(context);
