@@ -151,7 +151,5 @@ class EventIdProvider extends ChangeNotifier {
         .from('event_id_extras')
         .delete()
         .inFilter('event_id', unsave);
-
-    logger.e(unsave);
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
@@ -198,8 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey);
 
-      Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
-
       checkIfUserSignUpOnline();
 
       try {
@@ -211,7 +210,11 @@ class _HomeScreenState extends State<HomeScreen> {
         print('error no internet');
       }
 
-      saveAllOflineData();
+      if (widget.isAdmin) {
+        saveAllOflineData();
+        Provider.of<EventIdProvider>(context, listen: false)
+            .saveEventIdExtras();
+      }
     });
   }
 
@@ -395,16 +398,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 officerName: user.userName,
                                                 userKey: widget.userKey,
                                               )
-                                            : Center(
-                                                child: Text(
-                                                  'No Event',
-                                                  style: TextStyle(
-                                                      color: colortheme
-                                                          .secondaryColor,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
+                                            : Stack(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/imgs/pattern1.svg',
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      'No Event',
+                                                      style: TextStyle(
+                                                          color: colortheme
+                                                              .secondaryColor,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  )
+                                                ],
                                               )),
                                   ),
                                 ),
@@ -437,16 +448,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 eventStatus: 'Ongoing',
                                                 eventDate: event2.eventDate,
                                               )
-                                            : Center(
-                                                child: Text(
-                                                  'No Event',
-                                                  style: TextStyle(
-                                                      color: colortheme
-                                                          .secondaryColor,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
+                                            : Stack(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/imgs/pattern1.svg',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      'No Event',
+                                                      style: TextStyle(
+                                                          color: colortheme
+                                                              .secondaryColor,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  )
+                                                ],
                                               )),
                                   ),
                                 ),
@@ -472,16 +491,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 eventStatus: 'Ongoing',
                                                 eventDate: event3.eventDate,
                                               )
-                                            : Center(
-                                                child: Text(
-                                                  'No Event',
-                                                  style: TextStyle(
-                                                      color: colortheme
-                                                          .secondaryColor,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
+                                            : Stack(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/imgs/pattern1.svg',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      'No Event',
+                                                      style: TextStyle(
+                                                          color: colortheme
+                                                              .secondaryColor,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  )
+                                                ],
                                               )),
                                   ),
                                 ),

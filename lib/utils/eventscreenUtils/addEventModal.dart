@@ -2,8 +2,10 @@ import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
+import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class addEventDialog extends StatefulWidget {
@@ -186,6 +188,41 @@ class _addEventDialogState extends State<addEventDialog> {
       ),
     ).show(context);
   }
+
+  double responsiveDropDownSizing(
+      double height, double xlarge, double large, double medium, double small) {
+    //if screen is xlarge
+    if (height >= 900) {
+      return xlarge;
+    }
+
+    //if screen is large
+    if (height < 900 && height >= 800) {
+      return large;
+    }
+
+    //if screen is medium
+    if (height < 800 && height >= 700) {
+      return medium;
+    }
+
+    //default small
+    return small;
+  }
+
+  //event value
+  List<String> eventValue = [
+    ' ₱20',
+    ' ₱30',
+    ' ₱40',
+    ' ₱50',
+    ' ₱60',
+    ' ₱70',
+    ' ₱80',
+    ' ₱90',
+    ' ₱100'
+  ];
+  String? selectedValue = ' ₱20';
 
   @override
   Widget build(BuildContext context) {
@@ -410,6 +447,36 @@ class _addEventDialogState extends State<addEventDialog> {
                       hintext: 'enter event place',
                       keyBoardType: TextInputType.text,
                       controller: widget.eventPlaceController),
+                ),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormHeadersResponsive(
+                            color: Colors.black,
+                            height: widget.height,
+                            text: 'Event Penalty'),
+                        Container(
+                          padding: EdgeInsets.all(responsiveDropDownSizing(
+                              widget.height, 7.0, 6.0, 4.0, 0.0)),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                              border: Border.all(color: Colors.grey.shade900)),
+                          child: DropDown(
+                            showUnderline: false,
+                            initialValue: selectedValue,
+                            items: eventValue,
+                            onChanged: (val) {
+                              setState(() {
+                                selectedValue = val;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 2),

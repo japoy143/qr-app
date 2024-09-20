@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/utils/localNotifications.dart';
-import 'package:qr_app/utils/userscreenUtils/scanner.dart';
 
 class EventEndedBoxHomescreen extends StatefulWidget {
   final EventType items;
@@ -50,106 +47,114 @@ class _EventEndedBoxHomescreenState extends State<EventEndedBoxHomescreen> {
     String formattedDate = DateFormat('MMM d').format(item.eventDate);
     List splittedDate = formattedDate.split(" ");
 
-    return Column(
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14.0, 14, 14.0, 5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                item.eventName,
-                style: TextStyle(
-                  color: colorTheme.secondaryColor,
-                  fontFamily: "Poppins",
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+        SvgPicture.asset(
+          'assets/imgs/pattern4.svg',
+          fit: BoxFit.fill,
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Text(
-                  item.eventDescription,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey.shade300,
-                    fontFamily: "Poppins",
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 20.0,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14.0, 14, 14.0, 5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    item.eventPlace,
+                    item.eventName,
                     style: TextStyle(
-                      color: Colors.grey.shade300,
+                      color: colorTheme.secondaryColor,
                       fontFamily: "Poppins",
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 14.0, 0, 0),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
                     child: Text(
-                      'Event Ended',
+                      item.eventDescription,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: colorTheme.secondaryColor,
+                        color: Colors.grey.shade300,
                         fontFamily: "Poppins",
-                        fontSize: 19.0,
+                        fontSize: 12.0,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
                 ],
               ),
-              Column(
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    splittedDate[0],
-                    style: TextStyle(
-                      color: colorTheme.secondaryColor,
-                      fontFamily: "Poppins",
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.eventPlace,
+                        style: TextStyle(
+                          color: Colors.grey.shade300,
+                          fontFamily: "Poppins",
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 14.0, 0, 0),
+                        child: Text(
+                          'Event Ended',
+                          style: TextStyle(
+                            color: colorTheme.secondaryColor,
+                            fontFamily: "Poppins",
+                            fontSize: 19.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    splittedDate[1],
-                    style: TextStyle(
-                      color: colorTheme.secondaryColor,
-                      fontFamily: "Poppins",
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Column(
+                    children: [
+                      Text(
+                        splittedDate[0],
+                        style: TextStyle(
+                          color: colorTheme.secondaryColor,
+                          fontFamily: "Poppins",
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        splittedDate[1],
+                        style: TextStyle(
+                          color: colorTheme.secondaryColor,
+                          fontFamily: "Poppins",
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          ],
+        )
       ],
     );
   }
