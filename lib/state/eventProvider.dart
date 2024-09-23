@@ -34,6 +34,7 @@ class EventProvider extends ChangeNotifier {
               eventEnded: event['event_ended'],
               eventPlace: event['event_place'],
               eventStatus: '',
+              eventPenalty: event['event_penalty'],
               key: event['key']);
         }).toList();
 
@@ -65,6 +66,7 @@ class EventProvider extends ChangeNotifier {
             eventEnded: event['event_ended'],
             eventPlace: event['event_place'],
             eventStatus: '',
+            eventPenalty: event['event_penalty'],
             key: event['key']);
       }).toList();
 
@@ -95,6 +97,7 @@ class EventProvider extends ChangeNotifier {
             eventEnded: event['event_ended'],
             eventPlace: event['event_place'],
             eventStatus: '',
+            eventPenalty: event['event_penalty'],
             key: event['key']);
       }).toList();
 
@@ -138,7 +141,8 @@ class EventProvider extends ChangeNotifier {
         'key': event.id.toString(),
         'event_place': event.eventPlace,
         'end_time': event.endTime.toString(),
-        'event_ended': event.eventEnded
+        'event_ended': event.eventEnded,
+        'event_penalty': event.eventPenalty
       });
 
       await eventBox.put(event.id, event);

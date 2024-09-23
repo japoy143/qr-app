@@ -150,20 +150,35 @@ class _EventBoxState extends State<EventBox> {
                   ),
                   widget.isAdmin
                       ? _eventStatus == "Ongoing"
-                          ? GestureDetector(
-                              onTap: () =>
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => QrCodeScanner(
-                                            EventId: event.id,
-                                            userKey: widget.userkey,
-                                            officerName: widget.officerName,
-                                            EventName: event.eventName,
-                                          ))),
-                              child: const Icon(
-                                Icons.qr_code_scanner,
-                                color: Colors.white,
-                                size: 26,
-                              ),
+                          ? Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: widget.updateEvent,
+                                  child: const Icon(
+                                    Icons.edit_note,
+                                    color: Colors.white,
+                                    size: 26,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                          builder: (context) => QrCodeScanner(
+                                                EventId: event.id,
+                                                userKey: widget.userkey,
+                                                officerName: widget.officerName,
+                                                EventName: event.eventName,
+                                              ))),
+                                  child: const Icon(
+                                    Icons.qr_code_scanner,
+                                    color: Colors.white,
+                                    size: 26,
+                                  ),
+                                ),
+                              ],
                             )
                           : GestureDetector(
                               onTap: widget.updateEvent,
@@ -233,28 +248,60 @@ class _EventBoxState extends State<EventBox> {
                       ),
                     ],
                   ),
-                  Column(
+                  Row(
                     children: [
-                      Text(
-                        splittedDate[0],
-                        style: TextStyle(
-                          color: colorTheme.secondaryColor,
-                          fontFamily: "Poppins",
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Column(
+                        children: [
+                          Text(
+                            'Penalty',
+                            style: TextStyle(
+                              color: colorTheme.secondaryColor,
+                              fontFamily: "Poppins",
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.currency(
+                              locale: 'en_PH',
+                              decimalDigits: 0,
+                              symbol: '\u20B1',
+                            ).format(event.eventPenalty),
+                            style: TextStyle(
+                              color: colorTheme.secondaryColor,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        splittedDate[1],
-                        style: TextStyle(
-                          color: colorTheme.secondaryColor,
-                          fontFamily: "Poppins",
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            splittedDate[0],
+                            style: TextStyle(
+                              color: colorTheme.secondaryColor,
+                              fontFamily: "Poppins",
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            splittedDate[1],
+                            style: TextStyle(
+                              color: colorTheme.secondaryColor,
+                              fontFamily: "Poppins",
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

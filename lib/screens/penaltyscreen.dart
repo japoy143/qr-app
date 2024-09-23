@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/models/users.dart';
+import 'package:qr_app/models/events.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
+import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
@@ -28,6 +29,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUsers();
     Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
+    Provider.of<EventIdProvider>(context, listen: false).getEvents();
     _studentNameController.addListener(() {
       setState(() {});
     });
@@ -41,12 +43,32 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
   }
 
   Map<int, dynamic> penaltyFormula = {
-    0: ['', '', ''],
-    1: ['2 Pencils', '1 Notebook', '1 YellowPad'],
-    2: ['2 Pencils', '2 Notebook', '1 YellowPad'],
-    3: ['3 Pencils', '2 Notebook', '2 YellowPad'],
-    4: ['4 Pencils', '3 Notebook', '2 YellowPad'],
-    5: ['4 Pencils', '3 Notebook', '3 YellowPad']
+    0: ['', '', '', ''],
+    10: ['1 Ballpen', '1 Pencil', '', ''],
+    20: ['2 Ballpen', '2 Pencil', '', ''],
+    30: ['1 Ballpen', '1 Pencil', '1 Crayons 8 colors', ''],
+    40: ['1 Pad Paper', '1 Crayons 8 colors', '', ''],
+    50: [
+      '1 Ballpen',
+      '1 Pencil',
+      '1 Crayons 8 colors',
+      '1 Pad Paper',
+    ],
+    60: [
+      '1 Pad Paper',
+      '1 Crayons 8 colors',
+      '1 Small Notebook',
+      '',
+    ],
+    70: ['1 Crayons 8 colors', '1 Pad Paper', '1 Small Notebook', ''],
+    80: ['1 Ballpen', '1 Pencil', '1 Pad Paper', '1 Big Notebook'],
+    90: ['1 Big NoteBook', '2 Small Notebook', '', ''],
+    100: [
+      '1 Crayons 8 colors',
+      '1 Pad Paper',
+      '1 Small Notebook',
+      '1 Big Notebook'
+    ],
   };
 
   //user attended
@@ -65,6 +87,25 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
     int eventMissed = totalEvent - totalEventAttended;
 
     return eventMissed;
+  }
+
+  int getEventTotalValue(List eventAttended, Map<dynamic, int> ids) {
+    int total = 0;
+
+    eventAttended.forEach((element) {
+      if (element != "") {
+        total += ids[element] ?? 0;
+      }
+    });
+
+    return total;
+  }
+
+  List getEventAttendedList(String attended) {
+    List attend = attended.split('|');
+    attend.remove("");
+
+    return attend;
   }
 
   @override
@@ -286,87 +327,136 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                                             ),
                                           )
                                         : const SizedBox.shrink(),
-                                    item.isPenaltyShown
-                                        ? const Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 20, 0, 0),
-                                            child: Text(
-                                              'Penalties',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 18),
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                    item.isPenaltyShown
-                                        ? Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 6, 0, 0),
-                                            child: Consumer<EventIdProvider>(
-                                              builder:
-                                                  (context, provider, child) {
-                                                final eventLength =
-                                                    provider.eventLength;
-                                                final penaltyData =
-                                                    penaltyFormula[
-                                                        getUserEventMissed(
-                                                            item.eventAttended,
-                                                            eventLength)];
+                                    Consumer<EventProvider>(
+                                        builder: (context, provider, child) {
+                                      List<EventType> events =
+                                          provider.eventList;
 
-                                                return Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      penaltyData[0],
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      penaltyData[1],
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                    )
-                                                  ],
-                                                );
-                                              },
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                    item.isPenaltyShown
-                                        ? Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 6, 0, 0),
-                                            child: Consumer<EventIdProvider>(
-                                              builder:
-                                                  (context, provider, child) {
-                                                final eventLength =
-                                                    provider.eventLength;
-                                                final penaltyData =
-                                                    penaltyFormula[
-                                                        getUserEventMissed(
-                                                            item.eventAttended,
-                                                            eventLength)];
-                                                return Text(
-                                                  penaltyData[2],
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16),
-                                                );
-                                              },
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
+                                      //attended event
+                                      List attendedEvent = getEventAttendedList(
+                                          item.eventAttended);
+
+                                      //all not attended
+                                      List penaltyEvent = [];
+
+                                      //filter not equal event attended
+                                      events.forEach((ids) {
+                                        bool isAttended = attendedEvent.any(
+                                            (element) =>
+                                                int.parse(element) == ids.id);
+
+                                        if (!isAttended) {
+                                          penaltyEvent.add(ids.id);
+                                        }
+                                      });
+
+                                      final eventIds = Map.fromEntries(
+                                        events.map(
+                                          (e) => MapEntry(e.id, e.eventPenalty),
+                                        ),
+                                      );
+
+                                      int totalValue = getEventTotalValue(
+                                          penaltyEvent, eventIds);
+
+                                      final penalty = totalValue >= 100
+                                          ? penaltyFormula[100]
+                                          : penaltyFormula[totalValue];
+
+                                      return item.isPenaltyShown
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 10, 0, 0),
+                                                  child: Text(
+                                                    'Total Event Penalty   ₱${getEventTotalValue(penaltyEvent, eventIds).toString()}',
+                                                    style: const TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                                item.isPenaltyShown
+                                                    ? const Padding(
+                                                        padding:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 4, 0, 4),
+                                                        child: Text(
+                                                          'Converted Penalty',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: 14),
+                                                        ),
+                                                      )
+                                                    : const SizedBox.shrink(),
+                                                item.isPenaltyShown
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            penalty[0],
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          ),
+                                                          Text(
+                                                            penalty[1],
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          )
+                                                        ],
+                                                      )
+                                                    : SizedBox.shrink(),
+                                                item.isPenaltyShown
+                                                    ? Row(
+                                                        children: [
+                                                          Text(
+                                                            penalty[2],
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          ),
+                                                          Text(
+                                                            penalty[3],
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          )
+                                                        ],
+                                                      )
+                                                    : SizedBox.shrink(),
+                                              ],
+                                            )
+                                          : const SizedBox.shrink();
+                                    }),
                                   ],
                                 )),
                           ),

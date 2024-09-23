@@ -2,10 +2,8 @@ import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
-import 'package:qr_app/utils/formUtils/formHeadersResponsive.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class addEventDialog extends StatefulWidget {
@@ -17,6 +15,7 @@ class addEventDialog extends StatefulWidget {
   final TextEditingController eventPlaceController;
   final TextEditingController eventDescription;
   final TextEditingController eventId;
+  final TextEditingController eventPenalty;
   String currentDate;
   String currentTime;
   String eventTimeEnd;
@@ -40,6 +39,7 @@ class addEventDialog extends StatefulWidget {
     required this.eventId,
     required this.eventTimeEnd,
     required this.onUpdateEventDetails,
+    required this.eventPenalty,
   });
 
   @override
@@ -209,20 +209,6 @@ class _addEventDialogState extends State<addEventDialog> {
     //default small
     return small;
   }
-
-  //event value
-  List<String> eventValue = [
-    ' ₱20',
-    ' ₱30',
-    ' ₱40',
-    ' ₱50',
-    ' ₱60',
-    ' ₱70',
-    ' ₱80',
-    ' ₱90',
-    ' ₱100'
-  ];
-  String? selectedValue = ' ₱20';
 
   @override
   Widget build(BuildContext context) {
@@ -429,55 +415,60 @@ class _addEventDialogState extends State<addEventDialog> {
                     ),
                   ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 2),
-                  child: Text(
-                    'Where',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins"),
-                  ),
-                ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
-                  child: CustomTextField(
-                      height: widget.screenHeight,
-                      isReadOnly: false,
-                      hintext: 'enter event place',
-                      keyBoardType: TextInputType.text,
-                      controller: widget.eventPlaceController),
-                ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    padding: EdgeInsets.fromLTRB(0, 15, 0, 2),
+                    child: Row(
                       children: [
-                        FormHeadersResponsive(
-                            color: Colors.black,
-                            height: widget.height,
-                            text: 'Event Penalty'),
-                        Container(
-                          padding: EdgeInsets.all(responsiveDropDownSizing(
-                              widget.height, 7.0, 6.0, 4.0, 0.0)),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(color: Colors.grey.shade900)),
-                          child: DropDown(
-                            showUnderline: false,
-                            initialValue: selectedValue,
-                            items: eventValue,
-                            onChanged: (val) {
-                              setState(() {
-                                selectedValue = val;
-                              });
-                            },
-                          ),
-                        ),
+                        Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Where',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Poppins"),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                                  child: CustomTextField(
+                                      height: widget.screenHeight,
+                                      isReadOnly: false,
+                                      hintext: 'enter event place',
+                                      keyBoardType: TextInputType.text,
+                                      controller: widget.eventPlaceController),
+                                ),
+                              ],
+                            )),
+                        Expanded(
+                            flex: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Penalty',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Poppins"),
+                                ),
+                                Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                                    child: CustomTextField(
+                                      height: widget.screenHeight,
+                                      isReadOnly: false,
+                                      hintext: '₱20',
+                                      keyBoardType: TextInputType.number,
+                                      controller: widget.eventPenalty,
+                                    )),
+                              ],
+                            ))
                       ],
-                    ),
-                  ],
-                ),
+                    )),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 2),
                   child: Row(

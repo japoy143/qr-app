@@ -580,14 +580,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                         officerName: user.userName,
                                         userKey: widget.userKey,
                                       )
-                                    : Center(
-                                        child: Text(
-                                          'No Event',
-                                          style: TextStyle(
-                                              color: colortheme.secondaryColor,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600),
-                                        ),
+                                    : Stack(
+                                        children: [
+                                          SvgPicture.asset(
+                                            'assets/imgs/pattern4.svg',
+                                            fit: BoxFit.fill,
+                                          ),
+                                          Center(
+                                            child: Text(
+                                              'No Event',
+                                              style: TextStyle(
+                                                  color:
+                                                      colortheme.secondaryColor,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          )
+                                        ],
                                       )),
                           ],
                         )),

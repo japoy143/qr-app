@@ -52,6 +52,7 @@ class _EventScreenState extends State<EventScreen> {
   final _eventDescriptionController = TextEditingController();
   final _eventPlaceController = TextEditingController();
   final _eventIdController = TextEditingController();
+  final _eventPenaltyController = TextEditingController();
   String currentDate = '';
   String currentTime = '';
   String eventTimeEnd = '';
@@ -93,6 +94,7 @@ class _EventScreenState extends State<EventScreen> {
     _eventPlaceController.clear();
     _eventDescriptionController.clear();
     _eventIdController.clear();
+    _eventPenaltyController.clear();
     currentDate = '';
     currentTime = '';
     eventTimeEnd = '';
@@ -106,6 +108,7 @@ class _EventScreenState extends State<EventScreen> {
         context: context,
         builder: (context) {
           return addEventDialog(
+            eventPenalty: _eventPenaltyController,
             screenHeight: screenHeight,
             eventTimeEnd: eventTimeEnd,
             currentDate: currentDate,
@@ -162,6 +165,7 @@ class _EventScreenState extends State<EventScreen> {
 
     //insert event
     eventProvider.insertData(EventType(
+        eventPenalty: int.parse(_eventPenaltyController.text),
         id: int.parse(_eventIdController.text),
         eventName: _eventNameController.text,
         eventDescription: _eventDescriptionController.text,
@@ -259,6 +263,7 @@ class _EventScreenState extends State<EventScreen> {
       eventProvider.updateEvent(
           id,
           EventType(
+              eventPenalty: int.parse(_eventPenaltyController.text),
               id: int.parse(_eventIdController.text),
               eventName: _eventNameController.text,
               eventDescription: _eventDescriptionController.text,
