@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
+import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 
 class EventSummaryScreen extends StatefulWidget {
   final String userKey;
@@ -26,6 +28,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
     Provider.of<EventProvider>(context, listen: false).getEvents();
 
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
+    Provider.of<UsersProvider>(context, listen: false).getUsers();
     super.initState();
   }
 
@@ -63,13 +66,50 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Events Summary',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w800,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Events Summary',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Consumer<UsersProvider>(
+                      builder: (context, provider, widget) {
+                        List<UsersType> allUsers = provider.userList;
+
+                        //filter admins
+                        List<UsersType> onlyStudent = allUsers
+                            .where((element) => element.isAdmin == false)
+                            .toList();
+
+                        // Sort user alphabetically (case-insensitive)
+                        List<UsersType> alphabeticalStudents = onlyStudent
+                            .toList()
+                          ..sort((a, b) => a.userName
+                              .toLowerCase()
+                              .compareTo(b.userName.toLowerCase()));
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: GestureDetector(
+                              onTap: () async {
+                                SaveAndDownloadMultiplePdf.createPdf(
+                                    events: sortedEventEnded,
+                                    users: alphabeticalStudents);
+                              },
+                              child: const Icon(
+                                Icons.picture_as_pdf,
+                                size: 30,
+                              )),
+                        );
+                      },
+                    )
+                  ],
                 ),
                 Text(
                   'Events Ended',

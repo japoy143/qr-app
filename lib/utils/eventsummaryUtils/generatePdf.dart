@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get_connect/sockets/src/socket_notifier.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -79,18 +77,20 @@ class SaveAndDownloadPdf {
                           ]),
                     ),
                     pw.TableHelper.fromTextArray(
-                        data: data,
-                        headers: headers,
-                        tableWidth: pw.TableWidth.max,
-                        headerHeight: 80,
-                        cellHeight: 60,
-                        cellAlignment: pw.Alignment.center,
-                        headerAlignment: pw.Alignment.center,
-                        border: pw.TableBorder.all(width: 4),
-                        headerStyle: pw.TextStyle(
-                            fontSize: 12, fontWeight: pw.FontWeight.bold),
-                        cellStyle: pw.TextStyle(
-                            fontSize: 10, fontWeight: pw.FontWeight.bold))
+                      data: data,
+                      headers: headers,
+                      tableWidth: pw.TableWidth.max,
+                      headerHeight: 80,
+                      cellHeight: 60,
+                      cellAlignment: pw.Alignment.center,
+                      headerAlignment: pw.Alignment.center,
+                      border: pw.TableBorder.all(
+                          width: 4, style: pw.BorderStyle.dashed),
+                      headerStyle: pw.TextStyle(
+                          fontSize: 12, fontWeight: pw.FontWeight.bold),
+                      cellStyle: pw.TextStyle(
+                          fontSize: 10, fontWeight: pw.FontWeight.bold),
+                    ),
                   ])),
     );
 

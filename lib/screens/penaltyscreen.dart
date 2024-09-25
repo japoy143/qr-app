@@ -332,6 +332,11 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                                       List<EventType> events =
                                           provider.eventList;
 
+                                      List<EventType> eventEnded = events
+                                          .where((element) =>
+                                              element.eventEnded == true)
+                                          .toList();
+
                                       //attended event
                                       List attendedEvent = getEventAttendedList(
                                           item.eventAttended);
@@ -340,7 +345,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                                       List penaltyEvent = [];
 
                                       //filter not equal event attended
-                                      events.forEach((ids) {
+                                      eventEnded.forEach((ids) {
                                         bool isAttended = attendedEvent.any(
                                             (element) =>
                                                 int.parse(element) == ids.id);

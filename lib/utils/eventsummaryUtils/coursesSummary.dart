@@ -4,9 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/types.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/utils/eventsummaryUtils/generatePdf.dart';
+import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
 
 class CoursesSummaryScreen extends StatefulWidget {
@@ -106,6 +108,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
     String formattedDate = DateFormat('MMM d').format(DateTime.now());
     String time = DateFormat('h:mm a').format(DateTime.now());
     String eventTime = '$formattedDate, $time';
+    String eventName = widget.eventName;
 
     List<CoursesSummaryType> cellData = [
       CoursesSummaryType(
@@ -159,21 +162,32 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: GestureDetector(
-                onTap: () async {
-                  SaveAndDownloadPdf.createPdf(
-                      eventTime: eventTime,
-                      eventName: widget.eventName,
-                      eventDescription: 'Drug awarness seminar',
-                      totalAttended: totalStudentAttended(),
-                      data: data);
-                },
-                child: const Icon(
-                  Icons.picture_as_pdf,
-                  size: 30,
-                )),
+          Consumer<UsersProvider>(
+            builder: (context, provider, widget) {
+              provider.getUsers();
+              List<UsersType> allUsers = provider.userList;
+
+              //filter admins
+              List<UsersType> onlyStudent = allUsers
+                  .where((element) => element.isAdmin == false)
+                  .toList();
+
+              // Sort user alphabetically (case-insensitive)
+              List<UsersType> alphabeticalStudents = onlyStudent.toList()
+                ..sort((a, b) => a.userName
+                    .toLowerCase()
+                    .compareTo(b.userName.toLowerCase()));
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: GestureDetector(
+                    onTap: () async {},
+                    child: const Icon(
+                      Icons.picture_as_pdf,
+                      size: 30,
+                    )),
+              );
+            },
           )
         ],
       ),
