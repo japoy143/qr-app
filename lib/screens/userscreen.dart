@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
+import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/generatePenaltyPdf.dart';
 import 'package:qr_app/utils/toast.dart';
 import 'package:qr_app/utils/userscreenUtils/eventSummary.dart';
 import 'package:supabase/supabase.dart';
@@ -187,6 +189,7 @@ class _UserScreenState extends State<UserScreen> {
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
+    Provider.of<EventProvider>(context, listen: false).getEvents();
     super.initState();
   }
 
@@ -202,7 +205,7 @@ class _UserScreenState extends State<UserScreen> {
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
     //user data
-    final user = userProvider.userData;
+    UsersType user = userProvider.userData;
 
     //for qr data
     String qrData = [
@@ -361,7 +364,7 @@ class _UserScreenState extends State<UserScreen> {
                 '${user.userCourse}-${user.userYear}',
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -372,7 +375,29 @@ class _UserScreenState extends State<UserScreen> {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4),
-                        child: Text('Attendance'),
+                        child: Consumer<EventProvider>(
+                            builder: (context, provider, child) {
+                          final events = provider.eventList;
+
+                          return GestureDetector(
+                              onTap: () async {
+                                SaveAndDownloadUserPdf.createPdf(
+                                    users: user, events: events);
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Attendance ',
+                                    style:
+                                        TextStyle(fontSize: 16, color: purple),
+                                  ),
+                                  Icon(
+                                    Icons.picture_as_pdf,
+                                    color: purple,
+                                  )
+                                ],
+                              ));
+                        }),
                       ),
                       Expanded(child: Divider()),
                     ],

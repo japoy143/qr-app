@@ -6,6 +6,7 @@ import 'package:qr_app/screens/homescreen.dart';
 import 'package:qr_app/screens/eventsummaryscreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
+import 'package:qr_app/screens/validationscreen.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
@@ -44,6 +45,7 @@ class _MenuScreenState extends State<MenuScreen> {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
     final userDetails = userProvider.userData;
     final isAdmin = userDetails.isAdmin;
+    final validation = true;
 
     List pages = isAdmin
         ? [
@@ -83,9 +85,15 @@ class _MenuScreenState extends State<MenuScreen> {
             EventSummaryScreen(
               userKey: user.schoolId.toString(),
             ),
+            if (validation)
+              {
+                ValidationScreen(
+                  userKey: user.schoolId.toString(),
+                )
+              },
             UserScreen(
               userKey: user.schoolId.toString(),
-            )
+            ),
           ];
 
     List<BottomNavigationBarItem> bottomNavItems = [
@@ -96,6 +104,9 @@ class _MenuScreenState extends State<MenuScreen> {
       if (isAdmin)
         const BottomNavigationBarItem(
             icon: Icon(Icons.analytics_outlined), label: 'Penalty'),
+      if (!isAdmin && validation)
+        const BottomNavigationBarItem(
+            icon: Icon(Icons.verified_user_sharp), label: 'Validation'),
       const BottomNavigationBarItem(
           icon: Icon(Icons.person_outline), label: 'User'),
     ];

@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:encrypt_decrypt_plus/cipher/cipher.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -55,6 +52,9 @@ class UsersProvider extends ChangeNotifier {
     800008,
     900009,
   ];
+
+  //validation representative
+  List<int> validationIds = List<int>.generate(50, (index) => 101 + index);
 
   final String? secret_key = dotenv.env['secret_key'];
 

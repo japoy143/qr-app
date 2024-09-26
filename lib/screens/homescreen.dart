@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var isDataSave = await offlineBox.get('offline');
 
     if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      if (isDataSave == null && isDataSave) {
+      if (isDataSave == null || isDataSave) {
         Provider.of<EventAttendanceProvider>(context, listen: false)
             .getOfflineSaveEventAttendance();
 
