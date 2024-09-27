@@ -51,6 +51,7 @@ dependencies:
   introduction_screen:
   flutter_barcode_scanner:
   vibration:
+  glass:
   #utils
   uuid:
   intl:

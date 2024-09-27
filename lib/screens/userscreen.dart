@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:glass/glass.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +53,7 @@ class _UserScreenState extends State<UserScreen> {
     bool isLogin,
     String eventAttended,
     bool isValidationRep,
+    bool isUserValidated,
   ) async {
     //image picker
     final ImagePicker picker = ImagePicker();
@@ -100,7 +102,8 @@ class _UserScreenState extends State<UserScreen> {
             isLogin: isLogin,
             eventAttended: eventAttended,
             isPenaltyShown: false,
-            isValidationRep: isValidationRep));
+            isValidationRep: isValidationRep,
+            isUserValidated: isUserValidated));
 
     showToast();
   }
@@ -251,7 +254,8 @@ class _UserScreenState extends State<UserScreen> {
                                   user.isSignupOnline,
                                   user.isLogin,
                                   user.eventAttended,
-                                  user.isValidationRep),
+                                  user.isValidationRep,
+                                  user.isUserValidated),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;
@@ -345,21 +349,30 @@ class _UserScreenState extends State<UserScreen> {
               ),
               const Text('Scan this code to verify your attendance'),
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-                child: Container(
-                  height: (screenHeight - statusbarHeight) * 0.34,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                      color: colortheme.secondaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 4,
-                        color: Colors.grey.shade300,
-                      )),
-                  child: PrettyQrView.data(
-                      data: qrData, decoration: const PrettyQrDecoration()),
-                ),
-              ),
+                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                  child: Container(
+                    height: (screenHeight - statusbarHeight) * 0.34,
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                        color: colortheme.secondaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          width: 4,
+                          color: Colors.grey.shade300,
+                        )),
+                    child: user.isUserValidated
+                        ? PrettyQrView.data(
+                            data: qrData,
+                            decoration: const PrettyQrDecoration())
+                        : PrettyQrView.data(
+                            data: '0|0|0|0|0',
+                            decoration: const PrettyQrDecoration(
+                              image: PrettyQrDecorationImage(
+                                  image: AssetImage(
+                                      'assets/imgs/validate_warn.png'),
+                                  scale: 0.8),
+                            )),
+                  )),
               Text(
                 user.userName,
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),

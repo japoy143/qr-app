@@ -1,4 +1,8 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/usersProvider.dart';
@@ -28,6 +32,28 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   final appBar = AppBar();
 
+  List<Widget> circles() {
+    var random =
+        Random(); // Moved outside to avoid recreating the Random object
+
+    return List.generate(15, (index) {
+      double topPos = random.nextDouble() * 40;
+      double leftPos = random.nextDouble() * 300;
+
+      return Positioned(
+        top: topPos,
+        left: leftPos,
+        child: SvgPicture.asset(
+          'assets/imgs/circle.svg',
+          height: index % 2 == 0
+              ? 100
+              : 40, // Add constraints like height/width if necessary
+          width: index % 2 == 0 ? 100 : 40,
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double appBarHeight = appBar.preferredSize.height;
@@ -47,6 +73,9 @@ class _ValidationScreenState extends State<ValidationScreen> {
                 student.isAdmin == false && student.isValidationRep == false)
             .toList();
 
+        sortedUsers.sort((a, b) => a.lastName.compareTo(b.lastName));
+
+        sortedUsers.sort((a, b) => a.isUserValidated ? 1 : 0);
         //imageList
         final imageList = provider.userImageList;
 
@@ -83,15 +112,21 @@ class _ValidationScreenState extends State<ValidationScreen> {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              decoration: BoxDecoration(
-                                  color: purple,
-                                  borderRadius: BorderRadius.circular(4.0)),
-                              child: ValidationUsers(
-                                user: item,
-                                imageList: imageList,
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: purple, width: 2),
+                                    borderRadius: BorderRadius.circular(4.0)),
+                                child: Stack(
+                                  children: [
+                                    ...circles(),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ValidationUsers(
+                                        user: item,
+                                        imageList: imageList,
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           );
                         })),
               ],

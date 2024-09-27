@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/utils/validationscreen/updateDialog.dart';
 
 class ValidationUsers extends StatefulWidget {
   final UsersType user;
@@ -12,14 +13,33 @@ class ValidationUsers extends StatefulWidget {
 }
 
 class _ValidationUsersState extends State<ValidationUsers> {
-  bool checkBox = false;
-
   @override
   Widget build(BuildContext context) {
     final user = widget.user;
     final image = widget.imageList;
 
     final imageUrl = image[user.schoolId.toString()];
+    bool checkBox = user.isUserValidated;
+    //dialog
+    showValidationDialog(int id) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return UpdateValidationDialog(
+              id: id,
+              checkboxTrue: () {
+                setState(() {
+                  checkBox = true;
+                });
+              },
+              checkboxfalse: () {
+                setState(() {
+                  checkBox = false;
+                });
+              },
+            );
+          });
+    }
 
     return Row(children: [
       Expanded(
@@ -41,8 +61,8 @@ class _ValidationUsersState extends State<ValidationUsers> {
           child: Text(
             "${user.userName} ${user.middleInitial}. ${user.lastName}\n${user.userCourse}-${user.userYear}",
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
                 decoration: checkBox
                     ? TextDecoration.lineThrough
                     : TextDecoration.none),
@@ -55,9 +75,8 @@ class _ValidationUsersState extends State<ValidationUsers> {
               Text(
                 "Not Validated",
                 style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                     decoration: checkBox
                         ? TextDecoration.lineThrough
                         : TextDecoration.none),
@@ -66,6 +85,7 @@ class _ValidationUsersState extends State<ValidationUsers> {
                   value: checkBox,
                   onChanged: (e) {
                     setState(() {
+                      showValidationDialog(user.schoolId);
                       checkBox = !checkBox;
                     });
                   }),

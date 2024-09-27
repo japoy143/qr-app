@@ -21,22 +21,22 @@ class UsersProvider extends ChangeNotifier {
 
   // shared pref
   UsersType userData = UsersType(
-    schoolId: 0,
-    key: '',
-    userName: '',
-    lastName: '',
-    middleInitial: '',
-    userCourse: '',
-    userYear: '',
-    userPassword: '',
-    isAdmin: false,
-    userProfile: '',
-    isSignupOnline: false,
-    isLogin: false,
-    eventAttended: '',
-    isPenaltyShown: false,
-    isValidationRep: false,
-  );
+      schoolId: 0,
+      key: '',
+      userName: '',
+      lastName: '',
+      middleInitial: '',
+      userCourse: '',
+      userYear: '',
+      userPassword: '',
+      isAdmin: false,
+      userProfile: '',
+      isSignupOnline: false,
+      isLogin: false,
+      eventAttended: '',
+      isPenaltyShown: false,
+      isValidationRep: false,
+      isUserValidated: false);
 
   //user image url
   String? userImage;
@@ -90,7 +90,8 @@ class UsersProvider extends ChangeNotifier {
             isLogin: user['is_login'],
             eventAttended: user['event_attended'],
             isValidationRep: user['validation_representative'],
-            isPenaltyShown: false);
+            isPenaltyShown: false,
+            isUserValidated: user['account_validated']);
       }).toList();
 
       userList = usersListData;
@@ -140,7 +141,8 @@ class UsersProvider extends ChangeNotifier {
           isLogin: user['is_login'],
           eventAttended: user['event_attended'],
           isValidationRep: user['validation_representative'],
-          isPenaltyShown: false);
+          isPenaltyShown: false,
+          isUserValidated: user["account_validated"]);
 
       logger.t('data $user');
       logger.t('successfully get user 103');
@@ -166,7 +168,8 @@ class UsersProvider extends ChangeNotifier {
             isLogin: user.isLogin,
             eventAttended: user.eventAttended,
             isValidationRep: user.isValidationRep,
-            isPenaltyShown: false);
+            isPenaltyShown: false,
+            isUserValidated: user.isUserValidated);
       }
       notifyListeners();
       return user;
@@ -196,7 +199,8 @@ class UsersProvider extends ChangeNotifier {
             isLogin: eachUser['is_login'],
             eventAttended: eachUser['event_attended'],
             isValidationRep: eachUser['validation_representative'],
-            isPenaltyShown: false);
+            isPenaltyShown: false,
+            isUserValidated: eachUser['account_validated']);
       }).toList();
 
       List filteredStudent =
@@ -276,7 +280,6 @@ class UsersProvider extends ChangeNotifier {
       }));
 
       userImageList = imageUrlList;
-      logger.e(imageUrlList);
     } catch (e) {}
   }
 
@@ -355,7 +358,8 @@ class UsersProvider extends ChangeNotifier {
         'user_profile': userProfile,
         'is_login': false,
         'validation_representative': isValidation,
-        'event_attended': ''
+        'event_attended': '',
+        'account_validated': false
       });
 
       userBox.put(
@@ -375,7 +379,8 @@ class UsersProvider extends ChangeNotifier {
               isLogin: false,
               eventAttended: '',
               isValidationRep: isValidation,
-              isPenaltyShown: false));
+              isPenaltyShown: false,
+              isUserValidated: false));
 
       logger.t('data inserted successfully 108');
     } catch (e) {
@@ -401,7 +406,8 @@ class UsersProvider extends ChangeNotifier {
               isLogin: false,
               eventAttended: '',
               isValidationRep: isValidation,
-              isPenaltyShown: false));
+              isPenaltyShown: false,
+              isUserValidated: false));
     }
   }
 
@@ -446,7 +452,8 @@ class UsersProvider extends ChangeNotifier {
             isLogin: true,
             eventAttended: user.eventAttended,
             isValidationRep: user.isValidationRep,
-            isPenaltyShown: false);
+            isPenaltyShown: false,
+            isUserValidated: user.isUserValidated);
 
         notifyListeners();
         logger.t('successfully login user 109');
@@ -476,7 +483,8 @@ class UsersProvider extends ChangeNotifier {
               isLogin: true,
               eventAttended: data.eventAttended,
               isValidationRep: data.isValidationRep,
-              isPenaltyShown: false);
+              isPenaltyShown: false,
+              isUserValidated: user.isUserValidated);
         }
 
         notifyListeners();
@@ -511,7 +519,8 @@ class UsersProvider extends ChangeNotifier {
           isLogin: false,
           eventAttended: '',
           isPenaltyShown: false,
-          isValidationRep: false);
+          isValidationRep: false,
+          isUserValidated: false);
 
       userImage = '';
       logger.t("successfully Logout user 110");
@@ -540,7 +549,8 @@ class UsersProvider extends ChangeNotifier {
           isLogin: false,
           eventAttended: '',
           isPenaltyShown: false,
-          isValidationRep: false);
+          isValidationRep: false,
+          isUserValidated: false);
 
       notifyListeners();
     }
@@ -684,7 +694,8 @@ class UsersProvider extends ChangeNotifier {
             isLogin: eachUser['is_login'],
             isValidationRep: eachUser['validation_representative'],
             eventAttended: eachUser['event_attended'],
-            isPenaltyShown: false);
+            isPenaltyShown: false,
+            isUserValidated: eachUser['account_validated']);
       }).toList();
 
       List<UsersType> allAdmins =
@@ -697,6 +708,50 @@ class UsersProvider extends ChangeNotifier {
       userBox.putAll(allAdminsFormatted);
     } catch (e) {
       logger.e('error no internet');
+    }
+  }
+
+  userAccountValidated(int id) async {
+    try {
+      await Supabase.instance.client
+          .from('users')
+          .update({'account_validated': true}).eq('school_id', id);
+
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isUserValidated = true;
+        userBox.put(id, data);
+      }
+    } catch (e) {
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isUserValidated = true;
+        userBox.put(id, data);
+      }
+    }
+  }
+
+  userAccountUnvalidated(int id) async {
+    try {
+      await Supabase.instance.client
+          .from('users')
+          .update({'account_validated': false}).eq('school_id', id);
+
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isUserValidated = false;
+        userBox.put(id, data);
+      }
+    } catch (e) {
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isUserValidated = false;
+        userBox.put(id, data);
+      }
     }
   }
 }

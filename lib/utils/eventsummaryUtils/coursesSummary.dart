@@ -8,7 +8,6 @@ import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
 
 class CoursesSummaryScreen extends StatefulWidget {
