@@ -45,7 +45,7 @@ class _MenuScreenState extends State<MenuScreen> {
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
     final userDetails = userProvider.userData;
     final isAdmin = userDetails.isAdmin;
-    final validation = true;
+    final validation = userDetails.isValidationRep;
 
     List pages = isAdmin
         ? [
@@ -85,12 +85,11 @@ class _MenuScreenState extends State<MenuScreen> {
             EventSummaryScreen(
               userKey: user.schoolId.toString(),
             ),
-            if (validation)
-              {
-                ValidationScreen(
-                  userKey: user.schoolId.toString(),
-                )
-              },
+            validation
+                ? ValidationScreen(userKey: user.schoolId.toString())
+                : UserScreen(
+                    userKey: user.schoolId.toString(),
+                  ),
             UserScreen(
               userKey: user.schoolId.toString(),
             ),

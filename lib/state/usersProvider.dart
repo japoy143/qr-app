@@ -17,22 +17,26 @@ class UsersProvider extends ChangeNotifier {
 
   List<UsersType> userList = [];
 
+  Map<String?, String> userImageList = {};
+
   // shared pref
   UsersType userData = UsersType(
-      schoolId: 0,
-      key: '',
-      userName: '',
-      lastName: '',
-      middleInitial: '',
-      userCourse: '',
-      userYear: '',
-      userPassword: '',
-      isAdmin: false,
-      userProfile: '',
-      isSignupOnline: false,
-      isLogin: false,
-      eventAttended: '',
-      isPenaltyShown: false);
+    schoolId: 0,
+    key: '',
+    userName: '',
+    lastName: '',
+    middleInitial: '',
+    userCourse: '',
+    userYear: '',
+    userPassword: '',
+    isAdmin: false,
+    userProfile: '',
+    isSignupOnline: false,
+    isLogin: false,
+    eventAttended: '',
+    isPenaltyShown: false,
+    isValidationRep: false,
+  );
 
   //user image url
   String? userImage;
@@ -85,6 +89,7 @@ class UsersProvider extends ChangeNotifier {
             isSignupOnline: true,
             isLogin: user['is_login'],
             eventAttended: user['event_attended'],
+            isValidationRep: user['validation_representative'],
             isPenaltyShown: false);
       }).toList();
 
@@ -134,6 +139,7 @@ class UsersProvider extends ChangeNotifier {
           isSignupOnline: true,
           isLogin: user['is_login'],
           eventAttended: user['event_attended'],
+          isValidationRep: user['validation_representative'],
           isPenaltyShown: false);
 
       logger.t('data $user');
@@ -159,6 +165,7 @@ class UsersProvider extends ChangeNotifier {
             isSignupOnline: user.isSignupOnline,
             isLogin: user.isLogin,
             eventAttended: user.eventAttended,
+            isValidationRep: user.isValidationRep,
             isPenaltyShown: false);
       }
       notifyListeners();
@@ -188,6 +195,7 @@ class UsersProvider extends ChangeNotifier {
             isSignupOnline: true,
             isLogin: eachUser['is_login'],
             eventAttended: eachUser['event_attended'],
+            isValidationRep: eachUser['validation_representative'],
             isPenaltyShown: false);
       }).toList();
 
@@ -250,6 +258,28 @@ class UsersProvider extends ChangeNotifier {
     }
   }
 
+  getUserImageList() async {
+    try {
+      // check if there is imagepath in the list using id
+      final urlResponse =
+          await Supabase.instance.client.storage.from('profiles').list();
+
+      List<String?> imagePathList =
+          urlResponse.map((item) => item.name).toList();
+
+      final imageUrlList = Map.fromEntries(imagePathList.map((element) {
+        final image = Supabase.instance.client.storage
+            .from('profiles')
+            .getPublicUrl("${element}/image");
+
+        return MapEntry(element, image);
+      }));
+
+      userImageList = imageUrlList;
+      logger.e(imageUrlList);
+    } catch (e) {}
+  }
+
   //107
   //scanned user image
   void getScannedUserImage(String id) async {
@@ -303,9 +333,14 @@ class UsersProvider extends ChangeNotifier {
     //encryption
     final encryptedPassword = cipher.xorEncode(userPassword);
     bool isAdmin = false;
+    bool isValidation = false;
     try {
       if (adminIds.contains(schoolId)) {
         isAdmin = true;
+      }
+
+      if (validationIds.contains(schoolId)) {
+        isValidation = true;
       }
       await Supabase.instance.client.from('users').insert({
         'school_id': schoolId,
@@ -319,6 +354,7 @@ class UsersProvider extends ChangeNotifier {
         'is_admin': isAdmin,
         'user_profile': userProfile,
         'is_login': false,
+        'validation_representative': isValidation,
         'event_attended': ''
       });
 
@@ -338,6 +374,7 @@ class UsersProvider extends ChangeNotifier {
               isSignupOnline: true,
               isLogin: false,
               eventAttended: '',
+              isValidationRep: isValidation,
               isPenaltyShown: false));
 
       logger.t('data inserted successfully 108');
@@ -363,6 +400,7 @@ class UsersProvider extends ChangeNotifier {
               isSignupOnline: false,
               isLogin: false,
               eventAttended: '',
+              isValidationRep: isValidation,
               isPenaltyShown: false));
     }
   }
@@ -407,6 +445,7 @@ class UsersProvider extends ChangeNotifier {
             isSignupOnline: user.isSignupOnline,
             isLogin: true,
             eventAttended: user.eventAttended,
+            isValidationRep: user.isValidationRep,
             isPenaltyShown: false);
 
         notifyListeners();
@@ -436,6 +475,7 @@ class UsersProvider extends ChangeNotifier {
               isSignupOnline: data.isSignupOnline,
               isLogin: true,
               eventAttended: data.eventAttended,
+              isValidationRep: data.isValidationRep,
               isPenaltyShown: false);
         }
 
@@ -470,7 +510,8 @@ class UsersProvider extends ChangeNotifier {
           isSignupOnline: false,
           isLogin: false,
           eventAttended: '',
-          isPenaltyShown: false);
+          isPenaltyShown: false,
+          isValidationRep: false);
 
       userImage = '';
       logger.t("successfully Logout user 110");
@@ -498,7 +539,8 @@ class UsersProvider extends ChangeNotifier {
           isSignupOnline: false,
           isLogin: false,
           eventAttended: '',
-          isPenaltyShown: false);
+          isPenaltyShown: false,
+          isValidationRep: false);
 
       notifyListeners();
     }
@@ -640,6 +682,7 @@ class UsersProvider extends ChangeNotifier {
             userProfile: '',
             isSignupOnline: true,
             isLogin: eachUser['is_login'],
+            isValidationRep: eachUser['validation_representative'],
             eventAttended: eachUser['event_attended'],
             isPenaltyShown: false);
       }).toList();

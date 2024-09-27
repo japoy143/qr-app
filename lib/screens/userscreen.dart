@@ -39,18 +39,20 @@ class _UserScreenState extends State<UserScreen> {
   XFile? selectedimage;
 
   getImage(
-      int id,
-      String userName,
-      String lastName,
-      String middleInitial,
-      String userCourse,
-      String userYear,
-      String userPassword,
-      bool isAdmin,
-      String userProfile,
-      bool isSignUpOnline,
-      bool isLogin,
-      String eventAttended) async {
+    int id,
+    String userName,
+    String lastName,
+    String middleInitial,
+    String userCourse,
+    String userYear,
+    String userPassword,
+    bool isAdmin,
+    String userProfile,
+    bool isSignUpOnline,
+    bool isLogin,
+    String eventAttended,
+    bool isValidationRep,
+  ) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -97,7 +99,8 @@ class _UserScreenState extends State<UserScreen> {
             isSignupOnline: isSignUpOnline,
             isLogin: isLogin,
             eventAttended: eventAttended,
-            isPenaltyShown: false));
+            isPenaltyShown: false,
+            isValidationRep: isValidationRep));
 
     showToast();
   }
@@ -247,7 +250,8 @@ class _UserScreenState extends State<UserScreen> {
                                   user.userProfile,
                                   user.isSignupOnline,
                                   user.isLogin,
-                                  user.eventAttended),
+                                  user.eventAttended,
+                                  user.isValidationRep),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;

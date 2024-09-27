@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/users.dart';
-import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
-import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
-import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
-import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
+import 'package:qr_app/utils/validationscreen/validationusers.dart';
 
 class ValidationScreen extends StatefulWidget {
   final String userKey;
@@ -25,10 +21,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   @override
   void initState() {
-    Provider.of<EventProvider>(context, listen: false).getEvents();
-
-    Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     Provider.of<UsersProvider>(context, listen: false).getUsers();
+    Provider.of<UsersProvider>(context, listen: false).getUserImageList();
     super.initState();
   }
 
@@ -36,29 +30,26 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UsersProvider>(context, listen: false);
-
     double appBarHeight = appBar.preferredSize.height;
     double screenWIdth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double statusbarHeight = MediaQuery.of(context).padding.top;
     Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
 
-    final userData = userProvider.userData;
-    //user isAdmin
-    final isAdmin = userData.isAdmin;
-
-    return Consumer<EventProvider>(
+    return Consumer<UsersProvider>(
       builder: (context, provider, child) {
-        //events
-        List<EventType> allEvents = provider.eventList;
+        //users
+        List<UsersType> allUsers = provider.userList;
 
-        //sort by date
-        allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+        //sort user from admin, representative,  and  normal users
+        List<UsersType> sortedUsers = allUsers
+            .where((student) =>
+                student.isAdmin == false && student.isValidationRep == false)
+            .toList();
 
-        //filter event ended
-        final sortedEventEnded =
-            allEvents.where((event) => event.eventEnded == true).toList();
+        //imageList
+        final imageList = provider.userImageList;
+
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
@@ -66,53 +57,16 @@ class _ValidationScreenState extends State<ValidationScreen> {
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Events Summary',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Consumer<UsersProvider>(
-                      builder: (context, provider, widget) {
-                        List<UsersType> allUsers = provider.userList;
-
-                        //filter admins
-                        List<UsersType> onlyStudent = allUsers
-                            .where((element) => element.isAdmin == false)
-                            .toList();
-
-                        // Sort user alphabetically (case-insensitive)
-                        List<UsersType> alphabeticalStudents = onlyStudent
-                            .toList()
-                          ..sort((a, b) => a.userName
-                              .toLowerCase()
-                              .compareTo(b.userName.toLowerCase()));
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                          child: GestureDetector(
-                              onTap: () async {
-                                SaveAndDownloadMultiplePdf.createPdf(
-                                    events: sortedEventEnded,
-                                    users: alphabeticalStudents);
-                              },
-                              child: const Icon(
-                                Icons.picture_as_pdf,
-                                size: 30,
-                              )),
-                        );
-                      },
-                    )
-                  ],
+                const Text(
+                  'Validation Accounts',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 Text(
-                  'Events Ended',
+                  'users validation account',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     color: Colors.grey.shade400,
@@ -122,35 +76,21 @@ class _ValidationScreenState extends State<ValidationScreen> {
                 ),
                 Expanded(
                     child: ListView.builder(
-                        itemCount: sortedEventEnded.length,
+                        itemCount: sortedUsers.length,
                         itemBuilder: (context, index) {
-                          final item = sortedEventEnded.elementAt(index);
+                          final item = sortedUsers.elementAt(index);
 
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                            child: GestureDetector(
-                              onTap: isAdmin
-                                  ? () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CoursesSummaryScreen(
-                                                eventName: item.eventName,
-                                                screenHeight: screenHeight,
-                                                eventId: item.id,
-                                              )))
-                                  : null,
-                              child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(8.0)),
-                                  child: EventSummayBox(
-                                    isAdmin: isAdmin,
-                                    items: item,
-                                    screeHeight: (screenHeight +
-                                        statusbarHeight +
-                                        appBarHeight),
-                                  )),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                  color: purple,
+                                  borderRadius: BorderRadius.circular(4.0)),
+                              child: ValidationUsers(
+                                user: item,
+                                imageList: imageList,
+                              ),
                             ),
                           );
                         })),

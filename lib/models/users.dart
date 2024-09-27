@@ -32,6 +32,8 @@ class UsersType {
   String lastName;
   @HiveField(13)
   String middleInitial;
+  @HiveField(14)
+  bool isValidationRep;
 
   UsersType(
       {required this.schoolId,
@@ -47,5 +49,6 @@ class UsersType {
       required this.eventAttended,
       required this.isPenaltyShown,
       required this.lastName,
-      required this.middleInitial});
+      required this.middleInitial,
+      required this.isValidationRep});
 }
