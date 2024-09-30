@@ -57,6 +57,7 @@ class UsersProvider extends ChangeNotifier {
     900009,
   ];
 
+  //101 - 150
   //validation representative
   List<int> validationIds = List<int>.generate(50, (index) => 101 + index);
 
@@ -151,7 +152,8 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('error 103 get user $e');
       //still works even offline
-      UsersType? user = userBox.get(int.parse(id));
+      var school_id = id == "" ? 0 : int.parse(id);
+      UsersType? user = userBox.get(school_id);
       if (user != null) {
         userData = UsersType(
             schoolId: user.schoolId,
@@ -698,11 +700,11 @@ class UsersProvider extends ChangeNotifier {
             isUserValidated: eachUser['account_validated']);
       }).toList();
 
-      List<UsersType> allAdmins =
-          users.where((element) => element.isAdmin == true).toList();
+      // List<UsersType> allAdmins =
+      //     users.where((element) => element.isAdmin == true).toList();
 
       Map<int, UsersType> allAdminsFormatted = {
-        for (var user in allAdmins) user.schoolId: user
+        for (var user in users) user.schoolId: user
       };
 
       userBox.putAll(allAdminsFormatted);

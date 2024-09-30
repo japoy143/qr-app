@@ -39,6 +39,9 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
   @override
   void initState() {
+    try {
+      Provider.of<UsersProvider>(context, listen: false).getAllAdminsAndSave();
+    } catch (e) {}
     super.initState();
   }
 
@@ -105,7 +108,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       userProvider.getAllAdminsAndSave();
     } catch (e) {}
 
-    userProvider.getUser(_schoolIdController.text.trim());
+    userProvider.getUser(_schoolIdController.text);
   }
 
   void showProgressDialog(BuildContext context) {

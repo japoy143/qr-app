@@ -70,6 +70,12 @@ class EventProvider extends ChangeNotifier {
             key: event['key']);
       }).toList();
 
+      Map<int, EventType> allEventFormatted = {
+        for (var event in allEvents) event.id: event
+      };
+
+      eventBox.putAll(allEventFormatted);
+
       eventList = allEvents;
       notifyListeners();
       logger.t('successfully get event 202');

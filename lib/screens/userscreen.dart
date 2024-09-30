@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:glass/glass.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
@@ -365,7 +364,7 @@ class _UserScreenState extends State<UserScreen> {
                             data: qrData,
                             decoration: const PrettyQrDecoration())
                         : PrettyQrView.data(
-                            data: '0|0|0|0|0',
+                            data: '0|0|0|0',
                             decoration: const PrettyQrDecoration(
                               image: PrettyQrDecorationImage(
                                   image: AssetImage(

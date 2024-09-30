@@ -206,17 +206,15 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         Provider.of<NotificationProvider>(context, listen: false)
             .callBackListener();
-        Provider.of<UsersProvider>(context, listen: false)
-            .updateUserOfflineSaveData(int.parse(widget.userKey));
       } catch (e) {
         print('error no internet');
       }
 
-      if (widget.isAdmin) {
-        saveAllOflineData();
-        Provider.of<EventIdProvider>(context, listen: false)
-            .saveEventIdExtras();
-      }
+      Provider.of<UsersProvider>(context, listen: false)
+          .updateUserOfflineSaveData(int.parse(widget.userKey));
+
+      saveAllOflineData();
+      Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
     });
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
@@ -76,6 +75,15 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userCourse = details[2];
       userYear = details[3];
     });
+
+    //check if validated
+    if (userSchoolId == "0" &&
+        userName == "0" &&
+        userCourse == "0" &&
+        userYear == "0") {
+      toast.ValidateAccountFirst(context);
+      return;
+    }
 
     // set user image
     getUserUrlImage(userSchoolId);

@@ -245,4 +245,16 @@ class CustomToast {
       autoCloseDuration: const Duration(seconds: 4),
     );
   }
+
+  void ValidateAccountFirst(context) {
+    toastification.show(
+      context: context,
+      type: ToastificationType.success,
+      style: ToastificationStyle.flatColored,
+      title: const Text("Validate Account"),
+      description: Text("User Account not validated"),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+    );
+  }
 }
