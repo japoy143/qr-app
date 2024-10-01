@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
 import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
+import 'package:qr_app/utils/eventsummaryUtils/penaltyvalues.dart';
 
 class EventSummaryScreen extends StatefulWidget {
   final String userKey;
@@ -29,6 +32,8 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
 
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     Provider.of<UsersProvider>(context, listen: false).getUsers();
+    Provider.of<PenaltyValuesProvider>(context, listen: false)
+        .getPenaltyValues();
     super.initState();
   }
 
@@ -82,6 +87,10 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                       child: Row(
                         children: [
                           GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PenaltyValuesScreen())),
                             child: Icon(
                               Icons.edit_note,
                               size: 30,
@@ -106,16 +115,24 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 30.0),
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      SaveAndDownloadMultiplePdf.createPdf(
-                                          events: sortedEventEnded,
-                                          users: alphabeticalStudents);
-                                    },
-                                    child: const Icon(
-                                      Icons.picture_as_pdf,
-                                      size: 30,
-                                    )),
+                                child: Consumer<PenaltyValuesProvider>(
+                                  builder: (context, provider, child) {
+                                    List<PenaltyValues> penaltyValuesList =
+                                        provider.penaltyList;
+
+                                    return GestureDetector(
+                                        onTap: () async {
+                                          SaveAndDownloadMultiplePdf.createPdf(
+                                              events: sortedEventEnded,
+                                              users: alphabeticalStudents,
+                                              penaltyValues: penaltyValuesList);
+                                        },
+                                        child: const Icon(
+                                          Icons.picture_as_pdf,
+                                          size: 30,
+                                        ));
+                                  },
+                                ),
                               );
                             },
                           )

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
@@ -30,6 +32,8 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
     Provider.of<UsersProvider>(context, listen: false).getUsers();
     Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
     Provider.of<EventIdProvider>(context, listen: false).getEvents();
+    Provider.of<PenaltyValuesProvider>(context, listen: false)
+        .getPenaltyValues();
     _studentNameController.addListener(() {
       setState(() {});
     });
@@ -42,34 +46,34 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
     super.dispose();
   }
 
-  Map<int, dynamic> penaltyFormula = {
-    0: ['', '', '', ''],
-    10: ['1 Ballpen', '1 Pencil', '', ''],
-    20: ['2 Ballpen', '2 Pencil', '', ''],
-    30: ['1 Ballpen', '1 Pencil', '1 Crayons 8 colors', ''],
-    40: ['1 Pad Paper', '1 Crayons 8 colors', '', ''],
-    50: [
-      '1 Ballpen',
-      '1 Pencil',
-      '1 Crayons 8 colors',
-      '1 Pad Paper',
-    ],
-    60: [
-      '1 Pad Paper',
-      '1 Crayons 8 colors',
-      '1 Small Notebook',
-      '',
-    ],
-    70: ['1 Crayons 8 colors', '1 Pad Paper', '1 Small Notebook', ''],
-    80: ['1 Ballpen', '1 Pencil', '1 Pad Paper', '1 Big Notebook'],
-    90: ['1 Big NoteBook', '2 Small Notebook', '', ''],
-    100: [
-      '1 Crayons 8 colors',
-      '1 Pad Paper',
-      '1 Small Notebook',
-      '1 Big Notebook'
-    ],
-  };
+  // Map<int, dynamic> penaltyFormula = {
+  //   0: ['', '', '', ''],
+  //   10: ['1 Ballpen', '1 Pencil', '', ''],
+  //   20: ['2 Ballpen', '2 Pencil', '', ''],
+  //   30: ['1 Ballpen', '1 Pencil', '1 Crayons 8 colors', ''],
+  //   40: ['1 Pad Paper', '1 Crayons 8 colors', '', ''],
+  //   50: [
+  //     '1 Ballpen',
+  //     '1 Pencil',
+  //     '1 Crayons 8 colors',
+  //     '1 Pad Paper',
+  //   ],
+  //   60: [
+  //     '1 Pad Paper',
+  //     '1 Crayons 8 colors',
+  //     '1 Small Notebook',
+  //     '',
+  //   ],
+  //   70: ['1 Crayons 8 colors', '1 Pad Paper', '1 Small Notebook', ''],
+  //   80: ['1 Ballpen', '1 Pencil', '1 Pad Paper', '1 Big Notebook'],
+  //   90: ['1 Big NoteBook', '2 Small Notebook', '', ''],
+  //   100: [
+  //     '1 Crayons 8 colors',
+  //     '1 Pad Paper',
+  //     '1 Small Notebook',
+  //     '1 Big Notebook'
+  //   ],
+  // };
 
   //user attended
   int getUserTotalAttended(String eventAttended) {
@@ -103,6 +107,13 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
 
   List getEventAttendedList(String attended) {
     List attend = attended.split('|');
+    attend.remove("");
+
+    return attend;
+  }
+
+  List getPenaltyList(String attended) {
+    List attend = attended.split(',');
     attend.remove("");
 
     return attend;
@@ -364,101 +375,60 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                                       int totalValue = getEventTotalValue(
                                           penaltyEvent, eventIds);
 
-                                      final penalty = totalValue >= 100
-                                          ? penaltyFormula[100]
-                                          : penaltyFormula[totalValue];
-
                                       return item.isPenaltyShown
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          0, 10, 0, 0),
-                                                  child: Text(
-                                                    'Total Event Penalty   ₱${getEventTotalValue(penaltyEvent, eventIds).toString()}',
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                          ? Consumer<PenaltyValuesProvider>(
+                                              builder:
+                                                  (context, provider, child) {
+                                                List<PenaltyValues>
+                                                    allPenaltyValues =
+                                                    provider.penaltyList;
+
+                                                PenaltyValues maxPenalty =
+                                                    allPenaltyValues.reduce((a,
+                                                            b) =>
+                                                        a.penaltyprice >
+                                                                b.penaltyprice
+                                                            ? a
+                                                            : b);
+
+                                                PenaltyValues values = totalValue >=
+                                                        maxPenalty.penaltyprice
+                                                    ? maxPenalty
+                                                    : allPenaltyValues
+                                                        .firstWhere((element) =>
+                                                            element
+                                                                .penaltyprice >=
+                                                            totalValue);
+
+                                                List penaltyEquivalentList =
+                                                    getPenaltyList(
+                                                        values.penaltyvalue);
+
+                                                return Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8.0),
+                                                  child: Wrap(
+                                                    spacing:
+                                                        16.0, // Adjust this value to control the gap between items
+                                                    runSpacing:
+                                                        8.0, // Gap between lines
+                                                    children:
+                                                        penaltyEquivalentList
+                                                            .map((e) => Text(
+                                                                  e,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          14),
+                                                                ))
+                                                            .toList(),
                                                   ),
-                                                ),
-                                                item.isPenaltyShown
-                                                    ? const Padding(
-                                                        padding:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 4, 0, 4),
-                                                        child: Text(
-                                                          'Converted Penalty',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 14),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink(),
-                                                item.isPenaltyShown
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            penalty[0],
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 12),
-                                                          ),
-                                                          Text(
-                                                            penalty[1],
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 12),
-                                                          )
-                                                        ],
-                                                      )
-                                                    : SizedBox.shrink(),
-                                                item.isPenaltyShown
-                                                    ? Row(
-                                                        children: [
-                                                          Text(
-                                                            penalty[2],
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 12),
-                                                          ),
-                                                          Text(
-                                                            penalty[3],
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 12),
-                                                          )
-                                                        ],
-                                                      )
-                                                    : SizedBox.shrink(),
-                                              ],
+                                                );
+                                              },
                                             )
                                           : const SizedBox.shrink();
                                     }),

@@ -4,6 +4,7 @@ import 'package:qr_app/models/eventlistattendance.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/eventsid.dart';
 import 'package:qr_app/models/notifications.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/users.dart';
 
 class AllInitialization {
@@ -40,5 +41,9 @@ class AllInitialization {
 
     //is offline data save
     await Hive.openBox('offlineBox');
+
+    //all penalty values
+    Hive.registerAdapter<PenaltyValues>(PenaltyValuesAdapter());
+    await Hive.openBox<PenaltyValues>('penaltyBox');
   }
 }

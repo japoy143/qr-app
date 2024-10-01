@@ -9,29 +9,31 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'package:path/path.dart' as path;
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/users.dart';
 
 class SaveAndDownloadMultiplePdf {
   static createPdf({
     required final List<UsersType> users,
     required final List<EventType> events,
+    required final List<PenaltyValues> penaltyValues,
   }) async {
     final doc = pw.Document();
 
-    //penalties
-    Map<int, dynamic> penaltyFormula = {
-      0: '',
-      10: '1 ballpen / pencil',
-      20: '2 ballpen / pencil',
-      30: '1 ballpen / pencil, 1 Crayons 8 colors',
-      40: '1 pad paper, 1 crayons 8 colors',
-      50: '1 ballpen / pencil, 1 crayons 8 colors, 1 pad paper',
-      60: '1 pad paper, 1 crayons 8 colors, 1 small notebook',
-      70: '1 crayons 8 colors, 1 pad paper, 1 small notebook',
-      80: '1 ballpen / pencil, 1 pad paper, 1 big notebook',
-      90: '1 big notebook, 2 small notebook',
-      100: '1 crayons 8 colors, 1 pad paper, 1 small notebook, 1 big notebook',
-    };
+    // //penalties
+    // Map<int, dynamic> penaltyFormula = {
+    //   0: '',
+    //   10: '1 ballpen / pencil',
+    //   20: '2 ballpen / pencil',
+    //   30: '1 ballpen / pencil, 1 Crayons 8 colors',
+    //   40: '1 pad paper, 1 crayons 8 colors',
+    //   50: '1 ballpen / pencil, 1 crayons 8 colors, 1 pad paper',
+    //   60: '1 pad paper, 1 crayons 8 colors, 1 small notebook',
+    //   70: '1 crayons 8 colors, 1 pad paper, 1 small notebook',
+    //   80: '1 ballpen / pencil, 1 pad paper, 1 big notebook',
+    //   90: '1 big notebook, 2 small notebook',
+    //   100: '1 crayons 8 colors, 1 pad paper, 1 small notebook, 1 big notebook',
+    // };
 
     List headers = [
       'Event Name',
@@ -153,10 +155,14 @@ class SaveAndDownloadMultiplePdf {
                   );
 
                   int totalValue = getEventTotalValue(penaltyEvent, eventIds);
-                  //penalty conversion
-                  final penalty = totalValue >= 100
-                      ? penaltyFormula[100]
-                      : penaltyFormula[totalValue];
+
+                  PenaltyValues maxPenalty = penaltyValues.reduce(
+                      (a, b) => a.penaltyprice > b.penaltyprice ? a : b);
+
+                  PenaltyValues values = totalValue >= maxPenalty.penaltyprice
+                      ? maxPenalty
+                      : penaltyValues.firstWhere(
+                          (element) => element.penaltyprice >= totalValue);
 
                   return pw.Container(
                       child: pw.Column(children: [
@@ -206,7 +212,7 @@ class SaveAndDownloadMultiplePdf {
                         ]),
                     pw.TableHelper.fromTextArray(
                       data: [],
-                      headers: [penalty],
+                      headers: [values.penaltyvalue],
                       tableWidth: pw.TableWidth.max,
                       headerHeight: 40,
                       cellHeight: 40,

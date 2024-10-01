@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/generatePenaltyPdf.dart';
@@ -195,6 +197,8 @@ class _UserScreenState extends State<UserScreen> {
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     Provider.of<EventIdProvider>(context, listen: false).getEventIdLength();
     Provider.of<EventProvider>(context, listen: false).getEvents();
+    Provider.of<PenaltyValuesProvider>(context, listen: false)
+        .getPenaltyValues();
     super.initState();
   }
 
@@ -395,24 +399,34 @@ class _UserScreenState extends State<UserScreen> {
                             builder: (context, provider, child) {
                           final events = provider.eventList;
 
-                          return GestureDetector(
-                              onTap: () async {
-                                SaveAndDownloadUserPdf.createPdf(
-                                    users: user, events: events);
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Attendance ',
-                                    style:
-                                        TextStyle(fontSize: 16, color: purple),
-                                  ),
-                                  Icon(
-                                    Icons.picture_as_pdf,
-                                    color: purple,
-                                  )
-                                ],
-                              ));
+                          return Consumer<PenaltyValuesProvider>(
+                            builder: (context, provider, child) {
+                              List<PenaltyValues> penaltyValuesList =
+                                  provider.penaltyList;
+
+                              return GestureDetector(
+                                  onTap: () async {
+                                    SaveAndDownloadUserPdf.createPdf(
+                                      users: user,
+                                      events: events,
+                                      penaltyValues: penaltyValuesList,
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Attendance ',
+                                        style: TextStyle(
+                                            fontSize: 16, color: purple),
+                                      ),
+                                      Icon(
+                                        Icons.picture_as_pdf,
+                                        color: purple,
+                                      )
+                                    ],
+                                  ));
+                            },
+                          );
                         }),
                       ),
                       Expanded(child: Divider()),

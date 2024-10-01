@@ -8,6 +8,7 @@ import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:path_provider/path_provider.dart' as path;
@@ -52,7 +53,8 @@ void main() async {
     ChangeNotifierProvider(create: (context) => EventAttendanceProvider()),
     ChangeNotifierProvider(create: (context) => EventIdProvider()),
     ChangeNotifierProvider(create: (context) => UsersProvider()),
-    ChangeNotifierProvider(create: (context) => NotificationProvider())
+    ChangeNotifierProvider(create: (context) => NotificationProvider()),
+    ChangeNotifierProvider(create: (context) => PenaltyValuesProvider()),
   ], child: const MyApp()));
 }
 
