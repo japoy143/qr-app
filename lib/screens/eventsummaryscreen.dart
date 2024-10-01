@@ -78,36 +78,49 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    Consumer<UsersProvider>(
-                      builder: (context, provider, widget) {
-                        List<UsersType> allUsers = provider.userList;
+                    Container(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            child: Icon(
+                              Icons.edit_note,
+                              size: 30,
+                            ),
+                          ),
+                          Consumer<UsersProvider>(
+                            builder: (context, provider, widget) {
+                              List<UsersType> allUsers = provider.userList;
 
-                        //filter admins
-                        List<UsersType> onlyStudent = allUsers
-                            .where((element) => element.isAdmin == false)
-                            .toList();
+                              //filter admins
+                              List<UsersType> onlyStudent = allUsers
+                                  .where((element) => element.isAdmin == false)
+                                  .toList();
 
-                        // Sort user alphabetically (case-insensitive)
-                        List<UsersType> alphabeticalStudents = onlyStudent
-                            .toList()
-                          ..sort((a, b) => a.userName
-                              .toLowerCase()
-                              .compareTo(b.userName.toLowerCase()));
+                              // Sort user alphabetically (case-insensitive)
+                              List<UsersType> alphabeticalStudents = onlyStudent
+                                  .toList()
+                                ..sort((a, b) => a.userName
+                                    .toLowerCase()
+                                    .compareTo(b.userName.toLowerCase()));
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                          child: GestureDetector(
-                              onTap: () async {
-                                SaveAndDownloadMultiplePdf.createPdf(
-                                    events: sortedEventEnded,
-                                    users: alphabeticalStudents);
-                              },
-                              child: const Icon(
-                                Icons.picture_as_pdf,
-                                size: 30,
-                              )),
-                        );
-                      },
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30.0),
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      SaveAndDownloadMultiplePdf.createPdf(
+                                          events: sortedEventEnded,
+                                          users: alphabeticalStudents);
+                                    },
+                                    child: const Icon(
+                                      Icons.picture_as_pdf,
+                                      size: 30,
+                                    )),
+                              );
+                            },
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),

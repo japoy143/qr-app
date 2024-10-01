@@ -75,9 +75,8 @@ class _EventScreenState extends State<EventScreen> {
 
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
 
-    try {
-      Provider.of<EventProvider>(context, listen: false).callBackListener();
-    } catch (e) {}
+    checkIfThereIsInternet();
+
     super.initState();
   }
 

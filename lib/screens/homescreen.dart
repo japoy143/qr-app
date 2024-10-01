@@ -183,6 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
         Provider.of<EventIdProvider>(context, listen: false)
             .getOfflineSaveEventId();
+
+        Provider.of<EventIdProvider>(context, listen: false)
+            .saveEventIdExtras();
       }
     }
   }
@@ -191,15 +194,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<EventProvider>(context, listen: false).getEvents();
+      Provider.of<EventProvider>(context, listen: false).getEvents(); //ok
 
-      Provider.of<UsersProvider>(context, listen: false)
+      Provider.of<UsersProvider>(context, listen: false) //ok
           .getUser(widget.userKey);
 
       Provider.of<UsersProvider>(context, listen: false)
-          .getUserImage(widget.userKey);
+          .getUserImage(widget.userKey); //ok
 
-      Provider.of<UsersProvider>(context, listen: false).getUserImageList();
+      Provider.of<UsersProvider>(context, listen: false)
+          .getUserImageList(); //ok
 
       checkIfUserSignUpOnline();
 
@@ -210,11 +214,9 @@ class _HomeScreenState extends State<HomeScreen> {
         print('error no internet');
       }
 
-      Provider.of<UsersProvider>(context, listen: false)
-          .updateUserOfflineSaveData(int.parse(widget.userKey));
+      checkIfThereIsInternet();
 
       saveAllOflineData();
-      Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
     });
   }
 

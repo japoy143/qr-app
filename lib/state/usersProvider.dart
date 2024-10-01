@@ -282,7 +282,9 @@ class UsersProvider extends ChangeNotifier {
       }));
 
       userImageList = imageUrlList;
-    } catch (e) {}
+    } catch (e) {
+      logger.e("${e} get user image list");
+    }
   }
 
   //107
