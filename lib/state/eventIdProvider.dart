@@ -67,6 +67,7 @@ class EventIdProvider extends ChangeNotifier {
     }
   }
 
+// must
   //404
   //insert events
   insertData(int id, EventsId event) async {
@@ -74,6 +75,7 @@ class EventIdProvider extends ChangeNotifier {
       await Supabase.instance.client
           .from('event_id')
           .insert({'id': id, 'event_id': id});
+
       eventIdBox.put(id, event);
       getEvents();
       notifyListeners();
@@ -111,8 +113,6 @@ class EventIdProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('error offline data $e');
     }
-
-    offlineBox.put('offline', false);
   }
 
   saveEventIdExtras() async {
@@ -151,5 +151,12 @@ class EventIdProvider extends ChangeNotifier {
         .from('event_id_extras')
         .delete()
         .inFilter('event_id', unsave);
+
+    offlineBox.put('offline', false);
+  }
+
+  //set offline box to  true  so that every login can update
+  setOfflineBoxToTrue() {
+    offlineBox.put('offline', false);
   }
 }

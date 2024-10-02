@@ -727,6 +727,8 @@ class UsersProvider extends ChangeNotifier {
         data.isUserValidated = true;
         userBox.put(id, data);
       }
+      getUsers();
+      notifyListeners();
     } catch (e) {
       var data = userBox.get(id);
 
@@ -734,6 +736,7 @@ class UsersProvider extends ChangeNotifier {
         data.isUserValidated = true;
         userBox.put(id, data);
       }
+      notifyListeners();
     }
   }
 
@@ -749,6 +752,8 @@ class UsersProvider extends ChangeNotifier {
         data.isUserValidated = false;
         userBox.put(id, data);
       }
+      getUsers();
+      notifyListeners();
     } catch (e) {
       var data = userBox.get(id);
 
@@ -756,6 +761,7 @@ class UsersProvider extends ChangeNotifier {
         data.isUserValidated = false;
         userBox.put(id, data);
       }
+      notifyListeners();
     }
   }
 }

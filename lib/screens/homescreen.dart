@@ -12,6 +12,7 @@ import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/notification_active.dart';
 import 'package:qr_app/theme/notification_none.dart';
@@ -170,25 +171,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //check if the is internet then save offline data
-  saveAllOflineData() async {
-    final connectivityResult = await Connectivity().checkConnectivity();
-    final offlineBox = await Hive.box('offlineBox');
+  // saveAllOflineData() async {
+  //   final connectivityResult = await Connectivity().checkConnectivity();
+  //   final offlineBox = await Hive.box('offlineBox');
 
-    var isDataSave = await offlineBox.get('offline');
+  //   var isDataSave = await offlineBox.get('offline');
 
-    if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      if (isDataSave == null || isDataSave) {
-        Provider.of<EventAttendanceProvider>(context, listen: false)
-            .getOfflineSaveEventAttendance();
+  //   if (connectivityResult.contains(ConnectivityResult.wifi)) {
+  //     if (isDataSave) {
+  //       Provider.of<EventAttendanceProvider>(context, listen: false)
+  //           .getOfflineSaveEventAttendance();
 
-        Provider.of<EventIdProvider>(context, listen: false)
-            .getOfflineSaveEventId();
+  //       Provider.of<EventIdProvider>(context, listen: false)
+  //           .getOfflineSaveEventId();
 
-        Provider.of<EventIdProvider>(context, listen: false)
-            .saveEventIdExtras();
-      }
-    }
-  }
+  //       Provider.of<EventIdProvider>(context, listen: false)
+  //           .saveEventIdExtras();
+
+  //       print('working');
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {
@@ -207,16 +210,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
       checkIfUserSignUpOnline();
 
+      Provider.of<PenaltyValuesProvider>(context, listen: false).penaltyInit();
+
+      if (!widget.isAdmin) {
+        Provider.of<UsersProvider>(context, listen: false)
+            .updateUserOfflineSaveData(int.parse(widget.userKey));
+      }
+
       try {
         Provider.of<NotificationProvider>(context, listen: false)
             .callBackListener();
-      } catch (e) {
-        print('error no internet');
-      }
 
-      checkIfThereIsInternet();
+        if (widget.isAdmin) {
+          Provider.of<EventAttendanceProvider>(context, listen: false)
+              .getOfflineSaveEventAttendance();
 
-      saveAllOflineData();
+          Provider.of<EventIdProvider>(context, listen: false)
+              .getOfflineSaveEventId();
+
+          Provider.of<EventIdProvider>(context, listen: false)
+              .saveEventIdExtras();
+        }
+      } catch (e) {}
     });
   }
 

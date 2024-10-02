@@ -22,7 +22,6 @@ class _UpdateValidationDialogState extends State<UpdateValidationDialog> {
     final provider = Provider.of<UsersProvider>(context, listen: false);
     provider.userAccountValidated(widget.id);
     widget.checkboxTrue();
-    provider.getUsers();
     Navigator.of(context).pop();
   }
 

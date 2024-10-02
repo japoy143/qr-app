@@ -399,6 +399,11 @@ class _UserScreenState extends State<UserScreen> {
                             builder: (context, provider, child) {
                           final events = provider.eventList;
 
+                          //filter event ended
+                          final sortedEventEnded = events
+                              .where((event) => event.eventEnded == true)
+                              .toList();
+
                           return Consumer<PenaltyValuesProvider>(
                             builder: (context, provider, child) {
                               List<PenaltyValues> penaltyValuesList =
@@ -408,7 +413,7 @@ class _UserScreenState extends State<UserScreen> {
                                   onTap: () async {
                                     SaveAndDownloadUserPdf.createPdf(
                                       users: user,
-                                      events: events,
+                                      events: sortedEventEnded,
                                       penaltyValues: penaltyValuesList,
                                     );
                                   },

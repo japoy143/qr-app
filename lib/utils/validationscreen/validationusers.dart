@@ -86,7 +86,6 @@ class _ValidationUsersState extends State<ValidationUsers> {
                   onChanged: (e) {
                     setState(() {
                       showValidationDialog(user.schoolId);
-                      checkBox = !checkBox;
                     });
                   }),
             ],

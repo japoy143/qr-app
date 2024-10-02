@@ -171,7 +171,7 @@ class EventAttendanceProvider extends ChangeNotifier {
     }).toList();
 
     data.forEach((element) {
-      logger.e('${element}   event attendance');
+      logger.e('${element}   event attendance 22');
     });
 
     try {
