@@ -100,7 +100,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return false;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
+    if (_passwordController.text.trim() !=
+        _confirmPasswordController.text.trim()) {
       toast.passwordNotSame(context);
       Navigator.of(context).pop();
       return false;
@@ -112,7 +113,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         int.parse(_schoolIdController.text),
         selectedCourse.toString(),
         selectedYear.toString(),
-        _passwordController.text,
+        _passwordController.text.trim(),
         '');
 
     Navigator.of(context).pop();

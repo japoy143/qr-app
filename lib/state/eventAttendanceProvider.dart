@@ -151,33 +151,31 @@ class EventAttendanceProvider extends ChangeNotifier {
   }
 
   getOfflineSaveEventAttendance() async {
-    var allEventAttendance = eventAttendanceBox.values.toList();
-
-    List<EventAttendance> filteredOffline = allEventAttendance
-        .where((element) => element.isDataSaveOffline == true)
-        .toList();
-
-    logger.e(filteredOffline.length);
-
-    var data = filteredOffline.map((ids) {
-      return {
-        'event_id': ids.eventId,
-        'student_id': ids.studentId,
-        'student_name': ids.studentName,
-        'officer_name': ids.officerName,
-        'student_course': ids.studentCourse,
-        'student_year': ids.studentYear
-      };
-    }).toList();
-
-    data.forEach((element) {
-      logger.e('${element}   event attendance 22');
-    });
-
     try {
+      var allEventAttendance = eventAttendanceBox.values.toList();
+
+      List<EventAttendance> filteredOffline = allEventAttendance
+          .where((element) => element.isDataSaveOffline == true)
+          .toList();
+
+      logger.e(filteredOffline.length);
+
+      var data = filteredOffline.map((ids) {
+        return {
+          'event_id': ids.eventId,
+          'student_id': ids.studentId,
+          'student_name': ids.studentName,
+          'officer_name': ids.officerName,
+          'student_course': ids.studentCourse,
+          'student_year': ids.studentYear
+        };
+      }).toList();
+
       await Supabase.instance.client
           .from('event_attendance_extras')
           .insert(data);
+
+      eventAttendanceBox.clear();
     } catch (e) {
       logger.e('error $e savig offline data');
     }

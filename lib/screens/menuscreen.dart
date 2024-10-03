@@ -52,6 +52,7 @@ class _MenuScreenState extends State<MenuScreen> {
             HomeScreen(
               isAdmin: isAdmin,
               userKey: user.schoolId.toString(),
+              isValidationRep: validation,
               setIndex: (index) {
                 setState(() {
                   currentIndex = index;
@@ -73,6 +74,7 @@ class _MenuScreenState extends State<MenuScreen> {
             HomeScreen(
               isAdmin: isAdmin,
               userKey: user.schoolId.toString(),
+              isValidationRep: validation,
               setIndex: (index) {
                 setState(() {
                   currentIndex = index;

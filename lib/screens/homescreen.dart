@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/types.dart';
@@ -25,11 +24,13 @@ class HomeScreen extends StatefulWidget {
   final String userKey;
   final Function(int index) setIndex;
   final bool isAdmin;
+  final bool isValidationRep;
   const HomeScreen(
       {super.key,
       required this.userKey,
       required this.setIndex,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.isValidationRep});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -205,8 +206,10 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.userKey); //ok
 
-      Provider.of<UsersProvider>(context, listen: false)
-          .getUserImageList(); //ok
+      if (widget.isValidationRep) {
+        Provider.of<UsersProvider>(context, listen: false)
+            .getUserImageList(); //ok
+      }
 
       checkIfUserSignUpOnline();
 

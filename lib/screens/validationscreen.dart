@@ -2,11 +2,14 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/validationscreen/validationusers.dart';
 
 class ValidationScreen extends StatefulWidget {
@@ -19,6 +22,13 @@ class ValidationScreen extends StatefulWidget {
 
 class _ValidationScreenState extends State<ValidationScreen> {
   int totalEvent = 0;
+  final TextEditingController _studentNameController = TextEditingController();
+
+  List<String> courses = ['BSIT', 'BSCS', 'BSIS', 'BSCPE', 'BSECE'];
+  String? selectedCourse = 'BSIT';
+
+  List<int> year = [1, 2, 3, 4];
+  int? selectedYear = 1;
 
   //color theme
   final colortheme = ColorThemeProvider();
@@ -27,6 +37,9 @@ class _ValidationScreenState extends State<ValidationScreen> {
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUsers();
     Provider.of<UsersProvider>(context, listen: false).getUserImageList();
+    _studentNameController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -79,6 +92,26 @@ class _ValidationScreenState extends State<ValidationScreen> {
         //imageList
         final imageList = provider.userImageList;
 
+        // Filter users by selected course and exclude admins
+        final userAttendanceList = sortedUsers
+            .where((student) =>
+                student.userCourse == selectedCourse && student.isAdmin != true)
+            .toList();
+
+        // Further filter by selected year
+        final sortedCoursesAndYear = userAttendanceList
+            .where((student) => student.userYear == selectedYear.toString())
+            .toList();
+
+        // Search by student name
+        final usersList = _studentNameController.text.isEmpty
+            ? sortedCoursesAndYear
+            : sortedCoursesAndYear
+                .where((student) => student.userName
+                    .toLowerCase()
+                    .contains(_studentNameController.text.toLowerCase()))
+                .toList();
+
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 0),
@@ -103,32 +136,89 @@ class _ValidationScreenState extends State<ValidationScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: CustomTextField(
+                        height: screenHeight,
+                        hintext: 'enter student name',
+                        controller: _studentNameController,
+                        keyBoardType: TextInputType.text,
+                        isReadOnly: false,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.grey.shade900),
+                      ),
+                      child: DropDown(
+                        initialValue: selectedCourse,
+                        showUnderline: false,
+                        items: courses,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedCourse = val;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.grey.shade900),
+                      ),
+                      child: DropDown(
+                        initialValue: selectedYear,
+                        showUnderline: false,
+                        items: year,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedYear = val as int?;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 Expanded(
-                    child: ListView.builder(
-                        itemCount: sortedUsers.length,
-                        itemBuilder: (context, index) {
-                          final item = sortedUsers.elementAt(index);
+                    flex: 4,
+                    child: usersList.isEmpty
+                        ? Center(
+                            child: Text('Student Not Found'),
+                          )
+                        : ListView.builder(
+                            itemCount: usersList.length,
+                            itemBuilder: (context, index) {
+                              final item = usersList.elementAt(index);
 
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: purple, width: 2),
-                                    borderRadius: BorderRadius.circular(4.0)),
-                                child: Stack(
-                                  children: [
-                                    ...circles(),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ValidationUsers(
-                                        user: item,
-                                        imageList: imageList,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          );
-                        })),
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: purple, width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Stack(
+                                      children: [
+                                        ...circles(),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ValidationUsers(
+                                            user: item,
+                                            imageList: imageList,
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              );
+                            })),
               ],
             )),
           ),

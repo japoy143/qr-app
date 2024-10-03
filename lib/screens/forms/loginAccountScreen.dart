@@ -79,7 +79,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
 
     // check if password is thesame with the encrypted password in database
     final decryptedPassword = cipher.xorDecode(user.userPassword);
-    if (decryptedPassword != _passwordController.text) {
+    if (decryptedPassword != _passwordController.text.trim()) {
       Navigator.of(context).pop();
       toast.passwordIncorrect(context);
       return;
