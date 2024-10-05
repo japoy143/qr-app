@@ -86,16 +86,18 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                     Container(
                       child: Row(
                         children: [
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PenaltyValuesScreen())),
-                            child: Icon(
-                              Icons.edit_note,
-                              size: 30,
-                            ),
-                          ),
+                          isAdmin
+                              ? GestureDetector(
+                                  onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PenaltyValuesScreen())),
+                                  child: Icon(
+                                    Icons.edit_note,
+                                    size: 30,
+                                  ),
+                                )
+                              : SizedBox.shrink(),
                           Consumer<UsersProvider>(
                             builder: (context, provider, widget) {
                               List<UsersType> allUsers = provider.userList;
@@ -120,17 +122,22 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                     List<PenaltyValues> penaltyValuesList =
                                         provider.penaltyList;
 
-                                    return GestureDetector(
-                                        onTap: () async {
-                                          SaveAndDownloadMultiplePdf.createPdf(
-                                              events: sortedEventEnded,
-                                              users: alphabeticalStudents,
-                                              penaltyValues: penaltyValuesList);
-                                        },
-                                        child: const Icon(
-                                          Icons.picture_as_pdf,
-                                          size: 30,
-                                        ));
+                                    return isAdmin
+                                        ? GestureDetector(
+                                            onTap: () async {
+                                              SaveAndDownloadMultiplePdf
+                                                  .createPdf(
+                                                      events: sortedEventEnded,
+                                                      users:
+                                                          alphabeticalStudents,
+                                                      penaltyValues:
+                                                          penaltyValuesList);
+                                            },
+                                            child: const Icon(
+                                              Icons.picture_as_pdf,
+                                              size: 30,
+                                            ))
+                                        : SizedBox.shrink();
                                   },
                                 ),
                               );

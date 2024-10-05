@@ -219,6 +219,7 @@ class _EventScreenState extends State<EventScreen> {
       _eventDescriptionController.text = item.eventDescription;
       _eventPlaceController.text = item.eventPlace;
       _eventIdController.text = item.id.toString();
+      _eventPenaltyController.text = item.eventPenalty.toString();
     });
     showDialog(
         context: context,
@@ -336,7 +337,6 @@ class _EventScreenState extends State<EventScreen> {
         //events
         List<EventType> allEvents = provider.eventList;
 
-        //sort by date
         allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
         //filter event ended

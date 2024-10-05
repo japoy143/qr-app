@@ -101,6 +101,18 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
     return eventIdFilter.length;
   }
 
+  int getTotalStudentsAttended(String course, List<EventAttendance> attendance,
+      String year, int EventId) {
+    List attended = attendance
+        .where((element) =>
+            element.studentCourse == course &&
+            element.studentYear == year &&
+            element.eventId == EventId)
+        .toList();
+
+    return attended.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     Color purple = Color(colorscheme.hexColor(colorscheme.primaryColor));
@@ -160,36 +172,36 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          Consumer<UsersProvider>(
-            builder: (context, provider, widget) {
-              provider.getUsers();
-              List<UsersType> allUsers = provider.userList;
+          // actions: [
+          //   Consumer<UsersProvider>(
+          //     builder: (context, provider, widget) {
+          //       provider.getUsers();
+          //       List<UsersType> allUsers = provider.userList;
 
-              //filter admins
-              List<UsersType> onlyStudent = allUsers
-                  .where((element) => element.isAdmin == false)
-                  .toList();
+          //       //filter admins
+          //       List<UsersType> onlyStudent = allUsers
+          //           .where((element) => element.isAdmin == false)
+          //           .toList();
 
-              // Sort user alphabetically (case-insensitive)
-              List<UsersType> alphabeticalStudents = onlyStudent.toList()
-                ..sort((a, b) => a.userName
-                    .toLowerCase()
-                    .compareTo(b.userName.toLowerCase()));
+          //       // Sort user alphabetically (case-insensitive)
+          //       List<UsersType> alphabeticalStudents = onlyStudent.toList()
+          //         ..sort((a, b) => a.userName
+          //             .toLowerCase()
+          //             .compareTo(b.userName.toLowerCase()));
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: GestureDetector(
-                    onTap: () async {},
-                    child: const Icon(
-                      Icons.picture_as_pdf,
-                      size: 30,
-                    )),
-              );
-            },
-          )
-        ],
-      ),
+          //       return Padding(
+          //         padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          //         child: GestureDetector(
+          //             onTap: () async {},
+          //             child: const Icon(
+          //               Icons.picture_as_pdf,
+          //               size: 30,
+          //             )),
+          //       );
+          //     },
+          //   )
+          // ],
+          ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(14.0, 8, 14, 0),
         child: SafeArea(
@@ -250,6 +262,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                     itemCount: penalty.length,
                     itemBuilder: (context, index) {
                       final item = penalty.elementAt(index);
+
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         child: GestureDetector(
@@ -280,11 +293,17 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                           color: colorscheme.secondaryColor,
                                           fontWeight: FontWeight.w700),
                                     ),
-                                    Text(
-                                      'Total event attended: ${item.eventAttended}',
-                                      style: TextStyle(
-                                          color: colorscheme.secondaryColor,
-                                          fontWeight: FontWeight.w600),
+                                    Consumer<EventAttendanceProvider>(
+                                      builder: (context, provider, child) {
+                                        List<EventAttendance> attendanceList =
+                                            provider.eventAttendanceList;
+                                        return Text(
+                                          'Total event attended: ${getTotalStudentsAttended(item.courseName, attendanceList, selectedYear.toString() ?? '1', widget.eventId)}',
+                                          style: TextStyle(
+                                              color: colorscheme.secondaryColor,
+                                              fontWeight: FontWeight.w600),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),

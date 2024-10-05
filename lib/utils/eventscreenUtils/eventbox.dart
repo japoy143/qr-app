@@ -125,13 +125,14 @@ class _EventBoxState extends State<EventBox> {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('MMM d').format(item.eventDate);
-    List splittedDate = formattedDate.split(" ");
-
     return Consumer<EventProvider>(
       builder: (context, provider, child) {
         final event = provider.eventList
             .firstWhere((element) => element.id == widget.items.id);
+
+        String formattedDate = DateFormat('MMM d').format(event.eventDate);
+        List splittedDate = formattedDate.split(" ");
+
         return Column(
           children: [
             Padding(
