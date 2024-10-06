@@ -46,7 +46,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
         final notificationList = provider.notificationList;
 
         //sort by  date
-        notificationList.sort((a, b) => a.time.compareTo(b.time));
+        notificationList.sort(
+            (a, b) => DateTime.parse(b.time).compareTo(DateTime.parse(a.time)));
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.fromLTRB(14.0, 28, 14, 4),

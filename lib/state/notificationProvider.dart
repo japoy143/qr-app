@@ -131,6 +131,23 @@ class NotificationProvider extends ChangeNotifier {
     }
   }
 
+  insertNotificationforValidation(int Id, String username) async {
+    NotificationType data = NotificationType(
+        id: Id,
+        title: "Account Validation",
+        subtitle: 'User Validated',
+        body: 'Congratulations ${username} your account is validated',
+        time: DateTime.now().toString(),
+        read: false,
+        isOpen: false,
+        notificationKey: '${username}-${Id}',
+        notificationId: Id);
+    notificationList.insert(0, data);
+    getNotifications();
+
+    await notificationBox.put('${username}-${Id}', data);
+  }
+
   //504
   // event Ennded
   insertEventEndedData(String key, NotificationType message) async {

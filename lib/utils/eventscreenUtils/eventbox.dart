@@ -110,7 +110,7 @@ class _EventBoxState extends State<EventBox> {
         //ensure once
         isOngoingNotificationShown = false;
       }
-      return 'Ongoing';
+      return 'Ongoing  End: ${DateFormat("h:mm a").format(item.endTime)}';
     } else {
       String formattedDate = DateFormat("h:mm a").format(date);
       return formattedDate;
@@ -242,7 +242,7 @@ class _EventBoxState extends State<EventBox> {
                           style: TextStyle(
                             color: colorTheme.secondaryColor,
                             fontFamily: "Poppins",
-                            fontSize: 19.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

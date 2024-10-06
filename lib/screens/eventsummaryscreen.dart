@@ -104,7 +104,10 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
 
                               //filter admins
                               List<UsersType> onlyStudent = allUsers
-                                  .where((element) => element.isAdmin == false)
+                                  .where((element) =>
+                                      element.isAdmin == false &&
+                                      element.isUserValidated == true &&
+                                      element.isValidationRep == false)
                                   .toList();
 
                               // Sort user alphabetically (case-insensitive)

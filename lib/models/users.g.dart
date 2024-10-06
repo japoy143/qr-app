@@ -33,13 +33,14 @@ class UsersTypeAdapter extends TypeAdapter<UsersType> {
       middleInitial: fields[13] as String,
       isValidationRep: fields[14] as bool,
       isUserValidated: fields[15] as bool,
+      isNotificationSend: fields[16] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UsersType obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.schoolId)
       ..writeByte(1)
@@ -71,7 +72,9 @@ class UsersTypeAdapter extends TypeAdapter<UsersType> {
       ..writeByte(14)
       ..write(obj.isValidationRep)
       ..writeByte(15)
-      ..write(obj.isUserValidated);
+      ..write(obj.isUserValidated)
+      ..writeByte(16)
+      ..write(obj.isNotificationSend);
   }
 
   @override

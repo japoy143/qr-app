@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/notificationscreen.dart';
@@ -19,18 +20,13 @@ import 'package:qr_app/utils/homescreenUtils/eventBox.dart';
 import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/homescreenUtils/eventEndedBox.dart';
+import 'package:qr_app/utils/localNotifications.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String userKey;
   final Function(int index) setIndex;
-  final bool isAdmin;
-  final bool isValidationRep;
-  const HomeScreen(
-      {super.key,
-      required this.userKey,
-      required this.setIndex,
-      required this.isAdmin,
-      required this.isValidationRep});
+  final UsersType user;
+
+  const HomeScreen({super.key, required this.setIndex, required this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -201,12 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<EventProvider>(context, listen: false).getEvents(); //ok
 
       Provider.of<UsersProvider>(context, listen: false) //ok
-          .getUser(widget.userKey);
+          .getUser(widget.user.schoolId.toString());
 
       Provider.of<UsersProvider>(context, listen: false)
-          .getUserImage(widget.userKey); //ok
+          .getUserImage(widget.user.schoolId.toString()); //ok
 
-      if (widget.isValidationRep) {
+      if (widget.user.isValidationRep) {
         Provider.of<UsersProvider>(context, listen: false)
             .getUserImageList(); //ok
       }
@@ -215,26 +211,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
       Provider.of<PenaltyValuesProvider>(context, listen: false).penaltyInit();
 
-      if (!widget.isAdmin) {
+      if (!widget.user.isAdmin) {
         Provider.of<UsersProvider>(context, listen: false)
-            .updateUserOfflineSaveData(int.parse(widget.userKey));
-      }
+            .updateUserOfflineSaveData(
+                int.parse(widget.user.schoolId.toString()));
 
-      try {
-        Provider.of<NotificationProvider>(context, listen: false)
-            .callBackListener();
-
-        if (widget.isAdmin) {
-          Provider.of<EventAttendanceProvider>(context, listen: false)
-              .getOfflineSaveEventAttendance();
-
-          Provider.of<EventIdProvider>(context, listen: false)
-              .getOfflineSaveEventId();
-
-          Provider.of<EventIdProvider>(context, listen: false)
-              .saveEventIdExtras();
+        if (widget.user.isUserValidated) {
+          if (!widget.user.isNotificationSend) {
+            int schoolId = widget.user.schoolId;
+            String notificationKey = "${schoolId}-new";
+            LocalNotifications.showNotification('Account Validation',
+                'Congratulations ${widget.user.userName} your account is validated');
+            Provider.of<UsersProvider>(context, listen: false)
+                .updateNotificationSend(widget.user.schoolId);
+            //add notification
+            Provider.of<NotificationProvider>(context, listen: false)
+                .insertNotificationforValidation(
+                    widget.user.schoolId, widget.user.userName);
+          }
         }
-      } catch (e) {}
+
+        try {
+          Provider.of<NotificationProvider>(context, listen: false)
+              .callBackListener();
+
+          if (widget.user.isAdmin) {
+            Provider.of<EventAttendanceProvider>(context, listen: false)
+                .getOfflineSaveEventAttendance();
+
+            Provider.of<EventIdProvider>(context, listen: false)
+                .getOfflineSaveEventId();
+
+            Provider.of<EventIdProvider>(context, listen: false)
+                .saveEventIdExtras();
+          }
+        } catch (e) {}
+      }
     });
   }
 
@@ -416,7 +428,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 isAdmin: user.isAdmin,
                                                 items: event1,
                                                 officerName: user.userName,
-                                                userKey: widget.userKey,
+                                                userKey: widget.user.schoolId
+                                                    .toString(),
                                               )
                                             : Stack(
                                                 children: [
@@ -598,7 +611,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         isAdmin: user.isAdmin,
                                         items: firstEventEnded,
                                         officerName: user.userName,
-                                        userKey: widget.userKey,
+                                        userKey:
+                                            widget.user.schoolId.toString(),
                                       )
                                     : Stack(
                                         children: [

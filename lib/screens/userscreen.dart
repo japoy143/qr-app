@@ -41,21 +41,21 @@ class _UserScreenState extends State<UserScreen> {
   XFile? selectedimage;
 
   getImage(
-    int id,
-    String userName,
-    String lastName,
-    String middleInitial,
-    String userCourse,
-    String userYear,
-    String userPassword,
-    bool isAdmin,
-    String userProfile,
-    bool isSignUpOnline,
-    bool isLogin,
-    String eventAttended,
-    bool isValidationRep,
-    bool isUserValidated,
-  ) async {
+      int id,
+      String userName,
+      String lastName,
+      String middleInitial,
+      String userCourse,
+      String userYear,
+      String userPassword,
+      bool isAdmin,
+      String userProfile,
+      bool isSignUpOnline,
+      bool isLogin,
+      String eventAttended,
+      bool isValidationRep,
+      bool isUserValidated,
+      bool isNotificationSend) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -104,7 +104,8 @@ class _UserScreenState extends State<UserScreen> {
             eventAttended: eventAttended,
             isPenaltyShown: false,
             isValidationRep: isValidationRep,
-            isUserValidated: isUserValidated));
+            isUserValidated: isUserValidated,
+            isNotificationSend: isNotificationSend));
 
     showToast();
   }
@@ -258,7 +259,8 @@ class _UserScreenState extends State<UserScreen> {
                                   user.isLogin,
                                   user.eventAttended,
                                   user.isValidationRep,
-                                  user.isUserValidated),
+                                  user.isUserValidated,
+                                  user.isNotificationSend),
                               child: Consumer<UsersProvider>(
                                 builder: (context, provider, child) {
                                   final userImage = provider.userImage;

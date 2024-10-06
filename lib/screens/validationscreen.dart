@@ -200,23 +200,14 @@ class _ValidationScreenState extends State<ValidationScreen> {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: purple, width: 2),
-                                        borderRadius:
-                                            BorderRadius.circular(4.0)),
-                                    child: Stack(
-                                      children: [
-                                        ...circles(),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ValidationUsers(
-                                            user: item,
-                                            imageList: imageList,
-                                          ),
-                                        ),
-                                      ],
-                                    )),
+                                  decoration: BoxDecoration(
+                                      color: purple,
+                                      borderRadius: BorderRadius.circular(4.0)),
+                                  child: ValidationUsers(
+                                    user: item,
+                                    imageList: imageList,
+                                  ),
+                                ),
                               );
                             })),
               ],
