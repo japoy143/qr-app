@@ -10,6 +10,7 @@ import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/toast.dart';
+import 'package:qr_app/utils/userscreenUtils/scannermodal.dart';
 
 // ignore: must_be_immutable
 class QrCodeScanner extends StatefulWidget {
@@ -41,6 +42,21 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   //color theme
   final colortheme = ColorThemeProvider();
+
+  //modal
+  acceptAndRejectModal(EventAttendance event, int eventId, String userId) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: ScannerModal(
+              eventAttendance: event,
+              eventId: eventId,
+              userSchoolId: userId,
+            ),
+          );
+        });
+  }
 
   startscan() async {
     var result;
@@ -112,8 +128,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     }
 
     try {
-      eventAttendanceProvider.insertData(
-          userSchoolId,
+      acceptAndRejectModal(
           EventAttendance(
               id: int.parse(userSchoolId),
               eventId: widget.EventId,
@@ -122,17 +137,9 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               studentName: userName,
               studentCourse: userCourse,
               studentYear: userYear,
-              isDataSaveOffline: false));
-
-      final isUserAttended = await userProvider.updateUserNewAttendedEvent(
-          widget.EventId.toString(), int.parse(userSchoolId));
-
-      if (!isUserAttended) {
-        toast.errorStudentNotSave(context);
-        return;
-      }
-      //TODO: update user attendance
-      toast.AttendanceSuccessfullySave(context);
+              isDataSaveOffline: false),
+          widget.EventId,
+          userSchoolId);
     } catch (e) {
       toast.errorStudentNotSave(context);
     }
