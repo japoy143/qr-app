@@ -3,22 +3,30 @@ import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
+import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 import 'package:qr_app/utils/eventsummaryUtils/studentslistsummary.dart';
 
 class CoursesSummaryScreen extends StatefulWidget {
   final String eventName;
   final double screenHeight;
   final int eventId;
+  final bool isAdmin;
+  final List<EventType> sortedEvent;
   const CoursesSummaryScreen(
       {super.key,
       required this.eventId,
       required this.screenHeight,
-      required this.eventName});
+      required this.eventName,
+      required this.isAdmin,
+      required this.sortedEvent});
 
   @override
   State<CoursesSummaryScreen> createState() => _CoursesSummaryScreenState();
@@ -31,6 +39,8 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
 
   @override
   void initState() {
+    Provider.of<UsersProvider>(context, listen: false).getUsers();
+
     super.initState();
   }
 
@@ -120,6 +130,9 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
     String time = DateFormat('h:mm a').format(DateTime.now());
     String eventTime = '$formattedDate, $time';
     String eventName = widget.eventName;
+
+    bool isAdmin = widget.isAdmin;
+    List<EventType> sortedEvent = widget.sortedEvent;
 
     List<CoursesSummaryType> cellData = [
       CoursesSummaryType(
@@ -273,6 +286,8 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                         courseName: item.courseName,
                                         yearLevel: selectedYear,
                                         eventId: widget.eventId,
+                                        isAdmin: widget.isAdmin,
+                                        sortedEvent: widget.sortedEvent,
                                       ))),
                           child: Container(
                             decoration: BoxDecoration(
@@ -298,7 +313,7 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                         List<EventAttendance> attendanceList =
                                             provider.eventAttendanceList;
                                         return Text(
-                                          'Total event attended: ${getTotalStudentsAttended(item.courseName, attendanceList, selectedYear.toString() ?? '1', widget.eventId)}',
+                                          'Total event attended: ${getTotalStudentsAttended(item.courseName, attendanceList, selectedYear.toString(), widget.eventId)}',
                                           style: TextStyle(
                                               color: colorscheme.secondaryColor,
                                               fontWeight: FontWeight.w600),
@@ -307,23 +322,86 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                     ),
                                   ],
                                 ),
-                                GestureDetector(
-                                  onTap: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              StudentListSummary(
-                                                screenHeight:
-                                                    widget.screenHeight,
-                                                courseName: item.courseName,
-                                                yearLevel: selectedYear,
-                                                eventId: widget.eventId,
-                                              ))),
-                                  child: Text(
-                                    'Student attended',
-                                    style: TextStyle(
-                                        color: colorscheme.secondaryColor,
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Consumer<UsersProvider>(
+                                      builder: (context, provider, widget) {
+                                        List<UsersType> allUsers =
+                                            provider.userList;
+
+                                        //filter admins
+                                        List<UsersType> onlyStudent = allUsers
+                                            .where((element) =>
+                                                element.isAdmin == false &&
+                                                element.isUserValidated ==
+                                                    true &&
+                                                element.isValidationRep ==
+                                                    false &&
+                                                element.userCourse ==
+                                                    item.courseName &&
+                                                element.userYear ==
+                                                    selectedYear.toString())
+                                            .toList();
+
+                                        // Sort user alphabetically (case-insensitive)
+                                        List<UsersType> alphabeticalStudents =
+                                            onlyStudent.toList()
+                                              ..sort((a, b) => a.lastName
+                                                  .toLowerCase()
+                                                  .compareTo(b.lastName
+                                                      .toLowerCase()));
+
+                                        return Consumer<PenaltyValuesProvider>(
+                                          builder: (context, provider, child) {
+                                            List<PenaltyValues>
+                                                penaltyValuesList =
+                                                provider.penaltyList;
+
+                                            return isAdmin
+                                                ? GestureDetector(
+                                                    onTap: () async {
+                                                      SaveAndDownloadMultiplePdf
+                                                          .createPdf(
+                                                              events:
+                                                                  sortedEvent,
+                                                              users:
+                                                                  alphabeticalStudents,
+                                                              penaltyValues:
+                                                                  penaltyValuesList);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.picture_as_pdf,
+                                                      size: 30,
+                                                      color: Colors.white,
+                                                    ))
+                                                : SizedBox.shrink();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentListSummary(
+                                                    screenHeight:
+                                                        widget.screenHeight,
+                                                    courseName: item.courseName,
+                                                    yearLevel: selectedYear,
+                                                    eventId: widget.eventId,
+                                                    isAdmin: widget.isAdmin,
+                                                    sortedEvent:
+                                                        widget.sortedEvent,
+                                                  ))),
+                                      child: Text(
+                                        'Student attended',
+                                        style: TextStyle(
+                                            color: colorscheme.secondaryColor,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )
+                                  ],
                                 )
                               ],
                             ),

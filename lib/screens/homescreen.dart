@@ -305,73 +305,91 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Consumer<UsersProvider>(
-                                builder: (context, provider, child) {
-                              final userImageUrl = provider.userImage;
+                        Expanded(
+                          flex: 4,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Consumer<UsersProvider>(
+                                    builder: (context, provider, child) {
+                                  final userImageUrl = provider.userImage;
 
-                              return userImageUrl != null
-                                  ? showProfile(user.userProfile, userImageUrl,
-                                      screenHeight, statusbarHeight)
-                                  : Icon(
-                                      Icons.account_circle_outlined,
-                                      size: (screenHeight - statusbarHeight) *
-                                          0.07,
-                                    );
-                            }),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                  child: Text(
-                                    "${user.userName} ${user.lastName}",
-                                    style: const TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600),
-                                  ),
+                                  return userImageUrl != null
+                                      ? showProfile(
+                                          user.userProfile,
+                                          userImageUrl,
+                                          screenHeight,
+                                          statusbarHeight)
+                                      : Icon(
+                                          Icons.account_circle_outlined,
+                                          size:
+                                              (screenHeight - statusbarHeight) *
+                                                  0.07,
+                                        );
+                                }),
+                              ),
+                              const SizedBox(
+                                width: 10.0,
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 0, 0),
+                                        child: Text(
+                                          "${user.userName} ${user.lastName}",
+                                          style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w600),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                    Text(
+                                        '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
+                                  ],
                                 ),
-                                Text(
-                                    '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                          child: GestureDetector(
-                            onTap: () =>
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => NotificationScreen(
-                                          screenHeight: totalHeight,
-                                        ))),
-                            child: Consumer<NotificationProvider>(
-                              builder: (context, notificationProvider, child) {
-                                //notifications
-                                final inbox =
-                                    notificationProvider.notificationList;
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                            child: GestureDetector(
+                              onTap: () =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => NotificationScreen(
+                                            screenHeight: totalHeight,
+                                          ))),
+                              child: Consumer<NotificationProvider>(
+                                builder:
+                                    (context, notificationProvider, child) {
+                                  //notifications
+                                  final inbox =
+                                      notificationProvider.notificationList;
 
-                                // filter unread notifications
-                                final unread = inbox
-                                    .where((message) => message.read == false)
-                                    .toList();
+                                  // filter unread notifications
+                                  final unread = inbox
+                                      .where((message) => message.read == false)
+                                      .toList();
 
-                                return Container(
-                                    child: unread.isNotEmpty
-                                        ? const NotificationActive(
-                                            height: 26, width: 26)
-                                        : const NotificationNone(
-                                            height: 26,
-                                            width: 26,
-                                          ));
-                              },
+                                  return Container(
+                                      child: unread.isNotEmpty
+                                          ? const NotificationActive(
+                                              height: 26, width: 26)
+                                          : const NotificationNone(
+                                              height: 26,
+                                              width: 26,
+                                            ));
+                                },
+                              ),
                             ),
                           ),
                         )

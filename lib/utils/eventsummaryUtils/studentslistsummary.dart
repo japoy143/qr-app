@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/events.dart';
+import 'package:qr_app/models/penaltyvalues.dart';
+import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/penaltyValues.dart';
+import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
+import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 import 'package:qr_app/utils/formUtils/customtextField.dart';
 
 class StudentListSummary extends StatefulWidget {
@@ -9,14 +15,17 @@ class StudentListSummary extends StatefulWidget {
   final String courseName;
   final int? yearLevel;
   final int eventId;
+  final bool isAdmin;
+  final List<EventType> sortedEvent;
 
-  const StudentListSummary({
-    super.key,
-    required this.courseName,
-    required this.yearLevel,
-    required this.eventId,
-    required this.screenHeight,
-  });
+  const StudentListSummary(
+      {super.key,
+      required this.courseName,
+      required this.yearLevel,
+      required this.eventId,
+      required this.screenHeight,
+      required this.isAdmin,
+      required this.sortedEvent});
 
   @override
   State<StudentListSummary> createState() => _StudentListSummaryState();
@@ -77,6 +86,10 @@ class _StudentListSummaryState extends State<StudentListSummary> {
 
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = widget.isAdmin;
+    List<EventType> sortedEvent = widget.sortedEvent;
+    String courseName = widget.courseName;
+    int? year = widget.yearLevel;
     return Consumer<EventAttendanceProvider>(
       builder: (context, provider, child) {
         Color purple = Color(colortheme.hexColor(colortheme.primaryColor));
@@ -88,13 +101,64 @@ class _StudentListSummaryState extends State<StudentListSummary> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${widget.courseName}-${widget.yearLevel}',
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '${widget.courseName}-${widget.yearLevel}',
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      // Consumer<UsersProvider>(
+                      //   builder: (context, provider, widget) {
+                      //     List<UsersType> allUsers = provider.userList;
+
+                      //     //filter admins
+                      //     List<UsersType> onlyStudent = allUsers
+                      //         .where((element) =>
+                      //             element.isAdmin == false &&
+                      //             element.isUserValidated == true &&
+                      //             element.isValidationRep == false &&
+                      //             element.userCourse == courseName &&
+                      //             element.userYear == year.toString())
+                      //         .toList();
+
+                      //     // Sort user alphabetically (case-insensitive)
+                      //     List<UsersType> alphabeticalStudents = onlyStudent
+                      //         .toList()
+                      //       ..sort((a, b) => a.userName
+                      //           .toLowerCase()
+                      //           .compareTo(b.userName.toLowerCase()));
+
+                      //     return Padding(
+                      //       padding:
+                      //           const EdgeInsets.symmetric(horizontal: 30.0),
+                      //       child: Consumer<PenaltyValuesProvider>(
+                      //         builder: (context, provider, child) {
+                      //           List<PenaltyValues> penaltyValuesList =
+                      //               provider.penaltyList;
+
+                      //           return isAdmin
+                      //               ? GestureDetector(
+                      //                   onTap: () async {
+                      //                     SaveAndDownloadMultiplePdf.createPdf(
+                      //                         events: sortedEvent,
+                      //                         users: alphabeticalStudents,
+                      //                         penaltyValues: penaltyValuesList);
+                      //                   },
+                      //                   child: const Icon(
+                      //                     Icons.picture_as_pdf,
+                      //                     size: 30,
+                      //                   ))
+                      //               : SizedBox.shrink();
+                      //         },
+                      //       ),
+                      //     );
+                      //   },
+                      // )
+                    ],
                   ),
                   Text(
                     'students',

@@ -83,7 +83,7 @@ class SaveAndDownloadMultiplePdf {
     }
 
     doc.addPage(pw.MultiPage(
-        maxPages: users.length * 2,
+        maxPages: users.isEmpty ? 1 : users.length * 2,
         pageFormat: PdfPageFormat.a4,
         build: (context) => [
               //header
@@ -174,7 +174,8 @@ class SaveAndDownloadMultiplePdf {
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
                             pw.Text('ID No: ${user.schoolId}'),
-                            pw.Text('Name: ${user.userName}')
+                            pw.Text(
+                                'Name: ${user.lastName}, ${user.userName} .${user.middleInitial} '),
                           ],
                         ),
                         pw.Column(

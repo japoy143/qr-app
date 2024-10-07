@@ -59,7 +59,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
         List<EventType> allEvents = provider.eventList;
 
         //sort by date
-        allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+        allEvents.sort((a, b) => b.eventDate.compareTo(a.eventDate));
 
         //filter event ended
         final sortedEventEnded =
@@ -98,54 +98,54 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                   ),
                                 )
                               : SizedBox.shrink(),
-                          Consumer<UsersProvider>(
-                            builder: (context, provider, widget) {
-                              List<UsersType> allUsers = provider.userList;
+                          // Consumer<UsersProvider>(
+                          //   builder: (context, provider, widget) {
+                          //     List<UsersType> allUsers = provider.userList;
 
-                              //filter admins
-                              List<UsersType> onlyStudent = allUsers
-                                  .where((element) =>
-                                      element.isAdmin == false &&
-                                      element.isUserValidated == true &&
-                                      element.isValidationRep == false)
-                                  .toList();
+                          //     //filter admins
+                          //     List<UsersType> onlyStudent = allUsers
+                          //         .where((element) =>
+                          //             element.isAdmin == false &&
+                          //             element.isUserValidated == true &&
+                          //             element.isValidationRep == false)
+                          //         .toList();
 
-                              // Sort user alphabetically (case-insensitive)
-                              List<UsersType> alphabeticalStudents = onlyStudent
-                                  .toList()
-                                ..sort((a, b) => a.userName
-                                    .toLowerCase()
-                                    .compareTo(b.userName.toLowerCase()));
+                          //     // Sort user alphabetically (case-insensitive)
+                          //     List<UsersType> alphabeticalStudents = onlyStudent
+                          //         .toList()
+                          //       ..sort((a, b) => a.userName
+                          //           .toLowerCase()
+                          //           .compareTo(b.userName.toLowerCase()));
 
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30.0),
-                                child: Consumer<PenaltyValuesProvider>(
-                                  builder: (context, provider, child) {
-                                    List<PenaltyValues> penaltyValuesList =
-                                        provider.penaltyList;
+                          //     return Padding(
+                          //       padding: const EdgeInsets.symmetric(
+                          //           horizontal: 30.0),
+                          //       child: Consumer<PenaltyValuesProvider>(
+                          //         builder: (context, provider, child) {
+                          //           List<PenaltyValues> penaltyValuesList =
+                          //               provider.penaltyList;
 
-                                    return isAdmin
-                                        ? GestureDetector(
-                                            onTap: () async {
-                                              SaveAndDownloadMultiplePdf
-                                                  .createPdf(
-                                                      events: sortedEventEnded,
-                                                      users:
-                                                          alphabeticalStudents,
-                                                      penaltyValues:
-                                                          penaltyValuesList);
-                                            },
-                                            child: const Icon(
-                                              Icons.picture_as_pdf,
-                                              size: 30,
-                                            ))
-                                        : SizedBox.shrink();
-                                  },
-                                ),
-                              );
-                            },
-                          )
+                          //           return isAdmin
+                          //               ? GestureDetector(
+                          //                   onTap: () async {
+                          //                     SaveAndDownloadMultiplePdf
+                          //                         .createPdf(
+                          //                             events: sortedEventEnded,
+                          //                             users:
+                          //                                 alphabeticalStudents,
+                          //                             penaltyValues:
+                          //                                 penaltyValuesList);
+                          //                   },
+                          //                   child: const Icon(
+                          //                     Icons.picture_as_pdf,
+                          //                     size: 30,
+                          //                   ))
+                          //               : SizedBox.shrink();
+                          //         },
+                          //       ),
+                          //     );
+                          //   },
+                          // )
                         ],
                       ),
                     )
@@ -177,20 +177,24 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                                 eventName: item.eventName,
                                                 screenHeight: screenHeight,
                                                 eventId: item.id,
+                                                isAdmin: isAdmin,
+                                                sortedEvent: sortedEventEnded,
                                               )))
                                   : null,
                               child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(8.0)),
-                                  child: EventSummayBox(
-                                    isAdmin: isAdmin,
-                                    items: item,
-                                    screeHeight: (screenHeight +
-                                        statusbarHeight +
-                                        appBarHeight),
-                                  )),
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                    color: purple,
+                                    borderRadius: BorderRadius.circular(8.0)),
+                                child: EventSummayBox(
+                                  isAdmin: isAdmin,
+                                  items: item,
+                                  screeHeight: (screenHeight +
+                                      statusbarHeight +
+                                      appBarHeight),
+                                  sortedEvent: sortedEventEnded,
+                                ),
+                              ),
                             ),
                           );
                         })),

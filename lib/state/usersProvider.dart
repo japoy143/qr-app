@@ -37,7 +37,8 @@ class UsersProvider extends ChangeNotifier {
       isPenaltyShown: false,
       isValidationRep: false,
       isUserValidated: false,
-      isNotificationSend: false);
+      isNotificationSend: false,
+      isValidationOpen: false);
 
   //user image url
   String? userImage;
@@ -94,7 +95,8 @@ class UsersProvider extends ChangeNotifier {
             isValidationRep: user['validation_representative'],
             isPenaltyShown: false,
             isUserValidated: user['account_validated'],
-            isNotificationSend: user['notification_send']);
+            isNotificationSend: user['notification_send'],
+            isValidationOpen: user['is_validation_open']);
       }).toList();
 
       userList = usersListData;
@@ -146,7 +148,8 @@ class UsersProvider extends ChangeNotifier {
           isValidationRep: user['validation_representative'],
           isPenaltyShown: false,
           isUserValidated: user["account_validated"],
-          isNotificationSend: user["notification_send"]);
+          isNotificationSend: user["notification_send"],
+          isValidationOpen: user['is_validation_open']);
 
       logger.t('data $user');
       logger.t('successfully get user 103');
@@ -175,7 +178,8 @@ class UsersProvider extends ChangeNotifier {
             isValidationRep: user.isValidationRep,
             isPenaltyShown: false,
             isUserValidated: user.isUserValidated,
-            isNotificationSend: user.isNotificationSend);
+            isNotificationSend: user.isNotificationSend,
+            isValidationOpen: user.isValidationOpen);
       }
       notifyListeners();
       return user;
@@ -207,7 +211,8 @@ class UsersProvider extends ChangeNotifier {
             isValidationRep: eachUser['validation_representative'],
             isPenaltyShown: false,
             isUserValidated: eachUser['account_validated'],
-            isNotificationSend: eachUser['notification_send']);
+            isNotificationSend: eachUser['notification_send'],
+            isValidationOpen: eachUser['is_validation_open']);
       }).toList();
 
       List filteredStudent =
@@ -369,7 +374,8 @@ class UsersProvider extends ChangeNotifier {
         'validation_representative': isValidation,
         'event_attended': '',
         'account_validated': false,
-        'notification_send': false
+        'notification_send': false,
+        'is_validation_open': false
       });
 
       userBox.put(
@@ -391,7 +397,8 @@ class UsersProvider extends ChangeNotifier {
               isValidationRep: isValidation,
               isPenaltyShown: false,
               isUserValidated: false,
-              isNotificationSend: false));
+              isNotificationSend: false,
+              isValidationOpen: false));
 
       logger.t('data inserted successfully 108');
     } catch (e) {
@@ -419,7 +426,8 @@ class UsersProvider extends ChangeNotifier {
               isValidationRep: isValidation,
               isPenaltyShown: false,
               isUserValidated: false,
-              isNotificationSend: false));
+              isNotificationSend: false,
+              isValidationOpen: false));
     }
   }
 
@@ -466,7 +474,8 @@ class UsersProvider extends ChangeNotifier {
             isValidationRep: user.isValidationRep,
             isPenaltyShown: false,
             isUserValidated: user.isUserValidated,
-            isNotificationSend: user.isNotificationSend);
+            isNotificationSend: user.isNotificationSend,
+            isValidationOpen: user.isValidationOpen);
 
         notifyListeners();
         logger.t('successfully login user 109');
@@ -498,7 +507,8 @@ class UsersProvider extends ChangeNotifier {
               isValidationRep: data.isValidationRep,
               isPenaltyShown: false,
               isUserValidated: user.isUserValidated,
-              isNotificationSend: user.isNotificationSend);
+              isNotificationSend: user.isNotificationSend,
+              isValidationOpen: user.isValidationOpen);
         }
 
         notifyListeners();
@@ -550,7 +560,8 @@ class UsersProvider extends ChangeNotifier {
           isPenaltyShown: false,
           isValidationRep: false,
           isUserValidated: false,
-          isNotificationSend: false);
+          isNotificationSend: false,
+          isValidationOpen: false);
 
       userImage = '';
       logger.t("successfully Logout user 110");
@@ -581,7 +592,8 @@ class UsersProvider extends ChangeNotifier {
           isPenaltyShown: false,
           isValidationRep: false,
           isUserValidated: false,
-          isNotificationSend: false);
+          isNotificationSend: false,
+          isValidationOpen: false);
 
       notifyListeners();
     }
@@ -727,7 +739,8 @@ class UsersProvider extends ChangeNotifier {
             eventAttended: eachUser['event_attended'],
             isPenaltyShown: false,
             isUserValidated: eachUser['account_validated'],
-            isNotificationSend: eachUser['notification_send']);
+            isNotificationSend: eachUser['notification_send'],
+            isValidationOpen: eachUser['is_validation_open']);
       }).toList();
 
       // List<UsersType> allAdmins =

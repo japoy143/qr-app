@@ -8,12 +8,14 @@ class EventSummayBox extends StatefulWidget {
   final double screeHeight;
   final EventType items;
   final bool isAdmin;
+  final List<EventType> sortedEvent;
 
   EventSummayBox(
       {super.key,
       required this.items,
       required this.screeHeight,
-      required this.isAdmin});
+      required this.isAdmin,
+      required this.sortedEvent});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -118,11 +120,11 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 14.0, 0, 0),
                     child: Text(
-                      dateFormatter(item.startTime),
+                      "${dateFormatter(item.startTime)}  end: ${DateFormat("h:mm a").format(item.endTime)}",
                       style: TextStyle(
                         color: colorTheme.secondaryColor,
                         fontFamily: "Poppins",
-                        fontSize: 19.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -136,6 +138,8 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                                 eventName: item.eventName,
                                 screenHeight: widget.screeHeight,
                                 eventId: item.id,
+                                isAdmin: widget.isAdmin,
+                                sortedEvent: widget.sortedEvent,
                               ))),
                       child: Text('See more',
                           style: TextStyle(

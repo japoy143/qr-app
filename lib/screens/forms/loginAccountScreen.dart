@@ -71,7 +71,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
     }
 
     //check if username is thesame
-    if (user.userName != _nameController.text) {
+    if (user.userName != _nameController.text.trim()) {
       Navigator.of(context).pop();
       toast.usernameIncorrect(context);
       return;

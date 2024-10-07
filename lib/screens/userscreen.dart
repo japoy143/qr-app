@@ -55,7 +55,8 @@ class _UserScreenState extends State<UserScreen> {
       String eventAttended,
       bool isValidationRep,
       bool isUserValidated,
-      bool isNotificationSend) async {
+      bool isNotificationSend,
+      bool isValidationOpen) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -105,7 +106,8 @@ class _UserScreenState extends State<UserScreen> {
             isPenaltyShown: false,
             isValidationRep: isValidationRep,
             isUserValidated: isUserValidated,
-            isNotificationSend: isNotificationSend));
+            isNotificationSend: isNotificationSend,
+            isValidationOpen: isValidationOpen));
 
     showToast();
   }
@@ -240,105 +242,122 @@ class _UserScreenState extends State<UserScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                          child: GestureDetector(
-                              onTap: () => getImage(
-                                  user.schoolId,
-                                  user.userName,
-                                  user.lastName,
-                                  user.middleInitial,
-                                  user.userCourse,
-                                  user.userYear,
-                                  user.userPassword,
-                                  user.isAdmin,
-                                  user.userProfile,
-                                  user.isSignupOnline,
-                                  user.isLogin,
-                                  user.eventAttended,
-                                  user.isValidationRep,
-                                  user.isUserValidated,
-                                  user.isNotificationSend),
-                              child: Consumer<UsersProvider>(
-                                builder: (context, provider, child) {
-                                  final userImage = provider.userImage;
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                              child: GestureDetector(
+                                  onTap: () => getImage(
+                                      user.schoolId,
+                                      user.userName,
+                                      user.lastName,
+                                      user.middleInitial,
+                                      user.userCourse,
+                                      user.userYear,
+                                      user.userPassword,
+                                      user.isAdmin,
+                                      user.userProfile,
+                                      user.isSignupOnline,
+                                      user.isLogin,
+                                      user.eventAttended,
+                                      user.isValidationRep,
+                                      user.isUserValidated,
+                                      user.isNotificationSend,
+                                      user.isValidationOpen),
+                                  child: Consumer<UsersProvider>(
+                                    builder: (context, provider, child) {
+                                      final userImage = provider.userImage;
 
-                                  return SizedBox(
-                                    width: 60,
-                                    height: 60,
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        userImage != null
-                                            ? showProfile(
-                                                user.userProfile,
-                                                userImage,
-                                                screenHeight,
-                                                statusbarHeight)
-                                            : Icon(
-                                                Icons.account_circle_outlined,
-                                                size: (screenHeight -
-                                                        statusbarHeight) *
-                                                    0.07,
+                                      return SizedBox(
+                                        width: 60,
+                                        height: 60,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            userImage != null
+                                                ? showProfile(
+                                                    user.userProfile,
+                                                    userImage,
+                                                    screenHeight,
+                                                    statusbarHeight)
+                                                : Icon(
+                                                    Icons
+                                                        .account_circle_outlined,
+                                                    size: (screenHeight -
+                                                            statusbarHeight) *
+                                                        0.07,
+                                                  ),
+                                            const Positioned(
+                                              left: 36,
+                                              bottom: 14,
+                                              child: Icon(
+                                                Icons.add_a_photo,
+                                                color: Colors.blueGrey,
+                                                size: 17,
                                               ),
-                                        const Positioned(
-                                          left: 36,
-                                          bottom: 14,
-                                          child: Icon(
-                                            Icons.add_a_photo,
-                                            color: Colors.blueGrey,
-                                            size: 17,
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )),
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Text(
-                                "${user.userName} ${user.lastName}",
-                                style: const TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
+                                      );
+                                    },
+                                  )),
                             ),
-                            Text(
-                                '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Text(
+                                    "${user.userName} ${user.lastName}",
+                                    style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                    '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    GestureDetector(
-                        onTap: () async {
-                          final userProvider = Provider.of<UsersProvider>(
-                              context,
-                              listen: false);
-                          showProgressDialog(context);
-                          await Future.delayed(Duration(seconds: 2), () {
-                            userProvider.logout(user.schoolId);
-                          });
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey,
-                              fontSize: 16),
-                        ))
+                    Expanded(
+                      flex: 1,
+                      child: GestureDetector(
+                          onTap: () async {
+                            final userProvider = Provider.of<UsersProvider>(
+                                context,
+                                listen: false);
+                            showProgressDialog(context);
+                            await Future.delayed(Duration(seconds: 2), () {
+                              userProvider.logout(user.schoolId);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Logout',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                                fontSize: 16),
+                          )),
+                    )
                   ],
                 ),
               ),
@@ -419,16 +438,28 @@ class _UserScreenState extends State<UserScreen> {
                                       penaltyValues: penaltyValuesList,
                                     );
                                   },
-                                  child: Row(
+                                  child: Column(
                                     children: [
-                                      Text(
-                                        'Attendance ',
-                                        style: TextStyle(
-                                            fontSize: 16, color: purple),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Attendance ',
+                                            style: TextStyle(
+                                                fontSize: 16, color: purple),
+                                          ),
+                                          Icon(
+                                            Icons.picture_as_pdf,
+                                            color: purple,
+                                          )
+                                        ],
                                       ),
-                                      Icon(
-                                        Icons.picture_as_pdf,
-                                        color: purple,
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 18, 0),
+                                        child: Text(
+                                          'Tap Here',
+                                          style: TextStyle(color: purple),
+                                        ),
                                       )
                                     ],
                                   ));
