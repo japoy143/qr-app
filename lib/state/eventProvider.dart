@@ -223,7 +223,8 @@ class EventProvider extends ChangeNotifier {
         'key': eventType.key,
         'event_place': eventType.eventPlace,
         'end_time': eventType.endTime.toString(),
-        'event_ended': eventType.eventEnded
+        'event_ended': eventType.eventEnded,
+        'event_penalty': eventType.eventPenalty,
       }).eq('event_id', id);
 
       logger.t('successfully updated event 206');

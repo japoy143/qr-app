@@ -239,6 +239,7 @@ class _EventScreenState extends State<EventScreen> {
             onSave: () => updateEvent(item.id),
             onCancel: clearFields,
             onUpdateEventDetails: updateEventDetails,
+            eventPenalty: _eventPenaltyController,
           );
         });
   }

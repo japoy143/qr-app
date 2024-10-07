@@ -284,7 +284,7 @@ class _addEventDialogState extends State<addEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +312,7 @@ class _addEventDialogState extends State<addEventDialog> {
                                 onTap: timeStartPicker,
                                 child: Container(
                                   height: 40,
-                                  width: 55,
+                                  width: 50,
                                   decoration: BoxDecoration(
                                       color: widget.color,
                                       borderRadius: BorderRadius.circular(4.0)),
@@ -328,6 +328,9 @@ class _addEventDialogState extends State<addEventDialog> {
                             ],
                           )
                         ],
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,7 +358,7 @@ class _addEventDialogState extends State<addEventDialog> {
                                 onTap: timeEndPicker,
                                 child: Container(
                                   height: 40,
-                                  width: 55,
+                                  width: 50,
                                   decoration: BoxDecoration(
                                       color: widget.color,
                                       borderRadius: BorderRadius.circular(4.0)),

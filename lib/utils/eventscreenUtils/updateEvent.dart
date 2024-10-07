@@ -7,7 +7,7 @@ import 'package:qr_app/utils/formUtils/customtextField.dart';
 import 'package:qr_app/utils/toast.dart';
 
 class UpdateEventDialog extends StatefulWidget {
-    final double screenHeight;
+  final double screenHeight;
   final Color color;
   final double height;
   final double width;
@@ -15,6 +15,7 @@ class UpdateEventDialog extends StatefulWidget {
   final TextEditingController eventPlaceController;
   final TextEditingController eventDescription;
   final TextEditingController eventId;
+  final TextEditingController eventPenalty;
   String currentDate;
   String currentTime;
   String eventTimeEnd;
@@ -38,6 +39,7 @@ class UpdateEventDialog extends StatefulWidget {
     required this.eventTimeEnd,
     required this.onUpdateEventDetails,
     required this.screenHeight,
+    required this.eventPenalty,
   });
 
   @override
@@ -210,7 +212,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
                   child: CustomTextField(
-                         height: widget.screenHeight,
+                      height: widget.screenHeight,
                       isReadOnly: false,
                       hintext: 'enter event name',
                       keyBoardType: TextInputType.text,
@@ -222,7 +224,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                               height: widget.screenHeight,
+                            height: widget.screenHeight,
                             isReadOnly: false,
                             hintext: 'description',
                             keyBoardType: TextInputType.text,
@@ -233,7 +235,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                       ),
                       Expanded(
                         child: CustomTextField(
-                               height: widget.screenHeight,
+                            height: widget.screenHeight,
                             isReadOnly: true,
                             hintext: 'event id',
                             keyBoardType: TextInputType.number,
@@ -255,7 +257,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,6 +301,9 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                             ],
                           )
                         ],
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,10 +356,11 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                   child: Text('Event Date'),
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       height: 40,
-                      width: 100,
+                      width: 90,
                       decoration: BoxDecoration(
                           border: Border.all(width: 2, color: widget.color),
                           borderRadius: BorderRadius.circular(4.0)),
@@ -386,24 +392,59 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                     ),
                   ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 2),
-                  child: Text(
-                    'Where',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins"),
-                  ),
-                ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
-                  child: CustomTextField(
-                         height: widget.screenHeight,
-                      isReadOnly: false,
-                      hintext: 'enter event place',
-                      keyBoardType: TextInputType.text,
-                      controller: widget.eventPlaceController),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Where',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Poppins"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                                child: CustomTextField(
+                                    height: widget.screenHeight,
+                                    isReadOnly: false,
+                                    hintext: 'enter event place',
+                                    keyBoardType: TextInputType.text,
+                                    controller: widget.eventPlaceController),
+                              ),
+                            ],
+                          )),
+                      Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Penalty',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Poppins"),
+                              ),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                                  child: CustomTextField(
+                                    height: widget.screenHeight,
+                                    isReadOnly: false,
+                                    hintext: '₱20',
+                                    keyBoardType: TextInputType.number,
+                                    controller: widget.eventPenalty,
+                                  )),
+                            ],
+                          ))
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 2),

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/models/penaltyvalues.dart';
-import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/eventsummaryUtils/coursesSummary.dart';
 import 'package:qr_app/utils/eventsummaryUtils/eventsummarybox.dart';
-import 'package:qr_app/utils/eventsummaryUtils/multipagepdf.dart';
 import 'package:qr_app/utils/eventsummaryUtils/penaltyvalues.dart';
 
 class EventSummaryScreen extends StatefulWidget {
@@ -187,6 +184,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                     color: purple,
                                     borderRadius: BorderRadius.circular(8.0)),
                                 child: EventSummayBox(
+                                  userAttendedEvent: userData.eventAttended,
                                   isAdmin: isAdmin,
                                   items: item,
                                   screeHeight: (screenHeight +

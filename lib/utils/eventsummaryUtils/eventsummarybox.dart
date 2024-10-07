@@ -8,6 +8,7 @@ class EventSummayBox extends StatefulWidget {
   final double screeHeight;
   final EventType items;
   final bool isAdmin;
+  final String userAttendedEvent;
   final List<EventType> sortedEvent;
 
   EventSummayBox(
@@ -15,7 +16,8 @@ class EventSummayBox extends StatefulWidget {
       required this.items,
       required this.screeHeight,
       required this.isAdmin,
-      required this.sortedEvent});
+      required this.sortedEvent,
+      required this.userAttendedEvent});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -38,6 +40,15 @@ class _EventSummayBoxState extends State<EventSummayBox> {
   void initState() {
     item = widget.items;
     super.initState();
+  }
+
+  String isUserAttended(int id) {
+    List<String> eventIds = widget.userAttendedEvent.split("|");
+    eventIds.remove("");
+
+    bool isAttended = eventIds.any((element) => int.parse(element) == id);
+
+    return isAttended ? "Attended" : "Missed";
   }
 
   @override
@@ -100,6 +111,32 @@ class _EventSummayBoxState extends State<EventSummayBox> {
           ),
         ),
         Padding(
+          padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                item.eventPlace,
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontFamily: "Poppins",
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                isUserAttended(item.id),
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontFamily: "Poppins",
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
           padding: const EdgeInsets.fromLTRB(14.0, 6.0, 14.0, 5.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,15 +145,6 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.eventPlace,
-                    style: TextStyle(
-                      color: Colors.grey.shade300,
-                      fontFamily: "Poppins",
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 14.0, 0, 0),
                     child: Text(
@@ -131,6 +159,7 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                   ),
                 ],
               ),
+
               widget.isAdmin
                   ? GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
