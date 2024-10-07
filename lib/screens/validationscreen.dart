@@ -197,15 +197,25 @@ class _ValidationScreenState extends State<ValidationScreen> {
                             itemBuilder: (context, index) {
                               final item = usersList.elementAt(index);
 
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: purple,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: ValidationUsers(
-                                    user: item,
-                                    imageList: imageList,
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    item.isValidationOpen =
+                                        !item.isValidationOpen;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: purple,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: ValidationUsers(
+                                      isOpen: item.isValidationOpen,
+                                      user: item,
+                                      imageList: imageList,
+                                    ),
                                   ),
                                 ),
                               );

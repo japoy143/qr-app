@@ -805,4 +805,22 @@ class UsersProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  //DELETE
+  deleteUserAccount(int id) async {
+    try {
+      await Supabase.instance.client.from('users').delete().eq('school_id', id);
+
+      //delete in cache
+      userBox.delete(id);
+
+      getUsers();
+      notifyListeners();
+    } catch (e) {
+      //delete in cache
+      userBox.delete(id);
+      getUsers();
+      notifyListeners();
+    }
+  }
 }

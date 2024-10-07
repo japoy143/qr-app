@@ -117,6 +117,12 @@ class _EventBoxState extends State<EventBox> {
     }
   }
 
+  getAndSplitStatus(String status) {
+    List<String> data = status.split(" ");
+
+    return data[0] == 'Ongoing' ? "Ongoing" : 'Event Ended';
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -150,7 +156,7 @@ class _EventBoxState extends State<EventBox> {
                     ),
                   ),
                   widget.isAdmin
-                      ? _eventStatus == "Ongoing"
+                      ? getAndSplitStatus(_eventStatus) == "Ongoing"
                           ? Row(
                               children: [
                                 GestureDetector(

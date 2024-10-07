@@ -248,64 +248,69 @@ class _UserScreenState extends State<UserScreen> {
                         children: [
                           Expanded(
                             flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                              child: GestureDetector(
-                                  onTap: () => getImage(
-                                      user.schoolId,
-                                      user.userName,
-                                      user.lastName,
-                                      user.middleInitial,
-                                      user.userCourse,
-                                      user.userYear,
-                                      user.userPassword,
-                                      user.isAdmin,
-                                      user.userProfile,
-                                      user.isSignupOnline,
-                                      user.isLogin,
-                                      user.eventAttended,
-                                      user.isValidationRep,
-                                      user.isUserValidated,
-                                      user.isNotificationSend,
-                                      user.isValidationOpen),
-                                  child: Consumer<UsersProvider>(
-                                    builder: (context, provider, child) {
-                                      final userImage = provider.userImage;
+                            child: Consumer<UsersProvider>(
+                                builder: (context, provider, child) {
+                              final userImage = provider.userImage;
 
-                                      return SizedBox(
-                                        width: 60,
-                                        height: 60,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            userImage != null
-                                                ? showProfile(
-                                                    user.userProfile,
-                                                    userImage,
-                                                    screenHeight,
-                                                    statusbarHeight)
-                                                : Icon(
-                                                    Icons
-                                                        .account_circle_outlined,
-                                                    size: (screenHeight -
-                                                            statusbarHeight) *
-                                                        0.07,
-                                                  ),
-                                            const Positioned(
-                                              left: 36,
-                                              bottom: 14,
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                color: Colors.blueGrey,
-                                                size: 17,
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                                child: GestureDetector(
+                                  onTap: userImage == ""
+                                      ? () => getImage(
+                                          user.schoolId,
+                                          user.userName,
+                                          user.lastName,
+                                          user.middleInitial,
+                                          user.userCourse,
+                                          user.userYear,
+                                          user.userPassword,
+                                          user.isAdmin,
+                                          user.userProfile,
+                                          user.isSignupOnline,
+                                          user.isLogin,
+                                          user.eventAttended,
+                                          user.isValidationRep,
+                                          user.isUserValidated,
+                                          user.isNotificationSend,
+                                          user.isValidationOpen)
+                                      : () {
+                                          print('tapped');
+                                        },
+                                  child: SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        userImage != null
+                                            ? showProfile(
+                                                user.userProfile,
+                                                userImage,
+                                                screenHeight,
+                                                statusbarHeight)
+                                            : Icon(
+                                                Icons.account_circle_outlined,
+                                                size: (screenHeight -
+                                                        statusbarHeight) *
+                                                    0.07,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  )),
-                            ),
+                                        userImage == ""
+                                            ? Positioned(
+                                                left: 36,
+                                                bottom: 14,
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  color: Colors.blueGrey,
+                                                  size: 17,
+                                                ),
+                                              )
+                                            : SizedBox.shrink(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
                           ),
                           const SizedBox(
                             width: 10.0,
