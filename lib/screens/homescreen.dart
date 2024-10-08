@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
@@ -167,28 +169,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  //check if the is internet then save offline data
-  // saveAllOflineData() async {
-  //   final connectivityResult = await Connectivity().checkConnectivity();
-  //   final offlineBox = await Hive.box('offlineBox');
+  // check if the is internet then save offline data
+  saveAllOflineData() async {
+    Provider.of<EventAttendanceProvider>(context, listen: false)
+        .getOfflineSaveEventAttendance();
 
-  //   var isDataSave = await offlineBox.get('offline');
+    Provider.of<EventIdProvider>(context, listen: false)
+        .getOfflineSaveEventId();
 
-  //   if (connectivityResult.contains(ConnectivityResult.wifi)) {
-  //     if (isDataSave) {
-  //       Provider.of<EventAttendanceProvider>(context, listen: false)
-  //           .getOfflineSaveEventAttendance();
-
-  //       Provider.of<EventIdProvider>(context, listen: false)
-  //           .getOfflineSaveEventId();
-
-  //       Provider.of<EventIdProvider>(context, listen: false)
-  //           .saveEventIdExtras();
-
-  //       print('working');
-  //     }
-  //   }
-  // }
+    Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
+  }
 
   @override
   void initState() {
@@ -196,11 +186,24 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventProvider>(context, listen: false).getEvents(); //ok
 
+      Provider.of<EventAttendanceProvider>(context, listen: false)
+          .getEventAttendance(); //ok
+
       Provider.of<UsersProvider>(context, listen: false) //ok
           .getUser(widget.user.schoolId.toString());
 
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.user.schoolId.toString()); //ok
+
+      if (widget.user.isAdmin) {
+        print('working');
+        saveAllOflineData();
+      }
+
+      try {
+        Provider.of<NotificationProvider>(context, listen: false)
+            .callBackListener();
+      } catch (e) {}
 
       if (widget.user.isValidationRep) {
         Provider.of<UsersProvider>(context, listen: false)
@@ -230,22 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     widget.user.schoolId, widget.user.userName);
           }
         }
-
-        try {
-          Provider.of<NotificationProvider>(context, listen: false)
-              .callBackListener();
-
-          if (widget.user.isAdmin) {
-            Provider.of<EventAttendanceProvider>(context, listen: false)
-                .getOfflineSaveEventAttendance();
-
-            Provider.of<EventIdProvider>(context, listen: false)
-                .getOfflineSaveEventId();
-
-            Provider.of<EventIdProvider>(context, listen: false)
-                .saveEventIdExtras();
-          }
-        } catch (e) {}
       }
     });
   }
@@ -401,14 +388,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Events',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                          Consumer<EventAttendanceProvider>(
+                              builder: (context, provider, child) {
+                            List<EventAttendance> item =
+                                provider.eventAttendanceList;
+
+                            List<EventAttendance> sorted = item
+                                .where((e) => e.isDataSaveOffline == true)
+                                .toList();
+                            return Column(
+                              children: sorted
+                                  .map((e) => Text(e.eventId.toString()))
+                                  .toList(),
+                            );
+                          }),
+                          Text('Events'),
                           Text(
                             'Upcoming Events',
                             style: TextStyle(

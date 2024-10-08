@@ -12,6 +12,7 @@ class EventIdProvider extends ChangeNotifier {
   var eventIdBox = Hive.box<EventsId>('eventsIdBox');
   var offlineBox = Hive.box('offlineBox');
   List<EventsId> eventIdList = [];
+  bool offlineDataStatus = false;
 
   // event  length
   int eventLength = 0;
@@ -155,8 +156,16 @@ class EventIdProvider extends ChangeNotifier {
     offlineBox.put('offline', false);
   }
 
+  getOfflineBox() {
+    bool data = offlineBox.get('offline');
+    offlineDataStatus = data;
+  }
+
   //set offline box to  true  so that every login can update
   setOfflineBoxToTrue() {
     offlineBox.put('offline', false);
+
+    getOfflineBox();
+    notifyListeners();
   }
 }

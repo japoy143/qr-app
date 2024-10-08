@@ -115,7 +115,7 @@ class EventAttendanceProvider extends ChangeNotifier {
           studentName: event.studentName,
           studentCourse: event.studentCourse,
           studentYear: event.studentYear,
-          isDataSaveOffline: true);
+          isDataSaveOffline: false);
 
       await eventAttendanceBox.put(userSchoolId, eventData);
       getEventAttendance();
@@ -174,8 +174,6 @@ class EventAttendanceProvider extends ChangeNotifier {
       await Supabase.instance.client
           .from('event_attendance_extras')
           .insert(data);
-
-      eventAttendanceBox.clear();
     } catch (e) {
       logger.e('error $e savig offline data');
     }
