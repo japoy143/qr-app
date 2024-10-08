@@ -207,6 +207,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
+                                    padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                         color: purple,
                                         borderRadius:

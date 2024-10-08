@@ -170,14 +170,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // check if the is internet then save offline data
-  saveAllOflineData() async {
-    Provider.of<EventAttendanceProvider>(context, listen: false)
-        .getOfflineSaveEventAttendance();
+  saveAllOflineData(int id) async {
+    print('still workiing');
 
-    Provider.of<EventIdProvider>(context, listen: false)
-        .getOfflineSaveEventId();
+    UsersType? user = await Provider.of<UsersProvider>(context, listen: false)
+        .getUser(id.toString());
+    if (user != null) {
+      if (user.isAdminDataSave) {
+        Provider.of<EventAttendanceProvider>(context, listen: false)
+            .getOfflineSaveEventAttendance();
 
-    Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
+        Provider.of<EventIdProvider>(context, listen: false)
+            .getOfflineSaveEventId();
+
+        Provider.of<EventIdProvider>(context, listen: false)
+            .saveEventIdExtras();
+
+        Provider.of<UsersProvider>(context, listen: false)
+            .updateDataSaveOfflineStatus(id);
+      }
+    }
   }
 
   @override
@@ -197,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (widget.user.isAdmin) {
         print('working');
-        saveAllOflineData();
+        saveAllOflineData(widget.user.schoolId);
       }
 
       try {
@@ -388,21 +400,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Consumer<EventAttendanceProvider>(
-                              builder: (context, provider, child) {
-                            List<EventAttendance> item =
-                                provider.eventAttendanceList;
-
-                            List<EventAttendance> sorted = item
-                                .where((e) => e.isDataSaveOffline == true)
-                                .toList();
-                            return Column(
-                              children: sorted
-                                  .map((e) => Text(e.eventId.toString()))
-                                  .toList(),
-                            );
-                          }),
-                          Text('Events'),
+                          const Text(
+                            'Events',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                           Text(
                             'Upcoming Events',
                             style: TextStyle(

@@ -371,7 +371,8 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                                                                   penaltyValuesList);
                                                     },
                                                     child: const Icon(
-                                                      Icons.picture_as_pdf,
+                                                      Icons
+                                                          .picture_as_pdf_outlined,
                                                       size: 30,
                                                       color: Colors.white,
                                                     ))

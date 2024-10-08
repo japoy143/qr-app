@@ -88,3 +88,4 @@ Future<void> supabaseInitialization(String? key) async {
     print('key is null');
   }
 }
+  

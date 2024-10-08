@@ -162,7 +162,8 @@ class SaveAndDownloadUserPdf {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text('ID No: ${users.schoolId}'),
-                              pw.Text('Name: ${users.userName}')
+                              pw.Text(
+                                  'Name: ${users.lastName}, ${users.userName} .${users.middleInitial} '),
                             ],
                           ),
                           pw.Column(

@@ -38,8 +38,6 @@ class _MenuScreenState extends State<MenuScreen> {
     Provider.of<UsersProvider>(context, listen: false)
         .getUserImage(user.schoolId.toString());
 
-    Provider.of<EventIdProvider>(context, listen: false).getOfflineBox();
-
     super.initState();
   }
 

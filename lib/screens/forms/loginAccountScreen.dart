@@ -111,8 +111,6 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
       userProvider.getAllAdminsAndSave();
     } catch (e) {}
 
-    eventIdProvider.setOfflineBoxToTrue();
-
     userProvider.getUser(_schoolIdController.text);
   }
 

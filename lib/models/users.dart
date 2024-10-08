@@ -40,6 +40,8 @@ class UsersType {
   bool isNotificationSend;
   @HiveField(17)
   bool isValidationOpen;
+  @HiveField(18)
+  bool isAdminDataSave;
 
   UsersType(
       {required this.schoolId,
@@ -59,5 +61,6 @@ class UsersType {
       required this.isValidationRep,
       required this.isUserValidated,
       required this.isNotificationSend,
-      required this.isValidationOpen});
+      required this.isValidationOpen,
+      required this.isAdminDataSave});
 }

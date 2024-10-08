@@ -38,7 +38,8 @@ class UsersProvider extends ChangeNotifier {
       isValidationRep: false,
       isUserValidated: false,
       isNotificationSend: false,
-      isValidationOpen: false);
+      isValidationOpen: false,
+      isAdminDataSave: true);
 
   //user image url
   String? userImage;
@@ -96,7 +97,8 @@ class UsersProvider extends ChangeNotifier {
             isPenaltyShown: false,
             isUserValidated: user['account_validated'],
             isNotificationSend: user['notification_send'],
-            isValidationOpen: user['is_validation_open']);
+            isValidationOpen: user['is_validation_open'],
+            isAdminDataSave: user['is_admin_data_save']);
       }).toList();
 
       userList = usersListData;
@@ -149,7 +151,8 @@ class UsersProvider extends ChangeNotifier {
           isPenaltyShown: false,
           isUserValidated: user["account_validated"],
           isNotificationSend: user["notification_send"],
-          isValidationOpen: user['is_validation_open']);
+          isValidationOpen: user['is_validation_open'],
+          isAdminDataSave: user['is_admin_data_save']);
 
       logger.t('data $user');
       logger.t('successfully get user 103');
@@ -179,7 +182,8 @@ class UsersProvider extends ChangeNotifier {
             isPenaltyShown: false,
             isUserValidated: user.isUserValidated,
             isNotificationSend: user.isNotificationSend,
-            isValidationOpen: user.isValidationOpen);
+            isValidationOpen: user.isValidationOpen,
+            isAdminDataSave: user.isAdminDataSave);
       }
       notifyListeners();
       return user;
@@ -212,7 +216,8 @@ class UsersProvider extends ChangeNotifier {
             isPenaltyShown: false,
             isUserValidated: eachUser['account_validated'],
             isNotificationSend: eachUser['notification_send'],
-            isValidationOpen: eachUser['is_validation_open']);
+            isValidationOpen: eachUser['is_validation_open'],
+            isAdminDataSave: eachUser['is_admin_data_save']);
       }).toList();
 
       List filteredStudent =
@@ -375,7 +380,8 @@ class UsersProvider extends ChangeNotifier {
         'event_attended': '',
         'account_validated': false,
         'notification_send': false,
-        'is_validation_open': false
+        'is_validation_open': false,
+        'is_admin_data_save': true,
       });
 
       userBox.put(
@@ -398,7 +404,8 @@ class UsersProvider extends ChangeNotifier {
               isPenaltyShown: false,
               isUserValidated: false,
               isNotificationSend: false,
-              isValidationOpen: false));
+              isValidationOpen: false,
+              isAdminDataSave: true));
 
       logger.t('data inserted successfully 108');
     } catch (e) {
@@ -427,7 +434,8 @@ class UsersProvider extends ChangeNotifier {
               isPenaltyShown: false,
               isUserValidated: false,
               isNotificationSend: false,
-              isValidationOpen: false));
+              isValidationOpen: false,
+              isAdminDataSave: true));
     }
   }
 
@@ -475,7 +483,8 @@ class UsersProvider extends ChangeNotifier {
             isPenaltyShown: false,
             isUserValidated: user.isUserValidated,
             isNotificationSend: user.isNotificationSend,
-            isValidationOpen: user.isValidationOpen);
+            isValidationOpen: user.isValidationOpen,
+            isAdminDataSave: user.isAdminDataSave);
 
         notifyListeners();
         logger.t('successfully login user 109');
@@ -508,7 +517,8 @@ class UsersProvider extends ChangeNotifier {
               isPenaltyShown: false,
               isUserValidated: user.isUserValidated,
               isNotificationSend: user.isNotificationSend,
-              isValidationOpen: user.isValidationOpen);
+              isValidationOpen: user.isValidationOpen,
+              isAdminDataSave: user.isAdminDataSave);
         }
 
         notifyListeners();
@@ -561,7 +571,8 @@ class UsersProvider extends ChangeNotifier {
           isValidationRep: false,
           isUserValidated: false,
           isNotificationSend: false,
-          isValidationOpen: false);
+          isValidationOpen: false,
+          isAdminDataSave: true);
 
       userImage = '';
       logger.t("successfully Logout user 110");
@@ -593,7 +604,8 @@ class UsersProvider extends ChangeNotifier {
           isValidationRep: false,
           isUserValidated: false,
           isNotificationSend: false,
-          isValidationOpen: false);
+          isValidationOpen: false,
+          isAdminDataSave: true);
 
       notifyListeners();
     }
@@ -740,7 +752,8 @@ class UsersProvider extends ChangeNotifier {
             isPenaltyShown: false,
             isUserValidated: eachUser['account_validated'],
             isNotificationSend: eachUser['notification_send'],
-            isValidationOpen: eachUser['is_validation_open']);
+            isValidationOpen: eachUser['is_validation_open'],
+            isAdminDataSave: eachUser['is_admin_data_save']);
       }).toList();
 
       // List<UsersType> allAdmins =
@@ -819,6 +832,32 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       //delete in cache
       userBox.delete(id);
+      getUsers();
+      notifyListeners();
+    }
+  }
+
+  updateDataSaveOfflineStatus(int id) async {
+    try {
+      await Supabase.instance.client
+          .from('users')
+          .update({'is_admin_data_save': false}).eq('school_id', id);
+
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isAdminDataSave = false;
+        userBox.put(id, data);
+      }
+      getUsers();
+      notifyListeners();
+    } catch (e) {
+      var data = userBox.get(id);
+
+      if (data != null) {
+        data.isAdminDataSave = false;
+        userBox.put(id, data);
+      }
       getUsers();
       notifyListeners();
     }
