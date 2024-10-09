@@ -10,7 +10,6 @@ import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/toast.dart';
-import 'package:qr_app/utils/userscreenUtils/scannermodal.dart';
 
 // ignore: must_be_immutable
 class QrCodeScanner extends StatefulWidget {
@@ -37,26 +36,14 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   String userCourse = '';
   String userYear = '';
 
+  //is user data ready
+  bool isUserDataFetch = false;
+
   //toast
   final toast = CustomToast();
 
   //color theme
   final colortheme = ColorThemeProvider();
-
-  //modal
-  acceptAndRejectModal(EventAttendance event, int eventId, String userId) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: ScannerModal(
-              eventAttendance: event,
-              eventId: eventId,
-              userSchoolId: userId,
-            ),
-          );
-        });
-  }
 
   startscan() async {
     var result;
@@ -83,6 +70,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     final eventIdProvider =
         Provider.of<EventIdProvider>(context, listen: false);
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
+
     //student details
     final details = data.split("|");
     setState(() {
@@ -128,18 +116,9 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     }
 
     try {
-      acceptAndRejectModal(
-          EventAttendance(
-              id: int.parse(userSchoolId),
-              eventId: widget.EventId,
-              officerName: widget.officerName,
-              studentId: int.parse(userSchoolId),
-              studentName: userName,
-              studentCourse: userCourse,
-              studentYear: userYear,
-              isDataSaveOffline: false),
-          widget.EventId,
-          userSchoolId);
+      setState(() {
+        isUserDataFetch = true;
+      });
     } catch (e) {
       toast.errorStudentNotSave(context);
     }
@@ -154,11 +133,11 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   // return profile condition
-  Widget showProfile(String response) {
+  Widget showProfile(String response, double screenWidth) {
     // online and http link is not  empty
     if (response != 'off' && response != '') {
       return CircleAvatar(
-        radius: 140,
+        radius: screenWidth >= 400 ? 130 : 100,
         backgroundImage:
             NetworkImage(response), // Use NetworkImage for URL-based images
         backgroundColor: Colors.transparent,
@@ -218,7 +197,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                                   scale: 24,
                                   color: Colors.white,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
@@ -241,7 +220,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                     ))
                   ],
                 ),
-                Center(
+                const Center(
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 180,
@@ -254,7 +233,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                         flex: 2,
                         child: Container(
                           child: scannedImageUrl != null
-                              ? showProfile(scannedImageUrl)
+                              ? showProfile(scannedImageUrl, screenWIdth)
                               : const SizedBox.shrink(),
                         )),
                     Expanded(
@@ -285,8 +264,92 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 40, 25, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: isUserDataFetch
+                                    ? () {
+                                        setState(() {
+                                          isUserDataFetch = false;
+                                        });
+                                      }
+                                    : () {
+                                        print('tapped');
+                                      },
+                                child: Text(
+                                  'Reject',
+                                  style: TextStyle(
+                                      color: isUserDataFetch
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: isUserDataFetch
+                                    ? () async {
+                                        final eventAttendanceProvider = Provider
+                                            .of<EventAttendanceProvider>(
+                                                context,
+                                                listen: false);
+
+                                        final userProvider =
+                                            Provider.of<UsersProvider>(context,
+                                                listen: false);
+
+                                        eventAttendanceProvider.insertData(
+                                            userSchoolId,
+                                            EventAttendance(
+                                                id: int.parse(userSchoolId),
+                                                eventId: widget.EventId,
+                                                officerName: widget.officerName,
+                                                studentId:
+                                                    int.parse(userSchoolId),
+                                                studentName: userName,
+                                                studentCourse: userCourse,
+                                                studentYear: userYear,
+                                                isDataSaveOffline: false));
+
+                                        final isUserAttended =
+                                            await userProvider
+                                                .updateUserNewAttendedEvent(
+                                                    widget.EventId.toString(),
+                                                    int.parse(userSchoolId));
+
+                                        if (!isUserAttended) {
+                                          toast.errorStudentNotSave(context);
+                                          return;
+                                        }
+                                        //TODO: update user attendance
+                                        toast.AttendanceSuccessfullySave(
+                                            context);
+
+                                        setState(() {
+                                          isUserDataFetch = false;
+                                        });
+                                      }
+                                    : () {
+                                        print('tapped');
+                                      },
+                                child: Text(
+                                  'Accept',
+                                  style: TextStyle(
+                                      color: isUserDataFetch
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
                       ],
-                    ))
+                    )),
                   ],
                 ),
               ],

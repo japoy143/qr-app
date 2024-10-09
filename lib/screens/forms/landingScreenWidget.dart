@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_app/theme/avartar.dart';
 import 'package:qr_app/theme/colortheme.dart';
 
@@ -45,16 +46,33 @@ class landingScreenWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
+          Stack(
             children: [
-              Padding(
-                padding: height <= 850
-                    ? const EdgeInsets.fromLTRB(0, 10, 30, 0)
-                    : const EdgeInsets.fromLTRB(0, 10, 20, 0),
-                child: AvatarIllustration(height: height, width: width),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: height <= 850
+                        ? const EdgeInsets.fromLTRB(0, 10, 30, 0)
+                        : const EdgeInsets.fromLTRB(0, 10, 20, 0),
+                    child: AvatarIllustration(height: height, width: width),
+                  ),
+                ],
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/imgs/cite_logo.png',
+                      height: 60,
+                      width: 60,
+                      opacity: const AlwaysStoppedAnimation<double>(0.5),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
           Column(
