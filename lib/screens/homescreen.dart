@@ -2,11 +2,8 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/events.dart';
-import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/screens/notificationscreen.dart';
@@ -23,6 +20,7 @@ import 'package:qr_app/utils/homescreenUtils/eventBoxes.dart';
 import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/homescreenUtils/eventEndedBox.dart';
 import 'package:qr_app/utils/localNotifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int index) setIndex;
@@ -170,32 +168,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // check if the is internet then save offline data
-  saveAllOflineData(int id) async {
-    print('still workiing');
+  saveAllOflineData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isAdminDataSaved = true;
+    prefs.setBool('isDatabaseSave', true);
 
-    UsersType? user = await Provider.of<UsersProvider>(context, listen: false)
-        .getUser(id.toString());
-    if (user != null) {
-      if (user.isAdminDataSave) {
-        Provider.of<EventAttendanceProvider>(context, listen: false)
-            .getOfflineSaveEventAttendance();
+    Provider.of<EventAttendanceProvider>(context, listen: false)
+        .getOfflineSaveEventAttendance();
 
-        Provider.of<EventIdProvider>(context, listen: false)
-            .getOfflineSaveEventId();
+    Provider.of<EventIdProvider>(context, listen: false)
+        .getOfflineSaveEventId();
 
-        Provider.of<EventIdProvider>(context, listen: false)
-            .saveEventIdExtras();
-
-        Provider.of<UsersProvider>(context, listen: false)
-            .updateDataSaveOfflineStatus(id);
-      }
-    }
+    Provider.of<EventIdProvider>(context, listen: false).saveEventIdExtras();
   }
+
+  bool _isAdminDataSaved = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      //isDatabaseSave state
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _isAdminDataSaved = await prefs.getBool('isDatabaseSave') ?? false;
+      print(_isAdminDataSaved);
+
       Provider.of<EventProvider>(context, listen: false).getEvents(); //ok
 
       Provider.of<EventAttendanceProvider>(context, listen: false)
@@ -207,9 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<UsersProvider>(context, listen: false)
           .getUserImage(widget.user.schoolId.toString()); //ok
 
-      if (widget.user.isAdmin) {
+      if (widget.user.isAdmin && !_isAdminDataSaved) {
         print('working');
-        saveAllOflineData(widget.user.schoolId);
+        saveAllOflineData();
       }
 
       try {
@@ -222,14 +219,15 @@ class _HomeScreenState extends State<HomeScreen> {
             .getUserImageList(); //ok
       }
 
+      Provider.of<UsersProvider>(context, listen: false)
+          .updateUserOfflineSaveData((widget.user.schoolId));
       checkIfUserSignUpOnline();
 
       Provider.of<PenaltyValuesProvider>(context, listen: false).penaltyInit();
 
       if (!widget.user.isAdmin) {
         Provider.of<UsersProvider>(context, listen: false)
-            .updateUserOfflineSaveData(
-                int.parse(widget.user.schoolId.toString()));
+            .updateUserOfflineSaveData((widget.user.schoolId));
 
         if (widget.user.isUserValidated) {
           if (!widget.user.isNotificationSend) {

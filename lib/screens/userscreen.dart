@@ -14,6 +14,7 @@ import 'package:qr_app/theme/colortheme.dart';
 import 'package:qr_app/utils/generatePenaltyPdf.dart';
 import 'package:qr_app/utils/toast.dart';
 import 'package:qr_app/utils/userscreenUtils/eventSummary.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -349,6 +350,10 @@ class _UserScreenState extends State<UserScreen> {
                       flex: 1,
                       child: GestureDetector(
                           onTap: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('isDatabaseSave', false);
+
                             final userProvider = Provider.of<UsersProvider>(
                                 context,
                                 listen: false);

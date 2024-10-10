@@ -110,7 +110,7 @@ class _LoginScreenAccountState extends State<LoginScreenAccount> {
           int.parse(_schoolIdController.text.trim()));
       userProvider.getAllAdminsAndSave();
     } catch (e) {}
-
+   
     userProvider.getUser(_schoolIdController.text);
   }
 

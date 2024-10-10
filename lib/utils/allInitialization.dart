@@ -6,6 +6,7 @@ import 'package:qr_app/models/eventsid.dart';
 import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllInitialization {
   AllDatabaseInit() async {
@@ -42,5 +43,9 @@ class AllInitialization {
     //all penalty values
     Hive.registerAdapter<PenaltyValues>(PenaltyValuesAdapter());
     await Hive.openBox<PenaltyValues>('penaltyBox');
+
+    //isData save
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDatabaseSave', false);
   }
 }

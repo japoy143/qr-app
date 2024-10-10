@@ -724,7 +724,7 @@ class UsersProvider extends ChangeNotifier {
             .eq('student_id', id);
       }
     } catch (e) {
-      logger.e('no internet');
+      logger.e('no internet $e $id');
     }
   }
 
@@ -832,32 +832,6 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {
       //delete in cache
       userBox.delete(id);
-      getUsers();
-      notifyListeners();
-    }
-  }
-
-  updateDataSaveOfflineStatus(int id) async {
-    try {
-      await Supabase.instance.client
-          .from('users')
-          .update({'is_admin_data_save': false}).eq('school_id', id);
-
-      var data = userBox.get(id);
-
-      if (data != null) {
-        data.isAdminDataSave = false;
-        userBox.put(id, data);
-      }
-      getUsers();
-      notifyListeners();
-    } catch (e) {
-      var data = userBox.get(id);
-
-      if (data != null) {
-        data.isAdminDataSave = false;
-        userBox.put(id, data);
-      }
       getUsers();
       notifyListeners();
     }

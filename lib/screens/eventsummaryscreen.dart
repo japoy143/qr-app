@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/events.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/penaltyValues.dart';
 import 'package:qr_app/state/usersProvider.dart';
@@ -26,6 +28,8 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   @override
   void initState() {
     Provider.of<EventProvider>(context, listen: false).getEvents();
+    Provider.of<EventAttendanceProvider>(context, listen: false)
+        .getEventAttendance();
 
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
     Provider.of<UsersProvider>(context, listen: false).getUsers();
@@ -35,6 +39,42 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
   }
 
   final appBar = AppBar();
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(10.0),
+
+          // Adjust padding to make it more compact
+          content: SizedBox(
+            width: 150,
+            child: Row(
+              children: [
+                CircularProgressIndicator(color: Colors.blue),
+                SizedBox(
+                    width: 16), // Reduce spacing between indicator and text
+                Text(
+                  "Saving offline data ...",
+                  style: TextStyle(fontSize: 16), // Adjust font size if needed
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,54 +135,56 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                   ),
                                 )
                               : SizedBox.shrink(),
-                          // Consumer<UsersProvider>(
-                          //   builder: (context, provider, widget) {
-                          //     List<UsersType> allUsers = provider.userList;
+                          Consumer<EventAttendanceProvider>(
+                              builder: (context, provider, child) {
+                            //event attendance list
+                            List<EventAttendance> eventAttendanceList =
+                                provider.eventAttendanceList;
 
-                          //     //filter admins
-                          //     List<UsersType> onlyStudent = allUsers
-                          //         .where((element) =>
-                          //             element.isAdmin == false &&
-                          //             element.isUserValidated == true &&
-                          //             element.isValidationRep == false)
-                          //         .toList();
+                            //filter unsave or data save offline
+                            eventAttendanceList.where(
+                                (element) => element.isDataSaveOffline == true);
 
-                          //     // Sort user alphabetically (case-insensitive)
-                          //     List<UsersType> alphabeticalStudents = onlyStudent
-                          //         .toList()
-                          //       ..sort((a, b) => a.userName
-                          //           .toLowerCase()
-                          //           .compareTo(b.userName.toLowerCase()));
-
-                          //     return Padding(
-                          //       padding: const EdgeInsets.symmetric(
-                          //           horizontal: 30.0),
-                          //       child: Consumer<PenaltyValuesProvider>(
-                          //         builder: (context, provider, child) {
-                          //           List<PenaltyValues> penaltyValuesList =
-                          //               provider.penaltyList;
-
-                          //           return isAdmin
-                          //               ? GestureDetector(
-                          //                   onTap: () async {
-                          //                     SaveAndDownloadMultiplePdf
-                          //                         .createPdf(
-                          //                             events: sortedEventEnded,
-                          //                             users:
-                          //                                 alphabeticalStudents,
-                          //                             penaltyValues:
-                          //                                 penaltyValuesList);
-                          //                   },
-                          //                   child: const Icon(
-                          //                     Icons.picture_as_pdf,
-                          //                     size: 30,
-                          //                   ))
-                          //               : SizedBox.shrink();
-                          //         },
-                          //       ),
-                          //     );
-                          //   },
-                          // )
+                            return isAdmin
+                                ? Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                    child: GestureDetector(
+                                      onTap: eventAttendanceList.isEmpty
+                                          ? () {
+                                              print('tapped');
+                                            }
+                                          : () async {
+                                              print('saving');
+                                              showProgressDialog(context);
+                                              try {
+                                                for (var element
+                                                    in eventAttendanceList) {
+                                                  await Provider.of<
+                                                              UsersProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .updateUserOfflineSaveData(
+                                                          element.studentId);
+                                                }
+                                              } catch (e) {
+                                                // Handle any exceptions here
+                                                print('Error occurred: $e');
+                                              } finally {
+                                                // Close progress dialog here if needed
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                      child: Icon(
+                                        Icons.save_alt_outlined,
+                                        color: eventAttendanceList.isEmpty
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox.shrink();
+                          })
                         ],
                       ),
                     )

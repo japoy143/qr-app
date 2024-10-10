@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:logger/logger.dart';
@@ -116,40 +118,44 @@ class EventIdProvider extends ChangeNotifier {
   }
 
   saveEventIdExtras() async {
-    var allEventIds =
-        await Supabase.instance.client.from('event_id').select("*");
+    try {
+      var allEventIds =
+          await Supabase.instance.client.from('event_id').select("*");
 
-    List<EventsId> eventIdsList = allEventIds.map((ids) {
-      return EventsId(eventID: ids['event_id'], isDataSaveOffline: false);
-    }).toList();
+      List<EventsId> eventIdsList = allEventIds.map((ids) {
+        return EventsId(eventID: ids['event_id'], isDataSaveOffline: false);
+      }).toList();
 
-    var eventIdExtras =
-        await Supabase.instance.client.from('event_id_extras').select("*");
+      var eventIdExtras =
+          await Supabase.instance.client.from('event_id_extras').select("*");
 
-    List<EventsId> eventIdsExtrasList = eventIdExtras.map((ids) {
-      return EventsId(eventID: ids['event_id'], isDataSaveOffline: false);
-    }).toList();
+      List<EventsId> eventIdsExtrasList = eventIdExtras.map((ids) {
+        return EventsId(eventID: ids['event_id'], isDataSaveOffline: false);
+      }).toList();
 
-    List unsave = [];
+      List unsave = [];
 
-    eventIdsExtrasList.forEach((ids) {
-      bool isIdAlreadySave =
-          eventIdsList.any((element) => element.eventID == ids.eventID);
+      eventIdsExtrasList.forEach((ids) {
+        bool isIdAlreadySave =
+            eventIdsList.any((element) => element.eventID == ids.eventID);
 
-      if (!isIdAlreadySave) {
-        unsave.add(ids.eventID);
-      }
-    });
+        if (!isIdAlreadySave) {
+          unsave.add(ids.eventID);
+        }
+      });
 
-    var formattedData = unsave.map((ids) {
-      return {"event_id": ids};
-    }).toList();
+      var formattedData = unsave.map((ids) {
+        return {"event_id": ids};
+      }).toList();
 
-    await Supabase.instance.client.from('event_id').insert(formattedData);
+      await Supabase.instance.client.from('event_id').insert(formattedData);
 
-    await Supabase.instance.client
-        .from('event_id_extras')
-        .delete()
-        .inFilter('event_id', unsave);
+      await Supabase.instance.client
+          .from('event_id_extras')
+          .delete()
+          .inFilter('event_id', unsave);
+    } catch (e) {
+      logger.e('no internet $e');
+    }
   }
 }

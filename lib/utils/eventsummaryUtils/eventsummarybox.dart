@@ -43,10 +43,22 @@ class _EventSummayBoxState extends State<EventSummayBox> {
   }
 
   String isUserAttended(int id) {
-    List<String> eventIds = widget.userAttendedEvent.split("|");
-    eventIds.remove("");
+    if (widget.userAttendedEvent == "") {
+      return "Missed";
+    }
 
-    bool isAttended = eventIds.any((element) => int.parse(element) == id);
+    List<String> eventIds =
+        widget.userAttendedEvent.split("|").where((s) => s.isNotEmpty).toList();
+
+    bool isAttended = eventIds.any((element) {
+      try {
+        int parsedId = int.parse(element);
+        return parsedId == id;
+      } catch (e) {
+        print('Error parsing $element: $e');
+        return false;
+      }
+    });
 
     return isAttended ? "Attended" : "Missed";
   }
