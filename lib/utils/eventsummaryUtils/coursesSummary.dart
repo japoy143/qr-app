@@ -40,7 +40,8 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   @override
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUsers();
-
+    Provider.of<PenaltyValuesProvider>(context, listen: false)
+        .getPenaltyValues();
     super.initState();
   }
 
