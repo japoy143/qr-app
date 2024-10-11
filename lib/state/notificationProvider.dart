@@ -39,6 +39,9 @@ class NotificationProvider extends ChangeNotifier {
       }).toList();
 
       if (allMessages.isEmpty) {
+        List<NotificationType> messageList = notificationBox.values.toList();
+        notificationList = messageList;
+        notifyListeners();
         return;
       }
 
@@ -143,9 +146,13 @@ class NotificationProvider extends ChangeNotifier {
         notificationKey: '${username}-${Id}',
         notificationId: Id);
     notificationList.insert(0, data);
-    getNotifications();
 
+    List<NotificationType> notifications = notificationBox.values.toList();
+
+    notificationList = notifications;
     await notificationBox.put('${username}-${Id}', data);
+    getNotifications();
+    notifyListeners();
   }
 
   //504
