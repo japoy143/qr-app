@@ -426,7 +426,9 @@ class _UserScreenState extends State<UserScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(child: Divider()),
+                      (!user.isAdmin && !user.isValidationRep)
+                          ? Expanded(child: Divider())
+                          : SizedBox.shrink(),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4),
                         child: Consumer<EventProvider>(
@@ -451,66 +453,76 @@ class _UserScreenState extends State<UserScreen> {
                                       penaltyValues: penaltyValuesList,
                                     );
                                   },
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Attendance ',
-                                            style: TextStyle(
-                                                fontSize: 16, color: purple),
-                                          ),
-                                          Icon(
-                                            Icons.picture_as_pdf,
-                                            color: purple,
-                                          )
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(0, 0, 18, 0),
-                                        child: Text(
-                                          'Tap Here',
-                                          style: TextStyle(color: purple),
-                                        ),
-                                      )
-                                    ],
-                                  ));
+                                  child: (!user.isAdmin &&
+                                          !user.isValidationRep)
+                                      ? Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Attendance ',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: purple),
+                                                ),
+                                                Icon(
+                                                  Icons.picture_as_pdf,
+                                                  color: purple,
+                                                )
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 18, 0),
+                                              child: Text(
+                                                'Tap Here',
+                                                style: TextStyle(color: purple),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : SizedBox.shrink());
                             },
                           );
                         }),
                       ),
-                      Expanded(child: Divider()),
+                      (!user.isAdmin && !user.isValidationRep)
+                          ? Expanded(child: Divider())
+                          : SizedBox.shrink(),
                     ],
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Consumer<EventIdProvider>(
-                  builder: (context, provider, child) {
-                    final totalEvent = provider.eventLength;
+              (!user.isAdmin && !user.isValidationRep)
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Consumer<EventIdProvider>(
+                        builder: (context, provider, child) {
+                          final totalEvent = provider.eventLength;
 
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        EventSummary(
-                            counter: '$totalEvent', eventName: 'TotalEvents'),
-                        EventSummary(
-                            counter: getUserTotalAttended(user.eventAttended)
-                                .toString(),
-                            eventName: 'Events Attended'),
-                        EventSummary(
-                            counter: getUserEventMissed(
-                                    user.eventAttended, totalEvent)
-                                .toString(),
-                            eventName: 'Events Missed'),
-                      ],
-                    );
-                  },
-                ),
-              ),
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              EventSummary(
+                                  counter: '$totalEvent',
+                                  eventName: 'TotalEvents'),
+                              EventSummary(
+                                  counter:
+                                      getUserTotalAttended(user.eventAttended)
+                                          .toString(),
+                                  eventName: 'Events Attended'),
+                              EventSummary(
+                                  counter: getUserEventMissed(
+                                          user.eventAttended, totalEvent)
+                                      .toString(),
+                                  eventName: 'Events Missed'),
+                            ],
+                          );
+                        },
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

@@ -110,7 +110,7 @@ class _EventBoxState extends State<EventBox> {
         //ensure once
         isOngoingNotificationShown = false;
       }
-      return 'Ongoing  End: ${DateFormat("h:mm a").format(item.endTime)}';
+      return 'Ongoing';
     } else {
       String formattedDate = DateFormat("h:mm a").format(date);
       return formattedDate;
@@ -138,6 +138,8 @@ class _EventBoxState extends State<EventBox> {
 
         String formattedDate = DateFormat('MMM d').format(event.eventDate);
         List splittedDate = formattedDate.split(" ");
+        String eventStatusDate =
+            '  End: ${DateFormat("h:mm a").format(item.endTime)}';
 
         return Column(
           children: [
@@ -244,7 +246,7 @@ class _EventBoxState extends State<EventBox> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 14.0, 0, 0),
                         child: Text(
-                          _eventStatus,
+                          '${_eventStatus}${eventStatusDate}',
                           style: TextStyle(
                             color: colorTheme.secondaryColor,
                             fontFamily: "Poppins",
