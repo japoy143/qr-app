@@ -9,6 +9,8 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/notifications.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/screens/notificationscreen.dart';
+import 'package:qr_app/state/eventAttendanceProvider.dart';
+import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/notificationProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
@@ -308,6 +310,112 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
+  //delete dialog
+  void DeleteDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              height: 240,
+              width: 250,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.warning_outlined,
+                    size: 40,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  const Text(
+                    'Warning it will clear all data',
+                    style: TextStyle(
+                        color: Colors.deepPurpleAccent,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  const Text(
+                    'are you sure you want to clear all data ?',
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: Colors.deepPurpleAccent,
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400),
+                              )),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final notificationProvider =
+                                Provider.of<NotificationProvider>(context,
+                                    listen: false);
+                            final userProvider = Provider.of<UsersProvider>(
+                                context,
+                                listen: false);
+
+                            final eventIdProvider =
+                                Provider.of<EventIdProvider>(context,
+                                    listen: false);
+
+                            final eventAttendanceProvider =
+                                Provider.of<EventAttendanceProvider>(context,
+                                    listen: false);
+                            final eventProvider = Provider.of<EventProvider>(
+                                context,
+                                listen: false);
+
+                            await userProvider.deleteAllUsers();
+                            await notificationProvider.deleteAllNotifications();
+                            await notificationProvider
+                                .updateNotificationLength();
+                            await eventIdProvider.deleteAllEventId();
+                            await eventIdProvider.deleteAllEventIdExtras();
+                            await eventAttendanceProvider
+                                .deleteAllEventAttendance();
+                            await eventAttendanceProvider
+                                .deleteAllEventAttendanceExtras();
+                            await eventProvider.deleteAllEvent();
+
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: Colors.deepPurpleAccent,
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: const Text(
+                                'Clear Data',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400),
+                              )),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   final appBar = AppBar();
 
   @override
@@ -450,6 +558,7 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,7 +581,14 @@ class _EventScreenState extends State<EventScreen> {
                               ),
                             ),
                           ],
-                        )
+                        ),
+                        user.schoolId == 900009
+                            ? GestureDetector(
+                                onTap: () async {
+                                  DeleteDialog();
+                                },
+                                child: Icon(Icons.delete_outline))
+                            : SizedBox.shrink(),
                       ],
                     ),
                     Expanded(

@@ -99,7 +99,7 @@ class SaveAndDownloadMultiplePdf {
             ];
           }).toList();
 
-          const int rowsPerPage = 10; // Set the number of rows per page
+          const int rowsPerPage = 8; // Set the number of rows per page
           List<List<List<dynamic>>> chunks = [];
           for (var i = 0; i < data.length; i += rowsPerPage) {
             chunks.add(data.sublist(i,
@@ -147,7 +147,7 @@ class SaveAndDownloadMultiplePdf {
                     pw.Table.fromTextArray(
                       headers: headers,
                       data: chunk,
-                      cellHeight: 43,
+                      cellHeight: 40,
                       cellAlignment: pw.Alignment.center,
                       border: pw.TableBorder.all(
                         width: 2,

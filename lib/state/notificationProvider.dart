@@ -290,4 +290,41 @@ class NotificationProvider extends ChangeNotifier {
       logger.e('error 507 notification callback $e');
     }
   }
+
+  //
+  //DELETE ALL NOTIFICATIONS
+  //
+
+  deleteAllNotifications() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client
+          .from('notifications')
+          .delete()
+          .neq('id', 0);
+
+      //delete all offline data
+      notificationBox.clear();
+      getNotifications();
+      notifyListeners();
+
+      logger.d('Notifications Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All Notifications Error');
+      notificationBox.clear();
+      getNotifications();
+      notifyListeners();
+    }
+  }
+
+  updateNotificationLength() async {
+    try {
+      await Supabase.instance.client
+          .from('notification_length')
+          .update({'length': 0}).eq('id', 101);
+      notifyListeners();
+      logger.t('notificaions length updated successfully');
+    } catch (e) {}
+  }
 }

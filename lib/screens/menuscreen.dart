@@ -7,7 +7,6 @@ import 'package:qr_app/screens/eventsummaryscreen.dart';
 import 'package:qr_app/screens/penaltyscreen.dart';
 import 'package:qr_app/screens/userscreen.dart';
 import 'package:qr_app/screens/validationscreen.dart';
-import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/usersProvider.dart';
 import 'package:qr_app/theme/colortheme.dart';
 

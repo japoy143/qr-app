@@ -178,4 +178,44 @@ class EventAttendanceProvider extends ChangeNotifier {
       logger.e('error $e savig offline data');
     }
   }
+
+  deleteAllEventAttendance() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client
+          .from('event_attendance')
+          .delete()
+          .neq('id', 0);
+
+      //delete all offline data
+      eventAttendanceBox.clear();
+      getEventAttendance();
+      notifyListeners();
+
+      logger.d('EventAttendance Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All EventAttendance Error');
+      eventAttendanceBox.clear();
+      getEventAttendance();
+      notifyListeners();
+    }
+  }
+
+  deleteAllEventAttendanceExtras() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client
+          .from('event_attendance_extras')
+          .delete()
+          .neq('id', 0);
+
+      notifyListeners();
+
+      logger.d('EventAttendanceExtras Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All EventAttendanceExtras Error');
+    }
+  }
 }

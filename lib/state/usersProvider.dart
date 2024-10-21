@@ -836,4 +836,24 @@ class UsersProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  deleteAllUsers() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client.from('users').delete().neq('id', 0);
+
+      //delete all offline data
+      userBox.clear();
+      getUsers();
+      notifyListeners();
+
+      logger.d('Users Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All Users Error');
+      userBox.clear();
+      getUsers();
+      notifyListeners();
+    }
+  }
 }

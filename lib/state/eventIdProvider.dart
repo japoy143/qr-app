@@ -158,4 +158,37 @@ class EventIdProvider extends ChangeNotifier {
       logger.e('no internet $e');
     }
   }
+
+  deleteAllEventId() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client.from('event_id').delete().neq('id', 0);
+
+      //delete all offline data
+      eventIdBox.clear();
+      getEventIdLength();
+      notifyListeners();
+
+      logger.d('EventId Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All EventId Error');
+      eventIdBox.clear();
+      getEventIdLength();
+      notifyListeners();
+    }
+  }
+
+  deleteAllEventIdExtras() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client
+          .from('event_id_extras')
+          .delete()
+          .neq('id', 0);
+
+      logger.d('EventIdExtras Data Deleted Successfully');
+    } catch (e) {}
+  }
 }

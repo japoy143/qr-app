@@ -269,4 +269,24 @@ class EventProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  deleteAllEvent() async {
+    try {
+      //delete all notifications not equal to zero
+      //it will delete all because there is no zero id
+      await Supabase.instance.client.from('event').delete().neq('id', 0);
+
+      //delete all offline data
+      eventBox.clear();
+      getEvents();
+      notifyListeners();
+
+      logger.d('Event Data Deleted Successfully');
+    } catch (e) {
+      logger.e('Deleting All Event Error');
+      eventBox.clear();
+      getEvents();
+      notifyListeners();
+    }
+  }
 }

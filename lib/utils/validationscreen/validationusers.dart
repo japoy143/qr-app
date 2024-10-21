@@ -126,13 +126,11 @@ class _ValidationUsersState extends State<ValidationUsers> {
       ),
       widget.isOpen
           ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Text(''),
-                  ),
                   Expanded(
                     flex: 2,
                     child: Text(
@@ -155,15 +153,18 @@ class _ValidationUsersState extends State<ValidationUsers> {
                         Provider.of<UsersProvider>(context, listen: false)
                             .deleteUserAccount(user.schoolId);
                       },
-                      child: Container(
-                          padding: EdgeInsets.all(6.0),
-                          decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Text(
-                            'Delete',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(40.0, 0, 0, 0),
+                        child: Container(
+                            padding: EdgeInsets.all(6.0),
+                            decoration: BoxDecoration(
+                                color: Colors.redAccent,
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            )),
+                      ),
                     )),
                   ),
                 ],
