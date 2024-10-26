@@ -94,7 +94,7 @@ class SaveAndDownloadMultiplePdf {
           final List<List<dynamic>> data = events.map((e) {
             return [
               e.eventName.toString(),
-              DateFormat('MMMM dd, yyyy').format(e.eventDate),
+              '${DateFormat('MMMM dd, yyyy').format(e.eventDate)} \n ${DateFormat("h:mm a").format(e.eventDate)}',
               getAttendanceList(user.eventAttended, e.id, e.eventPenalty)
             ];
           }).toList();

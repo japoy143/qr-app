@@ -35,6 +35,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   String userName = '';
   String userCourse = '';
   String userYear = '';
+  String userLastName = '';
 
   //is user data ready
   bool isUserDataFetch = false;
@@ -78,6 +79,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       userName = details[1];
       userCourse = details[2];
       userYear = details[3];
+      userLastName = details[4];
     });
 
     //check if validated
@@ -309,7 +311,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                                                 officerName: widget.officerName,
                                                 studentId:
                                                     int.parse(userSchoolId),
-                                                studentName: userName,
+                                                studentName:
+                                                    "${userName} ${userLastName}",
                                                 studentCourse: userCourse,
                                                 studentYear: userYear,
                                                 isDataSaveOffline: false));

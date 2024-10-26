@@ -137,7 +137,7 @@ class _EventSummayBoxState extends State<EventSummayBox> {
                 ),
               ),
               Text(
-                isUserAttended(item.id),
+                !widget.isAdmin ? isUserAttended(item.id) : '',
                 style: TextStyle(
                   color: Colors.grey.shade300,
                   fontFamily: "Poppins",

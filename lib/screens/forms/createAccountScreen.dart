@@ -221,7 +221,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       FormHeadersResponsive(
                           color: Colors.black,
                           height: widget.height,
-                          text: 'Name'),
+                          text: 'Firstname'),
                       CustomTextField(
                           height: widget.height,
                           isReadOnly: false,

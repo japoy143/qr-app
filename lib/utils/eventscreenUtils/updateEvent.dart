@@ -259,95 +259,105 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Start Time'),
-                          Row(
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 2, color: widget.color),
-                                    borderRadius: BorderRadius.circular(4.0)),
-                                child: Center(
-                                    child: Text(
-                                  formattedTime,
-                                  style: const TextStyle(fontSize: 14.0),
-                                )),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              GestureDetector(
-                                onTap: timeStartPicker,
-                                child: Container(
-                                  height: 40,
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                      color: widget.color,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: const Center(
-                                      child: Text(
-                                    "Set",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  )),
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Start Time'),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 2, color: widget.color),
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Center(
+                                        child: Text(
+                                      formattedTime,
+                                      style: const TextStyle(fontSize: 14.0),
+                                    )),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('End Time'),
-                          Row(
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 2, color: widget.color),
-                                    borderRadius: BorderRadius.circular(4.0)),
-                                child: Center(
-                                    child: Text(
-                                  formattedEventEnd,
-                                  style: const TextStyle(fontSize: 14.0),
-                                )),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              GestureDetector(
-                                onTap: timeEndPicker,
-                                child: Container(
-                                  height: 40,
-                                  width: 55,
-                                  decoration: BoxDecoration(
-                                      color: widget.color,
-                                      borderRadius: BorderRadius.circular(4.0)),
-                                  child: const Center(
-                                      child: Text(
-                                    "Set",
-                                    style: TextStyle(
-                                      color: Colors.white,
+                                Expanded(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: timeStartPicker,
+                                    child: Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                          color: widget.color,
+                                          borderRadius:
+                                              BorderRadius.circular(4.0)),
+                                      child: const Center(
+                                          child: Text(
+                                        "Set",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      )),
                                     ),
-                                  )),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('End Time'),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 2, color: widget.color),
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: Center(
+                                        child: Text(
+                                      formattedEventEnd,
+                                      style: const TextStyle(fontSize: 14.0),
+                                    )),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: timeEndPicker,
+                                    child: Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                          color: widget.color,
+                                          borderRadius:
+                                              BorderRadius.circular(4.0)),
+                                      child: const Center(
+                                          child: Text(
+                                        "Set",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Expanded(flex: 1, child: Container()),
                     ],
                   ),
                 ),

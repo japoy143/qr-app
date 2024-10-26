@@ -230,7 +230,9 @@ class _UserScreenState extends State<UserScreen> {
       "|",
       user.userCourse,
       "|",
-      user.userYear
+      user.userYear,
+      "|",
+      user.lastName
     ].join("");
 
     return Scaffold(
