@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +16,7 @@ class addEventDialog extends StatefulWidget {
   final TextEditingController eventNameController;
   final TextEditingController eventPlaceController;
   final TextEditingController eventDescription;
-  final TextEditingController eventId;
+  TextEditingController eventId;
   final TextEditingController eventPenalty;
   String currentDate;
   String currentTime;
@@ -22,25 +24,28 @@ class addEventDialog extends StatefulWidget {
   VoidCallback onSave;
   VoidCallback onCancel;
   final Function(String, String, String) onUpdateEventDetails;
+  bool isOnline;
+  List<int> allEventIds;
 
-  addEventDialog({
-    super.key,
-    required this.screenHeight,
-    required this.color,
-    required this.height,
-    required this.width,
-    required this.eventNameController,
-    required this.eventDescription,
-    required this.onSave,
-    required this.onCancel,
-    required this.currentDate,
-    required this.currentTime,
-    required this.eventPlaceController,
-    required this.eventId,
-    required this.eventTimeEnd,
-    required this.onUpdateEventDetails,
-    required this.eventPenalty,
-  });
+  addEventDialog(
+      {super.key,
+      required this.screenHeight,
+      required this.color,
+      required this.height,
+      required this.width,
+      required this.eventNameController,
+      required this.eventDescription,
+      required this.onSave,
+      required this.onCancel,
+      required this.currentDate,
+      required this.currentTime,
+      required this.eventPlaceController,
+      required this.eventId,
+      required this.eventTimeEnd,
+      required this.onUpdateEventDetails,
+      required this.eventPenalty,
+      required this.isOnline,
+      required this.allEventIds});
 
   @override
   State<addEventDialog> createState() => _addEventDialogState();
@@ -210,11 +215,32 @@ class _addEventDialogState extends State<addEventDialog> {
     return small;
   }
 
+  //generate random id
+  int generateRandomId() {
+    final random = Random();
+    int max = widget.allEventIds.reduce((a, b) => a > b ? a : b);
+    int randomId = random.nextInt(max + 100);
+    return randomId;
+  }
+
+  //get the id thats not exist in database
+  int generateIdNotExist() {
+    bool exist = true;
+    while (exist) {
+      int id = generateRandomId();
+      if (widget.allEventIds.any((element) => element != id)) {
+        return id;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat('MMM dd').format(_currentDate);
     String formattedTime = DateFormat('h:mm a').format(_currentTime);
     String formattedEventEnd = DateFormat('h:mm a').format(_eventEndTime);
+
+
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return SingleChildScrollView(
@@ -263,7 +289,7 @@ class _addEventDialogState extends State<addEventDialog> {
                       Expanded(
                         child: CustomTextField(
                             height: widget.screenHeight,
-                            isReadOnly: false,
+                            isReadOnly: widget.isOnline ? true : false,
                             hintext: 'event id',
                             keyBoardType: TextInputType.number,
                             controller: widget.eventId),

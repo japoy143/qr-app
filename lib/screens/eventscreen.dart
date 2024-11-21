@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +54,13 @@ class _EventScreenState extends State<EventScreen> {
   var _eventNameController = TextEditingController();
   final _eventDescriptionController = TextEditingController();
   final _eventPlaceController = TextEditingController();
-  final _eventIdController = TextEditingController();
+  var _eventIdController = TextEditingController();
   final _eventPenaltyController = TextEditingController();
   String currentDate = '';
   String currentTime = '';
   String eventTimeEnd = '';
+  bool internetStatus = false;
+  bool statusHolder = true;
 
   // check if there is internet then use callback
   checkIfThereIsInternet() async {
@@ -65,6 +68,14 @@ class _EventScreenState extends State<EventScreen> {
     if (connectivityResult.contains(ConnectivityResult.wifi)) {
       Provider.of<EventProvider>(context, listen: false).callBackListener();
       print('online');
+    }
+  }
+
+  //status
+  InternetStatus() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      internetStatus = true;
     }
   }
 
@@ -80,6 +91,8 @@ class _EventScreenState extends State<EventScreen> {
     try {
       Provider.of<EventProvider>(context, listen: false).callBackListener();
     } catch (e) {}
+
+    InternetStatus();
 
     super.initState();
   }
@@ -105,8 +118,8 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   //modal for adding event
-  void showAddEvent(
-      double height, double width, Color color, double screenHeight) {
+  void showAddEvent(double height, double width, Color color,
+      double screenHeight, List<int> ids) {
     showDialog(
         context: context,
         builder: (context) {
@@ -126,8 +139,44 @@ class _EventScreenState extends State<EventScreen> {
             onSave: addEvent,
             onCancel: clearFields,
             onUpdateEventDetails: updateEventDetails,
+            isOnline: internetStatus,
+            allEventIds: ids,
           );
         });
+  }
+
+  //generate random id
+  int generateRandomId(List<int> allIds) {
+    final random = Random();
+    int max = allIds.reduce((a, b) => a > b ? a : b);
+    int randomId = random.nextInt(max + 100);
+    return randomId;
+  }
+
+  //get the id thats not exist in database
+  int generateIdNotExist() {
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    //events
+    List<EventType> allEvents = eventProvider.eventList;
+    //all event ids
+    List<int> allEventIds = allEvents.map((e) => e.id).toList();
+    bool exist = true;
+    while (exist) {
+      int id = generateRandomId(allEventIds);
+      if (allEventIds.any((element) => element != id)) {
+        return id;
+      }
+    }
+  }
+
+  eventIdSetter() {
+    TextEditingController randomId =
+        TextEditingController(text: generateIdNotExist().toString());
+    if (statusHolder && internetStatus) {
+      _eventIdController = randomId;
+
+      statusHolder = false;
+    }
   }
 
   String dateFormatterForNotif(String time) {
@@ -207,7 +256,9 @@ class _EventScreenState extends State<EventScreen> {
 
     //clear
     clearFields();
-    setState(() {});
+    setState(() {
+      statusHolder = true;
+    });
   }
 
 //update
@@ -448,6 +499,11 @@ class _EventScreenState extends State<EventScreen> {
 
         allEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
 
+        //all event ids
+        List<int> allEventIds = allEvents.map((e) => e.id).toList();
+
+        eventIdSetter();
+
         //filter event ended
         final sortedEventNotEnded =
             allEvents.where((event) => event.eventEnded == false).toList();
@@ -563,7 +619,7 @@ class _EventScreenState extends State<EventScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Events',
                               style: TextStyle(
                                 fontFamily: 'Poppins',
@@ -668,11 +724,11 @@ class _EventScreenState extends State<EventScreen> {
             floatingActionButton: user.isAdmin
                 ? FloatingActionButton(
                     onPressed: () => showAddEvent(
-                      (screenHeight - statusbarHeight) * 0.68,
-                      screenWidth * 0.85,
-                      purple,
-                      totalHeight,
-                    ),
+                        (screenHeight - statusbarHeight) * 0.68,
+                        screenWidth * 0.85,
+                        purple,
+                        totalHeight,
+                        allEventIds),
                     child: const Icon(Icons.add),
                   )
                 : null);
