@@ -59,6 +59,7 @@ class _EventScreenState extends State<EventScreen> {
   String currentDate = '';
   String currentTime = '';
   String eventTimeEnd = '';
+  String lateTime = '';
   bool internetStatus = false;
   bool statusHolder = true;
 
@@ -97,11 +98,13 @@ class _EventScreenState extends State<EventScreen> {
     super.initState();
   }
 
-  void updateEventDetails(String newDate, String newTime, String newEndTime) {
+  void updateEventDetails(
+      String newDate, String newTime, String newEndTime, String newLateTime) {
     setState(() {
       currentDate = newDate;
       currentTime = newTime;
       eventTimeEnd = newEndTime;
+      lateTime = newLateTime;
     });
   }
 
@@ -129,6 +132,7 @@ class _EventScreenState extends State<EventScreen> {
             eventTimeEnd: eventTimeEnd,
             currentDate: currentDate,
             currentTime: currentTime,
+            lateTime: lateTime,
             color: color,
             height: height,
             width: width,
@@ -158,8 +162,12 @@ class _EventScreenState extends State<EventScreen> {
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
     //events
     List<EventType> allEvents = eventProvider.eventList;
+
+    List<EventType> sorted =
+        allEvents.where((element) => element.eventEnded == true).toList();
+
     //all event ids
-    List<int> allEventIds = allEvents.map((e) => e.id).toList();
+    List<int> allEventIds = sorted.map((e) => e.id).toList();
     bool exist = true;
     while (exist) {
       int id = generateRandomId(allEventIds);
@@ -226,7 +234,8 @@ class _EventScreenState extends State<EventScreen> {
         eventPlace: _eventPlaceController.text,
         key: _eventIdController.text,
         endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
-        eventEnded: false));
+        eventEnded: false,
+        lateTime: formatter.dateFormmater(currentDate, lateTime)));
 
     String eventDescription = _eventDescriptionController.text;
     String eventPlace = _eventPlaceController.text;
@@ -268,6 +277,7 @@ class _EventScreenState extends State<EventScreen> {
       currentDate = item.eventDate.toString();
       currentTime = item.startTime.toString();
       eventTimeEnd = item.endTime.toString();
+      lateTime = item.lateTime.toString();
       _eventNameController.text = item.eventName;
       _eventDescriptionController.text = item.eventDescription;
       _eventPlaceController.text = item.eventPlace;
@@ -282,6 +292,7 @@ class _EventScreenState extends State<EventScreen> {
             eventTimeEnd: eventTimeEnd,
             currentDate: currentDate,
             currentTime: currentTime,
+            lateTime: lateTime,
             color: color,
             height: height,
             width: width,
@@ -328,7 +339,8 @@ class _EventScreenState extends State<EventScreen> {
               eventPlace: _eventPlaceController.text,
               key: _eventIdController.text,
               endTime: formatter.dateFormmater(currentDate, eventTimeEnd),
-              eventEnded: false));
+              eventEnded: false,
+              lateTime: formatter.dateFormmater(currentDate, lateTime)));
     });
 
     clearFields();

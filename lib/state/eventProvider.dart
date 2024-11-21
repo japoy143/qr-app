@@ -35,7 +35,8 @@ class EventProvider extends ChangeNotifier {
               eventPlace: event['event_place'],
               eventStatus: '',
               eventPenalty: event['event_penalty'],
-              key: event['key']);
+              key: event['key'],
+              lateTime: DateTime.parse(event['late_time']));
         }).toList();
 
         eventList = events;
@@ -67,7 +68,8 @@ class EventProvider extends ChangeNotifier {
             eventPlace: event['event_place'],
             eventStatus: '',
             eventPenalty: event['event_penalty'],
-            key: event['key']);
+            key: event['key'],
+            lateTime: DateTime.parse(event['late_time']));
       }).toList();
 
       Map<int, EventType> allEventFormatted = {
@@ -104,7 +106,8 @@ class EventProvider extends ChangeNotifier {
             eventPlace: event['event_place'],
             eventStatus: '',
             eventPenalty: event['event_penalty'],
-            key: event['key']);
+            key: event['key'],
+            lateTime: DateTime.parse(event['late_time']));
       }).toList();
 
       List<EventType> filteredEvent =
@@ -148,7 +151,8 @@ class EventProvider extends ChangeNotifier {
         'event_place': event.eventPlace,
         'end_time': event.endTime.toString(),
         'event_ended': event.eventEnded,
-        'event_penalty': event.eventPenalty
+        'event_penalty': event.eventPenalty,
+        'late_time': event.lateTime.toString()
       });
 
       await eventBox.put(event.id, event);
@@ -225,6 +229,7 @@ class EventProvider extends ChangeNotifier {
         'end_time': eventType.endTime.toString(),
         'event_ended': eventType.eventEnded,
         'event_penalty': eventType.eventPenalty,
+        'late_time': eventType.lateTime.toString(),
       }).eq('event_id', id);
 
       logger.t('successfully updated event 206');

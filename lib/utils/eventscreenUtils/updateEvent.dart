@@ -19,28 +19,29 @@ class UpdateEventDialog extends StatefulWidget {
   String currentDate;
   String currentTime;
   String eventTimeEnd;
+  String lateTime;
   VoidCallback onSave;
   VoidCallback onCancel;
-  final Function(String, String, String) onUpdateEventDetails;
+  final Function(String, String, String, String) onUpdateEventDetails;
 
-  UpdateEventDialog({
-    super.key,
-    required this.color,
-    required this.height,
-    required this.width,
-    required this.eventNameController,
-    required this.eventDescription,
-    required this.onSave,
-    required this.onCancel,
-    required this.currentDate,
-    required this.currentTime,
-    required this.eventPlaceController,
-    required this.eventId,
-    required this.eventTimeEnd,
-    required this.onUpdateEventDetails,
-    required this.screenHeight,
-    required this.eventPenalty,
-  });
+  UpdateEventDialog(
+      {super.key,
+      required this.color,
+      required this.height,
+      required this.width,
+      required this.eventNameController,
+      required this.eventDescription,
+      required this.onSave,
+      required this.onCancel,
+      required this.currentDate,
+      required this.currentTime,
+      required this.eventPlaceController,
+      required this.eventId,
+      required this.eventTimeEnd,
+      required this.onUpdateEventDetails,
+      required this.screenHeight,
+      required this.eventPenalty,
+      required this.lateTime});
 
   @override
   State<UpdateEventDialog> createState() => _UpdateEventDialogState();
@@ -50,6 +51,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
   DateTime _currentDate = DateTime.now();
   DateTime _currentTime = DateTime.now();
   DateTime _eventEndTime = DateTime.now();
+  DateTime _lateTime = DateTime.now();
 
   final toast = CustomToast();
 
@@ -79,6 +81,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             index.toString(),
             _currentTime.toString(),
             _eventEndTime.toString(),
+            _lateTime.toString(),
           );
           print(index);
         });
@@ -91,6 +94,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             index.toString(),
             _currentTime.toString(),
             _eventEndTime.toString(),
+            _lateTime.toString(),
           );
         });
         print(index);
@@ -117,6 +121,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             _currentDate.toString(),
             index.toString(),
             _eventEndTime.toString(),
+            _lateTime.toString(),
           );
         });
         print(index);
@@ -129,6 +134,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             _currentDate.toString(),
             index.toString(),
             _eventEndTime.toString(),
+            _lateTime.toString(),
           );
         });
         print(index);
@@ -159,6 +165,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             _currentDate.toString(),
             _currentTime.toString(),
             index.toString(),
+            _lateTime.toString(),
           );
         });
         print(index);
@@ -171,6 +178,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
             _currentDate.toString(),
             _currentTime.toString(),
             index.toString(),
+            _lateTime.toString(),
           );
         });
         print(index);

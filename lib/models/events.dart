@@ -26,6 +26,8 @@ class EventType {
   bool eventEnded;
   @HiveField(10)
   int eventPenalty;
+  @HiveField(11)
+  DateTime lateTime;
 
   EventType(
       {required this.id,
@@ -38,5 +40,6 @@ class EventType {
       required this.key,
       required this.endTime,
       required this.eventEnded,
-      required this.eventPenalty});
+      required this.eventPenalty,
+      required this.lateTime});
 }
