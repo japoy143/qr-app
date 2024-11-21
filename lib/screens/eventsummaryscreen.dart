@@ -226,6 +226,7 @@ class _EventSummaryScreenState extends State<EventSummaryScreen> {
                                     color: purple,
                                     borderRadius: BorderRadius.circular(8.0)),
                                 child: EventSummayBox(
+                                  lateAttendance: userData.lateAttendance,
                                   userAttendedEvent: userData.eventAttended,
                                   isAdmin: isAdmin,
                                   items: item,

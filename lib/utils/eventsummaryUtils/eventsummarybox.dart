@@ -10,6 +10,7 @@ class EventSummayBox extends StatefulWidget {
   final bool isAdmin;
   final String userAttendedEvent;
   final List<EventType> sortedEvent;
+  final String lateAttendance;
 
   EventSummayBox(
       {super.key,
@@ -17,7 +18,8 @@ class EventSummayBox extends StatefulWidget {
       required this.screeHeight,
       required this.isAdmin,
       required this.sortedEvent,
-      required this.userAttendedEvent});
+      required this.userAttendedEvent,
+      required this.lateAttendance});
 
   @override
   _EventSummayBoxState createState() => _EventSummayBoxState();
@@ -61,6 +63,25 @@ class _EventSummayBoxState extends State<EventSummayBox> {
     });
 
     return isAttended ? "Attended" : "Missed";
+  }
+
+  String isUserLate(int id) {
+    if (widget.lateAttendance == "") {
+      return 'Ontime';
+    }
+    List<String> lateIds =
+        widget.lateAttendance.split("|").where((s) => s.isNotEmpty).toList();
+
+    bool isLate = lateIds.any((element) {
+      try {
+        int parseId = int.parse(element);
+        return parseId == id;
+      } catch (e) {
+        return false;
+      }
+    });
+
+    return isLate ? 'Late' : 'Ontime';
   }
 
   @override
@@ -118,6 +139,15 @@ class _EventSummayBoxState extends State<EventSummayBox> {
               ),
               const SizedBox(
                 width: 20.0,
+              ),
+              Text(
+                '${isUserLate(item.id)}',
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontFamily: "Poppins",
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

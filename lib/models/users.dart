@@ -42,6 +42,8 @@ class UsersType {
   bool isValidationOpen;
   @HiveField(18)
   bool isAdminDataSave;
+  @HiveField(19)
+  String lateAttendance;
 
   UsersType(
       {required this.schoolId,
@@ -62,5 +64,6 @@ class UsersType {
       required this.isUserValidated,
       required this.isNotificationSend,
       required this.isValidationOpen,
-      required this.isAdminDataSave});
+      required this.isAdminDataSave,
+      required this.lateAttendance});
 }

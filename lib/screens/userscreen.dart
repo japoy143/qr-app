@@ -59,7 +59,8 @@ class _UserScreenState extends State<UserScreen> {
       bool isUserValidated,
       bool isNotificationSend,
       bool isValidationOpen,
-      bool isAdminDataSave) async {
+      bool isAdminDataSave,
+      String lateAttendance) async {
     //image picker
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -111,7 +112,8 @@ class _UserScreenState extends State<UserScreen> {
             isUserValidated: isUserValidated,
             isNotificationSend: isNotificationSend,
             isValidationOpen: isValidationOpen,
-            isAdminDataSave: isAdminDataSave));
+            isAdminDataSave: isAdminDataSave,
+            lateAttendance: lateAttendance));
 
     showToast();
   }
@@ -279,7 +281,8 @@ class _UserScreenState extends State<UserScreen> {
                                           user.isUserValidated,
                                           user.isNotificationSend,
                                           user.isValidationOpen,
-                                          user.isAdminDataSave)
+                                          user.isAdminDataSave,
+                                          user.lateAttendance)
                                       : () {
                                           print('tapped');
                                         },
