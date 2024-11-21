@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
@@ -498,9 +499,13 @@ class _UserScreenState extends State<UserScreen> {
               (!user.isAdmin && !user.isValidationRep)
                   ? Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Consumer<EventIdProvider>(
+                      child: Consumer<EventProvider>(
                         builder: (context, provider, child) {
-                          final totalEvent = provider.eventLength;
+                          List<EventType> allEvents = provider.eventList;
+                          int totalEvent = allEvents
+                              .where((e) => e.eventEnded == true)
+                              .toList()
+                              .length;
 
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

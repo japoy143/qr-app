@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/users.dart';
 import 'package:qr_app/state/usersProvider.dart';
+import 'package:qr_app/utils/validationscreen/deleteDialog.dart';
 import 'package:qr_app/utils/validationscreen/updateDialog.dart';
 
 class ValidationUsers extends StatefulWidget {
@@ -46,6 +47,16 @@ class _ValidationUsersState extends State<ValidationUsers> {
                 });
               },
             );
+          });
+    }
+
+//delete dialog
+
+    showDeleteDialog(String name, int id) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return deleteValidationDialog(id: id, account: name);
           });
     }
 
@@ -136,7 +147,7 @@ class _ValidationUsersState extends State<ValidationUsers> {
                     child: Text(
                       'Password:${decryptedPassword}',
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           decoration: checkBox
                               ? TextDecoration.lineThrough
@@ -150,19 +161,19 @@ class _ValidationUsersState extends State<ValidationUsers> {
                     child: Center(
                         child: GestureDetector(
                       onTap: () {
-                        Provider.of<UsersProvider>(context, listen: false)
-                            .deleteUserAccount(user.schoolId);
+                        showDeleteDialog(user.userName, user.schoolId);
                       },
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(40.0, 0, 0, 0),
                         child: Container(
-                            padding: EdgeInsets.all(6.0),
+                            padding: EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
                                 color: Colors.redAccent,
                                 borderRadius: BorderRadius.circular(4)),
                             child: Text(
                               'Delete',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 12.0),
                             )),
                       ),
                     )),
