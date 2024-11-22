@@ -9,11 +9,13 @@ class ScannerModal extends StatefulWidget {
   final EventAttendance eventAttendance;
   final String userSchoolId;
   final int eventId;
-  const ScannerModal(
+  DateTime lateTime;
+ScannerModal(
       {super.key,
       required this.eventAttendance,
       required this.userSchoolId,
-      required this.eventId});
+      required this.eventId,
+      required this.lateTime});
 
   @override
   State<ScannerModal> createState() => _ScannerModalState();
@@ -71,7 +73,8 @@ class _ScannerModalState extends State<ScannerModal> {
                     final isUserAttended =
                         await userProvider.updateUserNewAttendedEvent(
                             widget.eventId.toString(),
-                            int.parse(widget.userSchoolId));
+                            int.parse(widget.userSchoolId),
+                            false);
 
                     if (!isUserAttended) {
                       toast.errorStudentNotSave(context);

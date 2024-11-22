@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
+import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_app/models/eventattendance.dart';
 import 'package:qr_app/models/eventsid.dart';
@@ -17,6 +18,7 @@ class QrCodeScanner extends StatefulWidget {
   String EventName;
   String userKey;
   String officerName;
+  DateTime lateTime;
 
   QrCodeScanner({
     super.key,
@@ -24,6 +26,7 @@ class QrCodeScanner extends StatefulWidget {
     required this.EventName,
     required this.userKey,
     required this.officerName,
+    required this.lateTime,
   });
 
   @override
@@ -46,7 +49,16 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   //color theme
   final colortheme = ColorThemeProvider();
 
+  //current time attendance
+  DateTime currentTime = DateTime.now();
+
   startscan() async {
+    //date for late or ontime
+
+    setState(() {
+      currentTime = DateTime.now();
+    });
+
     var result;
 
     try {
@@ -317,11 +329,14 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                                                 studentYear: userYear,
                                                 isDataSaveOffline: false));
 
+                                        bool isLate = currentTime
+                                            .isAfter(widget.lateTime);
+
                                         final isUserAttended =
                                             await userProvider
                                                 .updateUserNewAttendedEvent(
                                                     widget.EventId.toString(),
-                                                    int.parse(userSchoolId));
+                                                    int.parse(userSchoolId), isLate);
 
                                         if (!isUserAttended) {
                                           toast.errorStudentNotSave(context);

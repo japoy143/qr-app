@@ -156,6 +156,7 @@ class _EventBoxHomescreenState extends State<EventBoxHomescreen> {
                                             userKey: widget.userKey,
                                             officerName: widget.officerName,
                                             EventName: item.eventName,
+                                            lateTime: item.lateTime,
                                           ))),
                               child: const Icon(
                                 Icons.qr_code_scanner,

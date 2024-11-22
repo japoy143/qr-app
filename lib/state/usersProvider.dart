@@ -626,7 +626,8 @@ class UsersProvider extends ChangeNotifier {
   //111
   //update user new attended event
   // return status
-  Future<bool> updateUserNewAttendedEvent(String newEvent, int id) async {
+  Future<bool> updateUserNewAttendedEvent(
+      String newEvent, int id, bool isLate) async {
     try {
       var userData = await Supabase.instance.client
           .from('users')
@@ -646,6 +647,16 @@ class UsersProvider extends ChangeNotifier {
       await Supabase.instance.client
           .from('users')
           .update({'event_attended': formmatedEvent}).eq('school_id', id);
+
+      //update only when its late 
+      if (isLate) {
+        //add late attendance
+        var pastLateAttendance = userData['late_attendance'];
+        var formmatedLateAttendance = '$pastLateAttendance$newEvent|';
+        //update late attendance
+        await Supabase.instance.client.from('users').update(
+            {'late_attendance': formmatedLateAttendance}).eq('school_id', id);
+      }
 
       logger.t('successfully updated event attended 111');
       return true;

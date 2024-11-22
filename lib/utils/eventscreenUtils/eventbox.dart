@@ -180,6 +180,7 @@ class _EventBoxState extends State<EventBox> {
                                                 userKey: widget.userkey,
                                                 officerName: widget.officerName,
                                                 EventName: event.eventName,
+                                                lateTime: event.lateTime,
                                               ))),
                                   child: const Icon(
                                     Icons.qr_code_scanner,

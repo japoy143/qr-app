@@ -56,6 +56,17 @@ class SaveAndDownloadMultiplePdf {
       return total;
     }
 
+    String getLateAttendance(String lateAttendance, int id) {
+      List late = lateAttendance.split('|');
+      late.remove("");
+
+      if (late.any((element) => element == id.toString())) {
+        return 'Late';
+      }
+
+      return 'Ontime';
+    }
+
     doc.addPage(pw.MultiPage(
       maxPages: users.isEmpty ? 1 : users.length * 2,
       pageFormat: PdfPageFormat.legal,
@@ -94,7 +105,7 @@ class SaveAndDownloadMultiplePdf {
           final List<List<dynamic>> data = events.map((e) {
             return [
               e.eventName.toString(),
-              '${DateFormat('MMMM dd, yyyy').format(e.eventDate)} \n ${DateFormat("h:mm a").format(e.eventDate)}',
+              '${DateFormat('MMMM dd, yyyy').format(e.eventDate)} \n ${DateFormat("h:mm a").format(e.eventDate)} \n ${getLateAttendance(user.lateAttendance, e.id)}',
               getAttendanceList(user.eventAttended, e.id, e.eventPenalty)
             ];
           }).toList();
