@@ -180,10 +180,8 @@ class _EventScreenState extends State<EventScreen> {
   eventIdSetter() {
     TextEditingController randomId =
         TextEditingController(text: generateIdNotExist().toString());
-    if (statusHolder && internetStatus) {
+    if (internetStatus) {
       _eventIdController = randomId;
-
-      statusHolder = false;
     }
   }
 
@@ -265,9 +263,6 @@ class _EventScreenState extends State<EventScreen> {
 
     //clear
     clearFields();
-    setState(() {
-      statusHolder = true;
-    });
   }
 
 //update
@@ -319,12 +314,12 @@ class _EventScreenState extends State<EventScreen> {
       return;
     }
 
-    // ensure eventTime must be before
-    if (formatter.ensureEventTimeIsBeforeThanEventEnd(
-        context, currentTime, eventTimeEnd)) {
-      toast.errorEventEnd(context);
-      return;
-    }
+    // // ensure eventTime must be before
+    // if (formatter.ensureEventTimeIsBeforeThanEventEnd(
+    //     context, currentTime, eventTimeEnd)) {
+    //   toast.errorEventEnd(context);
+    //   return;
+    // }
 
     setState(() {
       eventProvider.updateEvent(
@@ -735,12 +730,11 @@ class _EventScreenState extends State<EventScreen> {
             ),
             floatingActionButton: user.isAdmin
                 ? FloatingActionButton(
-                    onPressed: () => showAddEvent(
-                        (screenHeight - statusbarHeight) * 0.68,
-                        screenWidth * 0.85,
-                        purple,
-                        totalHeight,
-                        allEventIds),
+                    onPressed: () {
+                      showAddEvent((screenHeight - statusbarHeight) * 0.68,
+                          screenWidth * 0.85, purple, totalHeight, allEventIds);
+                      eventIdSetter();
+                    },
                     child: const Icon(Icons.add),
                   )
                 : null);

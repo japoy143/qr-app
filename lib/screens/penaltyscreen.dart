@@ -225,9 +225,12 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                     final usersList = _studentNameController.text.isEmpty
                         ? sortedCoursesAndYear
                         : sortedCoursesAndYear
-                            .where((student) => student.userName
-                                .toLowerCase()
-                                .contains(
+                            .where((student) =>
+                                student.userName.toLowerCase().contains(_studentNameController.text.toLowerCase()) ||
+                                student.lastName.toLowerCase().contains(
+                                    _studentNameController.text
+                                        .toLowerCase()) ||
+                                student.schoolId.toString().contains(
                                     _studentNameController.text.toLowerCase()))
                             .toList();
 
@@ -265,7 +268,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          item.userName,
+                                          '${item.userName} ${item.lastName}',
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500,

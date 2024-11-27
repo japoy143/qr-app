@@ -42,6 +42,9 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
     Provider.of<UsersProvider>(context, listen: false).getUsers();
     Provider.of<PenaltyValuesProvider>(context, listen: false)
         .getPenaltyValues();
+    Provider.of<EventAttendanceProvider>(context, listen: false)
+        .getEventAttendance();
+
     super.initState();
   }
 
@@ -97,17 +100,9 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
   }
 
 //totalStudent Attended
-  int totalStudentAttended() {
-    final eventAttendanceProvider =
-        Provider.of<EventAttendanceProvider>(context, listen: false);
-    eventAttendanceProvider.getEventAttendance();
-
-    List<EventAttendance> eventAttendance =
-        eventAttendanceProvider.eventAttendanceList;
-
-    List<EventAttendance> eventIdFilter = eventAttendance
-        .where((event) => event.eventId == widget.eventId)
-        .toList();
+  int totalStudentAttended(List<EventAttendance> attended) {
+    List<EventAttendance> eventIdFilter =
+        attended.where((event) => event.eventId == widget.eventId).toList();
 
     return eventIdFilter.length;
   }
@@ -236,15 +231,20 @@ class _CoursesSummaryScreenState extends State<CoursesSummaryScreen> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    Text(
-                      'Total Student Attended: ${totalStudentAttended()}',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.grey.shade400,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Consumer<EventAttendanceProvider>(
+                        builder: (context, provider, child) {
+                      List<EventAttendance> attended =
+                          provider.eventAttendanceList;
+
+                      return Text(
+                          'Total Student Attended: ${totalStudentAttended(attended)}',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.grey.shade400,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w600,
+                          ));
+                    }),
                   ],
                 ),
                 Padding(

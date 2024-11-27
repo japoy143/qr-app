@@ -83,9 +83,13 @@ class _StudentListSummaryState extends State<StudentListSummary> {
     return _studentNameController.text.isEmpty
         ? sortedCoursesAndYear
         : sortedCoursesAndYear
-            .where((search) => search.studentName
-                .toLowerCase()
-                .contains(_studentNameController.text.toLowerCase()))
+            .where((search) =>
+                search.studentName
+                    .toLowerCase()
+                    .contains(_studentNameController.text.toLowerCase()) ||
+                search.studentId
+                    .toString()
+                    .contains(_studentNameController.text))
             .toList();
   }
 
@@ -138,9 +142,13 @@ class _StudentListSummaryState extends State<StudentListSummary> {
     return _studentNameController.text.isEmpty
         ? filteredNotAttended
         : filteredNotAttended
-            .where((search) => search.studentName
-                .toLowerCase()
-                .contains(_studentNameController.text.toLowerCase()))
+            .where((search) =>
+                search.studentName
+                    .toLowerCase()
+                    .contains(_studentNameController.text.toLowerCase()) ||
+                search.studentId
+                    .toString()
+                    .contains(_studentNameController.text))
             .toList();
   }
 

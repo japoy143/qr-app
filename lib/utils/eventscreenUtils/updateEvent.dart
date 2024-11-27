@@ -66,7 +66,7 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
         ),
       ),
       dateOrder: DatePickerDateOrder.dmy,
-      initialDateTime: DateTime.now(),
+      initialDateTime: DateTime.parse(widget.currentDate),
       pickerTextStyle: TextStyle(
         color: widget.color,
         fontWeight: FontWeight.bold,
@@ -105,97 +105,148 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
 
   void timeStartPicker() {
     BottomPicker.time(
-      pickerTitle: Text(
-        'Set your next meeting time',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-          color: widget.color,
-        ),
-      ),
-      onSubmit: (index) {
-        setState(() {
-          widget.currentTime = index.toString();
-          _currentTime = index;
-          widget.onUpdateEventDetails(
-            _currentDate.toString(),
-            index.toString(),
-            _eventEndTime.toString(),
-            _lateTime.toString(),
-          );
-        });
-        print(index);
-      },
-      onChange: (index) {
-        setState(() {
-          widget.currentTime = index.toString();
-          _currentTime = index;
-          widget.onUpdateEventDetails(
-            _currentDate.toString(),
-            index.toString(),
-            _eventEndTime.toString(),
-            _lateTime.toString(),
-          );
-        });
-        print(index);
-      },
-      bottomPickerTheme: BottomPickerTheme.plumPlate,
-      use24hFormat: false,
-      initialTime: Time(
-        minutes: 10,
-      ),
-    ).show(context);
+            pickerTitle: Text(
+              'Set your next meeting time',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: widget.color,
+              ),
+            ),
+            onSubmit: (index) {
+              setState(() {
+                widget.currentTime = index.toString();
+                _currentTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  index.toString(),
+                  widget.eventTimeEnd,
+                  widget.lateTime,
+                );
+              });
+              print(index);
+            },
+            onChange: (index) {
+              setState(() {
+                widget.currentTime = index.toString();
+                _currentTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  index.toString(),
+                  widget.eventTimeEnd,
+                  widget.lateTime,
+                );
+              });
+              print(index);
+            },
+            bottomPickerTheme: BottomPickerTheme.plumPlate,
+            use24hFormat: false,
+            initialTime: Time(
+                hours: DateTime.parse(widget.currentTime).hour,
+                minutes: DateTime.parse(widget.currentTime).minute))
+        .show(context);
+  }
+
+  //late picker
+  void lateTimePicker() {
+    BottomPicker.time(
+            pickerTitle: Text(
+              'Set your late time',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: widget.color,
+              ),
+            ),
+            onSubmit: (index) {
+              setState(() {
+                widget.lateTime = index.toString();
+                _lateTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  widget.currentTime,
+                  widget.eventTimeEnd,
+                  index.toString(),
+                );
+              });
+              print(index);
+            },
+            onChange: (index) {
+              setState(() {
+                widget.lateTime = index.toString();
+                _lateTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  widget.currentTime,
+                  widget.eventTimeEnd,
+                  index.toString(),
+                );
+              });
+              print(index);
+            },
+            bottomPickerTheme: BottomPickerTheme.plumPlate,
+            use24hFormat: false,
+            initialTime: Time(
+                hours: DateTime.parse(widget.lateTime).hour,
+                minutes: DateTime.parse(widget.lateTime).minute))
+        .show(context);
   }
 
   void timeEndPicker() {
     BottomPicker.time(
-      pickerTitle: Text(
-        'Set the event time end',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-          color: widget.color,
-        ),
-      ),
-      onSubmit: (index) {
-        setState(() {
-          widget.eventTimeEnd = index.toString();
-          _eventEndTime = index;
-          widget.onUpdateEventDetails(
-            _currentDate.toString(),
-            _currentTime.toString(),
-            index.toString(),
-            _lateTime.toString(),
-          );
-        });
-        print(index);
-      },
-      onChange: (index) {
-        setState(() {
-          widget.eventTimeEnd = index.toString();
-          _eventEndTime = index;
-          widget.onUpdateEventDetails(
-            _currentDate.toString(),
-            _currentTime.toString(),
-            index.toString(),
-            _lateTime.toString(),
-          );
-        });
-        print(index);
-      },
-      bottomPickerTheme: BottomPickerTheme.plumPlate,
-      use24hFormat: false,
-      initialTime: Time(
-        minutes: 10,
-      ),
-    ).show(context);
+            pickerTitle: Text(
+              'Set the event time end',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: widget.color,
+              ),
+            ),
+            onSubmit: (index) {
+              setState(() {
+                widget.eventTimeEnd = index.toString();
+                _eventEndTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  widget.currentTime,
+                  index.toString(),
+                  widget.lateTime,
+                );
+              });
+              print(index);
+            },
+            onChange: (index) {
+              setState(() {
+                widget.eventTimeEnd = index.toString();
+                _eventEndTime = index;
+                widget.onUpdateEventDetails(
+                  widget.currentDate,
+                  widget.currentTime,
+                  index.toString(),
+                  widget.lateTime,
+                );
+              });
+              print(index);
+            },
+            bottomPickerTheme: BottomPickerTheme.plumPlate,
+            use24hFormat: false,
+            initialTime: Time(
+                hours: DateTime.parse(widget.eventTimeEnd).hour,
+                minutes: DateTime.parse(widget.eventTimeEnd).minute))
+        .show(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('MMM dd').format(_currentDate);
-    String formattedTime = DateFormat('h:mm a').format(_currentTime);
-    String formattedEventEnd = DateFormat('h:mm a').format(_eventEndTime);
+    String formattedDate =
+        DateFormat('MMM dd').format(DateTime.parse(widget.currentDate));
+    String formattedTime =
+        DateFormat('h:mm a').format(DateTime.parse(widget.currentTime));
+    String formattedEventEnd =
+        DateFormat('h:mm a').format(DateTime.parse(widget.eventTimeEnd));
+    String formattedLateTime =
+        DateFormat('h:mm a').format(DateTime.parse(widget.lateTime));
+
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return SingleChildScrollView(
@@ -259,6 +310,16 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                     style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w600,
+                        fontFamily: "Poppins"),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
+                  child: Text(
+                    'Make sure to set again the time',
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
                         fontFamily: "Poppins"),
                   ),
                 ),
@@ -369,45 +430,114 @@ class _UpdateEventDialogState extends State<UpdateEventDialog> {
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 4, 0, 2),
-                  child: Text('Event Date'),
-                ),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      height: 40,
-                      width: 90,
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: widget.color),
-                          borderRadius: BorderRadius.circular(4.0)),
-                      child: Center(
-                          child: Text(
-                        formattedDate,
-                        style: const TextStyle(fontSize: 16.0),
-                      )),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    GestureDetector(
-                      onTap: datePicker,
-                      child: Container(
-                        height: 40,
-                        width: 55,
-                        decoration: BoxDecoration(
-                            color: widget.color,
-                            borderRadius: BorderRadius.circular(4.0)),
-                        child: const Center(
-                            child: Text(
-                          "Set",
-                          style: TextStyle(
-                            color: Colors.white,
+                    //setter 1
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 4, 0, 2),
+                            child: Text('Event Date'),
                           ),
-                        )),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 2, color: widget.color),
+                                      borderRadius: BorderRadius.circular(4.0)),
+                                  child: Center(
+                                      child: Text(
+                                    formattedDate,
+                                    style: const TextStyle(fontSize: 16.0),
+                                  )),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: datePicker,
+                                  child: Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: widget.color,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: const Center(
+                                        child: Text(
+                                      "Set",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
+
+                    //setter 2
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 4, 0, 2),
+                            child: Text('Late Time'),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 4,
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 2, color: widget.color),
+                                      borderRadius: BorderRadius.circular(4.0)),
+                                  child: Center(
+                                      child: Text(
+                                    formattedLateTime,
+                                    style: const TextStyle(fontSize: 14.0),
+                                  )),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: lateTimePicker,
+                                  child: Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: widget.color,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    child: const Center(
+                                        child: Text(
+                                      "Set",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(flex: 1, child: SizedBox()),
                   ],
                 ),
                 Padding(

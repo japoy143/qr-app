@@ -31,9 +31,19 @@ class SaveAndDownloadMultiplePdf {
     final imgNDMC =
         (await rootBundle.load('assets/imgs/nd_logo.png')).buffer.asUint8List();
 
-    int getAttendanceList(String attendance, int id, int eventValue) {
+    int getAttendanceList(
+        String attendance, String lateAttendance, int id, int eventValue) {
       List splitAttendance = attendance.split("|");
+      List splitLateAttendance = lateAttendance.split("|");
       splitAttendance.remove("");
+      splitLateAttendance.remove("");
+
+      bool isLate =
+          splitLateAttendance.any((element) => element == id.toString());
+      if (isLate) {
+        return eventValue - 10;
+      }
+
       bool isIdexist =
           splitAttendance.any((element) => int.parse(element) == id);
 
@@ -56,15 +66,22 @@ class SaveAndDownloadMultiplePdf {
       return total;
     }
 
-    String getLateAttendance(String lateAttendance, int id) {
+    String getLateAttendance(
+        String lateAttendance, String eventAttendance, int id) {
       List late = lateAttendance.split('|');
+      List attendance = eventAttendance.split('|');
+      attendance.remove("");
       late.remove("");
+
+      if (attendance.any((element) => element == id.toString())) {
+        return 'Ontime';
+      }
 
       if (late.any((element) => element == id.toString())) {
         return 'Late';
       }
 
-      return 'Ontime';
+      return 'Not Attended';
     }
 
     doc.addPage(pw.MultiPage(
@@ -105,8 +122,9 @@ class SaveAndDownloadMultiplePdf {
           final List<List<dynamic>> data = events.map((e) {
             return [
               e.eventName.toString(),
-              '${DateFormat('MMMM dd, yyyy').format(e.eventDate)} \n ${DateFormat("h:mm a").format(e.eventDate)} \n ${getLateAttendance(user.lateAttendance, e.id)}',
-              getAttendanceList(user.eventAttended, e.id, e.eventPenalty)
+              '${DateFormat('MMMM dd, yyyy').format(e.eventDate)} \n ${DateFormat("h:mm a").format(e.eventDate)} \n ${getLateAttendance(user.lateAttendance, user.eventAttended, e.id)}',
+              getAttendanceList(
+                  user.eventAttended, user.lateAttendance, e.id, e.eventPenalty)
             ];
           }).toList();
 

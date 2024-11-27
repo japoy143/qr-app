@@ -131,9 +131,9 @@ class _addEventDialogState extends State<addEventDialog> {
           _lateTime = index;
           widget.onUpdateEventDetails(
             _currentDate.toString(),
-            index.toString(),
+            _currentTime.toString(),
             _eventEndTime.toString(),
-            _lateTime.toString(),
+            index.toString(),
           );
         });
         print(index);
@@ -144,9 +144,9 @@ class _addEventDialogState extends State<addEventDialog> {
           _lateTime = index;
           widget.onUpdateEventDetails(
             _currentDate.toString(),
-            index.toString(),
+            _currentTime.toString(),
             _eventEndTime.toString(),
-            _lateTime.toString(),
+            index.toString(),
           );
         });
         print(index);
