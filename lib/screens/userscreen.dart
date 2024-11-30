@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -7,6 +8,7 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/screens/manageprofilescreen.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
 import 'package:qr_app/state/penaltyValues.dart';
@@ -181,6 +183,46 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+  void showNoInternet(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Allow dismissal by tapping outside the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+              bottomLeft: Radius.circular(4.0),
+              bottomRight: Radius.circular(4.0),
+            ),
+          ),
+          contentPadding: const EdgeInsets.all(10.0),
+          content: SizedBox(
+            width: 150,
+            child: Row(
+              children: [
+                const CircularProgressIndicator(color: Colors.blue),
+                const SizedBox(width: 16),
+                const Text(
+                  "No internet",
+                  style: TextStyle(fontSize: 16),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 20),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Dismiss the dialog
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   //user attended
   int getUserTotalAttended(String eventAttended) {
     List attend = eventAttended.split('|');
@@ -201,6 +243,17 @@ class _UserScreenState extends State<UserScreen> {
 
   final appBar = AppBar();
 
+  bool internetStatus = false;
+  //status
+  InternetStatus() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      setState(() {
+        internetStatus = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     Provider.of<UsersProvider>(context, listen: false).getUser(widget.userKey);
@@ -208,6 +261,7 @@ class _UserScreenState extends State<UserScreen> {
     Provider.of<EventProvider>(context, listen: false).getEvents();
     Provider.of<PenaltyValuesProvider>(context, listen: false)
         .getPenaltyValues();
+    InternetStatus();
     super.initState();
   }
 
@@ -346,6 +400,16 @@ class _UserScreenState extends State<UserScreen> {
                                 ),
                                 Text(
                                     '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
+                                GestureDetector(
+                                    onTap: internetStatus
+                                        ? () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ManageProfileScreen(
+                                                      user: user,
+                                                    )))
+                                        : () => showNoInternet(context),
+                                    child: Text('Manage Profile')),
                               ],
                             ),
                           ),

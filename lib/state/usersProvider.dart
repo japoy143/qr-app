@@ -551,6 +551,46 @@ class UsersProvider extends ChangeNotifier {
     } catch (e) {}
   }
 
+  //update user details
+  updateManageProfile(
+    int schoolId,
+    String course,
+    String year,
+    String username,
+    String lastname,
+    String middleInitial,
+    String userpassword,
+  ) async {
+    Cipher cipher = Cipher(secretKey: secret_key);
+    //encryption
+    final encryptedPassword = cipher.xorEncode(userpassword);
+
+    var data = userBox.get(schoolId);
+    if (data != null) {
+      data.schoolId = schoolId;
+      data.userCourse = course;
+      data.userYear = year;
+      data.userName = username;
+      data.lastName = lastname;
+      data.middleInitial = middleInitial;
+      data.userPassword = encryptedPassword;
+      userBox.put(schoolId, data);
+    }
+
+    try {
+      await Supabase.instance.client.from('users').update({
+        'username': username,
+        'last_name': lastname,
+        'middle_initial': middleInitial,
+        'user_course': course,
+        'user_year': year,
+        'user_password': encryptedPassword
+      }).eq('school_id', schoolId);
+    } catch (e) {
+      logger.e('error updating manage profile $e');
+    }
+  }
+
   //110
   //logout callback and dispose all session data
   logout(int id) async {
@@ -648,7 +688,7 @@ class UsersProvider extends ChangeNotifier {
           .from('users')
           .update({'event_attended': formmatedEvent}).eq('school_id', id);
 
-      //update only when its late 
+      //update only when its late
       if (isLate) {
         //add late attendance
         var pastLateAttendance = userData['late_attendance'];

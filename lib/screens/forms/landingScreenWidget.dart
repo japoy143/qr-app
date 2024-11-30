@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_app/theme/avartar.dart';
 import 'package:qr_app/theme/colortheme.dart';
 

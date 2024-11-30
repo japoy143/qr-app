@@ -76,7 +76,9 @@ class _EventScreenState extends State<EventScreen> {
   InternetStatus() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      internetStatus = true;
+      setState(() {
+        internetStatus = true;
+      });
     }
   }
 
