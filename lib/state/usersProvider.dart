@@ -447,6 +447,100 @@ class UsersProvider extends ChangeNotifier {
     }
   }
 
+  //add nnew adminn
+  createNewAdminUser(
+      String userName,
+      String lastName,
+      String middleInitial,
+      int schoolId,
+      String userCourse,
+      String userYear,
+      String userPassword,
+      String userProfile) async {
+    Cipher cipher = Cipher(secretKey: secret_key);
+    //encryption
+    final encryptedPassword = cipher.xorEncode(userPassword);
+    bool isAdmin = true;
+    bool isValidation = false;
+    try {
+      await Supabase.instance.client.from('users').insert({
+        'school_id': schoolId,
+        'key': userName,
+        'username': userName,
+        'last_name': lastName,
+        'middle_initial': middleInitial,
+        'user_course': userCourse,
+        'user_year': userYear,
+        'user_password': encryptedPassword,
+        'is_admin': isAdmin,
+        'user_profile': userProfile,
+        'is_login': false,
+        'validation_representative': isValidation,
+        'event_attended': '',
+        'account_validated': false,
+        'notification_send': false,
+        'is_validation_open': false,
+        'is_admin_data_save': true,
+        'late_attendance': '',
+      });
+
+      userBox.put(
+          schoolId,
+          UsersType(
+              schoolId: schoolId,
+              key: userName,
+              userName: userName,
+              lastName: lastName,
+              middleInitial: middleInitial,
+              userCourse: userCourse,
+              userYear: userYear,
+              userPassword: encryptedPassword,
+              isAdmin: isAdmin,
+              userProfile: userProfile,
+              isSignupOnline: true,
+              isLogin: false,
+              eventAttended: '',
+              isValidationRep: isValidation,
+              isPenaltyShown: false,
+              isUserValidated: false,
+              isNotificationSend: false,
+              isValidationOpen: false,
+              isAdminDataSave: true,
+              lateAttendance: ''));
+
+      logger.t('data inserted successfully 108');
+    } catch (e) {
+      logger.e('error 108 insertion user $e');
+      if (adminIds.contains(schoolId)) {
+        isAdmin = true;
+      }
+
+      userBox.put(
+          schoolId,
+          UsersType(
+              schoolId: schoolId,
+              key: userName,
+              userName: userName,
+              lastName: lastName,
+              middleInitial: middleInitial,
+              userCourse: userCourse,
+              userYear: userYear,
+              userPassword: encryptedPassword,
+              isAdmin: isAdmin,
+              userProfile: userProfile,
+              isSignupOnline: false,
+              isLogin: false,
+              eventAttended: '',
+              isValidationRep: isValidation,
+              isPenaltyShown: false,
+              isUserValidated: false,
+              isNotificationSend: false,
+              isValidationOpen: false,
+              isAdminDataSave: true,
+              lateAttendance: ''));
+    }
+  }
+
   //insert
   insertData(String id, UsersType user) async {
     await userBox.put(id, user);

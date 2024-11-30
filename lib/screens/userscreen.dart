@@ -8,6 +8,7 @@ import 'package:qr_app/models/events.dart';
 import 'package:qr_app/models/penaltyvalues.dart';
 import 'package:qr_app/models/types.dart';
 import 'package:qr_app/models/users.dart';
+import 'package:qr_app/screens/addAdminsScreenn.dart';
 import 'package:qr_app/screens/manageprofilescreen.dart';
 import 'package:qr_app/state/eventIdProvider.dart';
 import 'package:qr_app/state/eventProvider.dart';
@@ -488,6 +489,20 @@ class _UserScreenState extends State<UserScreen> {
                 '${user.userCourse}-${user.userYear}',
                 style: const TextStyle(fontSize: 15, fontFamily: 'Poppins'),
               ),
+              user.isAdmin
+                  ? GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddAdminScreen(user: user))),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Text(
+                          'Add New Admin',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
                 child: Padding(

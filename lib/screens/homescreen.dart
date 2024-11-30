@@ -348,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           overflow: TextOverflow.ellipsis,
                                         )),
                                     Text(
-                                        '${user.isAdmin ? adminPosition.positions[user.schoolId] : "Student"}'),
+                                        '${user.isAdmin ? adminPosition.positions[user.schoolId] != null ? adminPosition.positions[user.schoolId] : "Admin" : "Student"}'),
                                   ],
                                 ),
                               ),
